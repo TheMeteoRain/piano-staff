@@ -24,4 +24,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: piano-staff/frontend:latest
+          tags: ghcr.io/themeteorain/piano-staff/frontend:latest
