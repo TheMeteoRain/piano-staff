@@ -22,13 +22,13 @@ export default {
 .progress-bar {
   width: 100%;
   height: 5px;
-  background-color: #e0e0e0;
+  background-color: #ffffff;
   overflow: hidden;
 }
 
 .progress-bar__fill {
   height: 100%;
-  background-color: #76c7c0;
+  background-color: #023e7d;
   transition: width 0.3s ease;
 }
 </style>

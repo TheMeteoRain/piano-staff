@@ -1,422 +1,451 @@
 <template>
-  <div class="grid" v-if="visible">
+  <EndScreen
+    v-if="state == 'game-over'"
+    :stats="lastSavedStats"
+    :reset="handleResetGame"
+  />
+  <div class="grid" v-if="state != 'game-over' && visible">
     <ProgressBar :progress="progress" />
-    <div ref="vfContainer" class="staff-container py-8 overflow-hidden"></div>
+    <div ref="vfContainer" class="staff-container pt-4 overflow-hidden"></div>
 
-    <div class="note-buttons grid grid-flow-col">
+    <div class="note-buttons">
       <button
         v-for="note in notes"
         :key="note"
         @click="handleGuess(note)"
-        class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3"
+        :disabled="state !== 'waiting'"
+        class="test cursor-pointer disabled:cursor-not-allowed"
       >
         {{ note }}
-      </button>
-    </div>
-
-    <div class="h-8">
-      <p v-if="state == 'feedback'">{{ feedback }}</p>
-    </div>
-
-    <div class="stats">
-      <h3>Stats</h3>
-      <p>Correct Guesses: {{ stats.correctGuesses }}</p>
-      <p>Incorrect Guesses: {{ stats.incorrectGuesses }}</p>
-      <p>Total Guesses: {{ stats.totalGuesses }}</p>
-      <button
-        @click="resetStats"
-        class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3"
-      >
-        Reset Stats
-      </button>
-      <button
-        @click="handleResetGame"
-        class="bg-sky-700 px-4 py-2 text-white hover:bg-sky-800 sm:px-8 sm:py-3"
-      >
-        Reset
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue'
-import { Renderer, Stave, StaveNote, Formatter, Voice, RenderContext, Annotation } from 'vexflow'
-import ProgressBar from './ProgressBar.vue'
+import { onMounted, ref, watch, onUnmounted, nextTick } from "vue";
+import {
+  Renderer,
+  Stave,
+  StaveNote,
+  Formatter,
+  Voice,
+  RenderContext,
+  Annotation,
+} from "vexflow";
+import ProgressBar from "./ProgressBar.vue";
+import EndScreen from "./EndScreen.vue";
+import { useStats, type Stats } from "@/utils/stats";
 
-type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
-type Clef = 'treble' | 'bass' | 'mixed'
+type Note = "C" | "D" | "E" | "F" | "G" | "A" | "B";
+export type Clef = "treble" | "bass" | "mixed";
 type NoteQueueItem = {
-  note: StaveNote
-  voice: Voice
+  note: StaveNote;
+  randomNote: RandomNote;
+  voice: Voice;
   meta: {
-    index: number
-    startX: number
-    currentX: number
-    delay: number
-    old: boolean
-    answered: boolean
-    removed: boolean
-    fadeOutStarted: boolean
-    elapsedStartTime: number
-    progress: number
-  }
-  raf?: number
-}
+    index: number;
+    startX: number;
+    currentX: number;
+    delay: number;
+    old: boolean;
+    state: "default" | "in-question" | "answered" | "removed";
+    fadeOutStarted: boolean;
+    elapsedStartTime: number;
+    progress: number;
+  };
+  raf?: number;
+};
 type RandomNote = {
-  note: Note
-  octave: number
-  clef: Clef
-  key: string
-}
-
-type Stats = {
-  correctGuesses: number
-  incorrectGuesses: number
-  totalGuesses: number
-  correctGuessesResponseTimes: number[]
-  exercise: Clef
-  startTime: string
-  endTime: string | null
-}
-
-type SavedStats = {
-  exercises: {
-    treble: Stats[]
-    bass: Stats[]
-    mixed: Stats[]
-  }
-}
+  note: Note;
+  octave: number;
+  clef: Clef;
+  key: string;
+};
 
 type ExerciseProps = {
-  exercise: Clef
-}
-const { exercise } = defineProps<ExerciseProps>()
-
-const initialState = {
-  correctGuesses: 0,
-  incorrectGuesses: 0,
-  totalGuesses: 0,
-  correctGuessesResponseTimes: [],
+  exercise: Clef;
+};
+const { exercise } = defineProps<ExerciseProps>();
+const initialStatsState: Stats = {
+  guesses: {},
   exercise: exercise,
   startTime: new Date().toISOString(),
   endTime: null,
-}
-const stats = ref<Stats>(structuredClone(initialState))
+};
+const { stats, initializeStats, saveStats, lastSavedStats } =
+  useStats(initialStatsState);
+
+const vfContainer = ref<HTMLDivElement | null>(null);
+const userGuess = ref<Note | "">("");
+const notes: Note[] = ["C", "D", "E", "F", "G", "A", "B"];
+const state = ref<"scrolling" | "waiting" | "game-over">("scrolling");
+const notesQueue = ref<NoteQueueItem[]>([]);
+const visible = ref<boolean>(false);
+const noteSpacing = 50;
+const noteDelay = 1500;
+const progress = ref<number>(0);
+const questionTimeLimit = 5000;
+let questionTimerIntervalID: number | null = null;
+let questionStartTime: number = 0;
+let progressTimerID: number | null = null;
+const totalGuessesToDefeat = 3;
+const noteFadeOutSpot = 45;
+const noteQuestionSpot = 100;
+const initialStartingX = 200;
+const stopX = 0;
+const pixelsPerSecond = 50;
+let renderer = null;
+let context: RenderContext;
+let staveTreble: Stave;
+let staveBass: Stave;
+let lastRandomNote = "";
 
 watch(
-  stats,
-  (newStats) => {
-    console.log(newStats)
+  () => notesQueue.value,
+  (newQueue) => {
+    newQueue.forEach((item) => {
+      console.log(item.meta.state);
+      if (item.meta.state === "removed") return;
+      item.note.getSVGElement()?.setAttribute("data-state", item.meta.state);
+    });
   },
-  { deep: true },
-)
+  { deep: true }
+);
 
-const vfContainer = ref<HTMLDivElement | null>(null)
-const userGuess = ref<Note | ''>('')
-const feedback = ref<string>('')
-const notes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-const state = ref('scrolling') // scrolling | waiting | feedback
-const notesQueue = ref<NoteQueueItem[]>([])
-const visible = ref<boolean>(false)
-const noteSpacing = 50
-const noteDelay = 1500
-const progress = ref<number>(0)
-const questionTimeLimit = 5000
-let questionTimerIntervalID: number | null = null
-let questionStartTime: number = 0
-let progressTimerID: number | null = null
-const totalGuessesToDefeat = 3
-const noteFadeOutSpot = 45
-const noteQuestionSpot = 100
-const initialStartingX = 200
-const stopX = 0
-const pixelsPerSecond = 50
-let renderer = null
-let context: RenderContext
-let staveTreble: Stave
-let staveBass: Stave
-let lastRandomNote = ''
+function updateStats(isCorrect: boolean, item: NoteQueueItem) {
+  const noteKey = item.randomNote.key.replace("/", "");
 
-function updateStats(isCorrect: boolean) {
-  if (isCorrect) {
-    stats.value.correctGuesses++
-    stats.value.correctGuessesResponseTimes.push(new Date().getTime() - questionStartTime)
+  if (stats.value.guesses[noteKey]) {
+    // update existing
+    const existingStat = stats.value.guesses[noteKey];
+    stats.value.guesses[noteKey] = {
+      averageMs:
+        (existingStat.averageMs * existingStat.totalGuesses +
+          (new Date().getTime() - questionStartTime)) /
+        (existingStat.totalGuesses + 1),
+      totalGuesses: existingStat.totalGuesses + 1,
+      correctGuesses: isCorrect
+        ? existingStat.correctGuesses + 1
+        : existingStat.correctGuesses,
+      incorrectGuesses: isCorrect
+        ? existingStat.incorrectGuesses
+        : existingStat.incorrectGuesses + 1,
+      guessRate: isCorrect
+        ? ((existingStat.correctGuesses + 1) /
+            (existingStat.totalGuesses + 1)) *
+          100
+        : (existingStat.correctGuesses / (existingStat.totalGuesses + 1)) * 100,
+    };
   } else {
-    stats.value.incorrectGuesses++
+    // new entry
+    stats.value.guesses[noteKey] = {
+      averageMs: new Date().getTime() - questionStartTime,
+      totalGuesses: 1,
+      correctGuesses: isCorrect ? 1 : 0,
+      incorrectGuesses: isCorrect ? 0 : 1,
+      guessRate: isCorrect ? 100 : 0,
+    };
   }
-  stats.value.totalGuesses++
-}
 
-function resetStats() {
-  stats.value = structuredClone(initialState)
-  stats.value.startTime = new Date().toISOString()
+  // stats.value.guesses.push({
+  //   note: noteKey,
+  //   ms: new Date().getTime() - questionStartTime,
+  //   correct: isCorrect,
+  // });
 }
 
 function getRandomNote(): RandomNote {
-  let clef: Clef = exercise
-  if (exercise === 'mixed') {
-    clef = Math.random() < 0.5 ? 'treble' : 'bass'
-  } else if (exercise === 'bass') {
-    clef = 'bass'
-  } else if (exercise === 'treble') {
-    clef = 'treble'
+  let clef: Clef = exercise;
+  if (exercise === "mixed") {
+    clef = Math.random() < 0.5 ? "treble" : "bass";
+  } else if (exercise === "bass") {
+    clef = "bass";
+  } else if (exercise === "treble") {
+    clef = "treble";
   }
-  const octaves = clef === 'treble' ? [4, 5] : [2, 3, 4]
+  const octaves = clef === "treble" ? [4, 5] : [2, 3, 4];
 
-  let note: Note, octave: number
+  let note: Note, octave: number;
   do {
-    note = notes[Math.floor(Math.random() * notes.length)]
-    octave = octaves[Math.floor(Math.random() * octaves.length)]
+    note = notes[Math.floor(Math.random() * notes.length)];
+    octave = octaves[Math.floor(Math.random() * octaves.length)];
 
     // constraint bass clef to maximum of C4
-    while (clef === 'bass' && octave === 4 && note != 'C') {
-      note = notes[Math.floor(Math.random() * notes.length)]
-      octave = octaves[Math.floor(Math.random() * octaves.length)]
+    while (clef === "bass" && octave === 4 && note != "C") {
+      note = notes[Math.floor(Math.random() * notes.length)];
+      octave = octaves[Math.floor(Math.random() * octaves.length)];
     }
-  } while (lastRandomNote === `${note}/${octave}`)
+  } while (lastRandomNote === `${note}/${octave}`);
 
-  lastRandomNote = `${note}/${octave}`
+  lastRandomNote = `${note}/${octave}`;
 
   return {
     note: note,
     octave: octave,
     clef: clef,
     key: `${note}/${octave}`,
-  }
+  };
 }
 
 function animateNote(noteItem: NoteQueueItem) {
-  if (state.value !== 'scrolling' || noteItem.meta.removed) return
-  const { meta, note } = noteItem
+  if (state.value !== "scrolling" || noteItem.meta.state == "removed") return;
+  const { meta, note } = noteItem;
 
-  const duration = meta.delay
-  const startX = meta.startX
-  const startTime = performance.now()
+  const duration = meta.delay;
+  const startX = meta.startX;
+  const startTime = performance.now();
 
   function step(now: DOMHighResTimeStamp) {
-    let elapsed, progress, currentX
+    let elapsed, progress, currentX;
     if (meta.old) {
       // Resume from the old position
-      const remainingDistance = meta.currentX - stopX
-      const remainingDuration = (remainingDistance / (meta.startX - stopX)) * duration
-      elapsed = now - meta.elapsedStartTime
-      progress = Math.min(elapsed / remainingDuration, 1)
-      currentX = meta.currentX - remainingDistance * progress
+      const remainingDistance = meta.currentX - stopX;
+      const remainingDuration =
+        (remainingDistance / (meta.startX - stopX)) * duration;
+      elapsed = now - meta.elapsedStartTime;
+      progress = Math.min(elapsed / remainingDuration, 1);
+      currentX = meta.currentX - remainingDistance * progress;
     } else {
       // Starting animation
-      elapsed = now - startTime
-      progress = Math.min(elapsed / duration, 1)
-      currentX = startX - (startX - stopX) * progress
+      elapsed = now - startTime;
+      progress = Math.min(elapsed / duration, 1);
+      currentX = startX - (startX - stopX) * progress;
     }
 
-    meta.elapsedStartTime = now
-    meta.progress = progress
-    meta.currentX = currentX
+    meta.elapsedStartTime = now;
+    meta.progress = progress;
+    meta.currentX = currentX;
 
-    const svgNote = note.getSVGElement()
+    const svgNote = note.getSVGElement();
     if (!svgNote) {
-      console.error('SVG element not found for note:', note)
-      return
+      console.error("SVG element not found for note:", note);
+      return;
     }
-    svgNote.setAttribute('transform', `translate(${currentX}, 0)`)
-    svgNote.setAttribute('data-current-x', currentX.toString())
-    svgNote.setAttribute('data-progress', progress.toString())
+    svgNote.setAttribute("transform", `translate(${currentX}, 0)`);
+    svgNote.setAttribute("data-current-x", currentX.toString());
+    svgNote.setAttribute("data-progress", progress.toString());
 
     if (currentX > 0) {
-      noteItem.raf = requestAnimationFrame(step)
+      noteItem.raf = requestAnimationFrame(step);
     } else {
-      removeNote(noteItem)
+      removeNote(noteItem);
     }
 
-    if (currentX <= noteQuestionSpot && !meta.answered) {
-      state.value = 'waiting'
+    if (currentX <= noteQuestionSpot && meta.state == "default") {
+      state.value = "waiting";
       notesQueue.value.forEach((item) => {
-        item.meta.old = true
+        item.meta.old = true;
         if (item.raf) {
-          cancelAnimationFrame(item.raf)
+          cancelAnimationFrame(item.raf);
         }
-      })
-      guestionTimer()
+      });
+      guestionTimer();
+      meta.state = "in-question";
+      colorizeSVGElement(svgNote, "#0353a4");
     }
-    if (!meta.fadeOutStarted && currentX <= noteFadeOutSpot && meta.answered) {
+    if (
+      !meta.fadeOutStarted &&
+      currentX <= noteFadeOutSpot &&
+      meta.state == "answered"
+    ) {
       svgNote?.setAttribute(
-        'style',
-        'visibility: hidden; opacity: 0; transition: visibility 0s 1s, opacity 1s linear;',
-      )
-      meta.fadeOutStarted = true
+        "style",
+        "visibility: hidden; opacity: 0; transition: visibility 0s 1s, opacity 1s linear;"
+      );
+      meta.fadeOutStarted = true;
     }
   }
   if (meta.old && meta.elapsedStartTime) {
-    const pauseDuration = performance.now() - meta.elapsedStartTime
-    meta.elapsedStartTime += pauseDuration
+    const pauseDuration = performance.now() - meta.elapsedStartTime;
+    meta.elapsedStartTime += pauseDuration;
   }
-  noteItem.raf = requestAnimationFrame(step)
+  noteItem.raf = requestAnimationFrame(step);
 }
 
 function guestionTimer() {
-  if (state.value !== 'waiting') return
+  if (state.value !== "waiting") return;
 
-  questionStartTime = new Date().getTime()
-  questionTimerIntervalID = setInterval(checkTime, 1000)
-
-  progressTimerID = setInterval(increaseProgress, 100)
+  questionStartTime = new Date().getTime();
+  // Don't know why this happens
+  // Type 'Timeout' is not assignable to type 'number'.
+  questionTimerIntervalID = setInterval(checkTime, 1000) as unknown as number;
+  progressTimerID = setInterval(increaseProgress, 100) as unknown as number;
 
   function checkTime() {
     if (new Date().getTime() - questionStartTime > questionTimeLimit) {
-      handleGuess('')
-      resetQuestionTimer()
+      handleGuess("");
+      resetQuestionTimer();
     }
   }
 
   function increaseProgress() {
-    progress.value = Math.min(100, progress.value + 2)
+    progress.value = Math.min(100, progress.value + 2);
   }
 }
 
 function resetProgressTimer() {
   if (progressTimerID) {
-    clearInterval(progressTimerID)
-    progressTimerID = null
-    progress.value = 0
+    clearInterval(progressTimerID);
+    progressTimerID = null;
+    progress.value = 0;
   }
 }
 
 function resetQuestionTimer() {
   if (questionTimerIntervalID) {
-    clearInterval(questionTimerIntervalID)
-    questionTimerIntervalID = null
+    clearInterval(questionTimerIntervalID);
+    questionTimerIntervalID = null;
   }
 }
 
-function handleGuess(guessNote: Note | '') {
-  if (state.value !== 'waiting') return
+function handleGuess(guessNote: Note | "") {
+  if (state.value !== "waiting") return;
 
-  state.value = 'feedback'
-  resetQuestionTimer()
+  resetQuestionTimer();
 
-  const item = notesQueue.value.find((item) => item.meta.answered == false)
+  const item = notesQueue.value.find(
+    (item) => item.meta.state == "in-question"
+  );
   if (!item) {
-    console.error('No item found in notesQueue')
-    return
+    console.error("No item found in notesQueue");
+    return;
   }
 
-  const svgNote = item.note.getSVGElement()
+  const svgNote = item.note.getSVGElement();
   if (!svgNote) {
-    console.error('SVG element not found for note:', item.note)
-    return
+    console.error("SVG element not found for note:", item.note);
+    return;
   }
 
-  modifySVGAttribute(item.note as StaveNote, 'visibility', 'visible')
-  item.meta.answered = true
+  modifyStaveNoteAnnotation(item.note as StaveNote, "visibility", "visible");
+  item.meta.state = "answered";
 
-  const correctNote = item.note.keys[0].charAt(0)
+  const correctNote = item.note.keys[0].charAt(0);
 
   if (guessNote === correctNote) {
-    feedback.value = '✅ Correct!'
-    svgNote.setAttribute('fill', 'green')
-    svgNote.setAttribute('stroke', 'green')
-    updateStats(true)
+    colorizeSVGElement(svgNote, "#16a34a");
+    updateStats(true, item as NoteQueueItem);
   } else {
-    feedback.value = `❌ Incorrect. It was ${correctNote}`
-    svgNote.setAttribute('fill', 'red')
-    svgNote.setAttribute('stroke', 'red')
-    updateStats(false)
-    if (stats.value.incorrectGuesses >= totalGuessesToDefeat) {
-      endGame()
-      return
+    colorizeSVGElement(svgNote, "#e11d48");
+    updateStats(false, item as NoteQueueItem);
+    if (
+      Object.entries(stats.value.guesses).reduce(
+        (prev, [, guess]) => prev + guess.incorrectGuesses,
+        0
+      ) >= totalGuessesToDefeat
+    ) {
+      endGame();
+      return;
     }
   }
 
+  resetProgressTimer();
+
   setTimeout(() => {
-    resetProgressTimer()
-    state.value = 'scrolling'
-    feedback.value = ''
-    userGuess.value = ''
-    addNotes(1)
-    notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem))
-  }, 2000)
+    state.value = "scrolling";
+    userGuess.value = "";
+    addNotes(1);
+    notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem));
+  }, 2000);
 }
 
-function modifySVGAttribute(note: StaveNote, attribute: string, value: string) {
-  const annotation = note.getSVGElement()?.querySelector('g.vf-annotation text')
+function modifyStaveNoteAnnotation(
+  note: StaveNote,
+  attribute: string,
+  value: string
+) {
+  const annotation = note
+    .getSVGElement()
+    ?.querySelector("g.vf-annotation text");
   if (annotation) {
-    annotation.setAttribute(attribute, value)
+    annotation.setAttribute(attribute, value);
   }
+}
+
+function colorizeSVGElement(svg: SVGElement, color: string) {
+  svg.setAttribute("fill", color);
+  svg.setAttribute("stroke", color);
 }
 
 function removeNote(note: NoteQueueItem) {
   if (note.raf) {
-    cancelAnimationFrame(note.raf)
+    cancelAnimationFrame(note.raf);
   }
-  note.meta.removed = true
-  const svg = note.note.getSVGElement()
+  note.meta.state = "removed";
+  const svg = note.note.getSVGElement();
   if (svg) {
-    svg.remove()
+    svg.remove();
   }
 }
 
 function waitForNoteGroup(maxAttempts = 10, delay = 100) {
   return new Promise((resolve, reject) => {
-    let attempts = 0
+    let attempts = 0;
     function check() {
-      const groups = document.querySelector('svg')?.querySelectorAll('g.vf-stavenote')
+      const groups = document
+        .querySelector("svg")
+        ?.querySelectorAll("g.vf-stavenote");
       if (groups && groups.length > 0) {
-        resolve(true)
+        resolve(true);
       } else if (attempts++ < maxAttempts) {
-        setTimeout(check, delay)
+        setTimeout(check, delay);
       } else {
-        reject(new Error('Note group not found'))
+        reject(new Error("Note group not found"));
       }
     }
-    check()
-  })
+    check();
+  });
 }
 
 function addNotes(n = 5) {
-  const notes = []
+  const notes = [];
   for (let i = 0; i < n; i++) {
-    const randomNote = getRandomNote()
+    const randomNote = getRandomNote();
     notes.push({
       randomNote,
       staveNote: new StaveNote({
         clef: randomNote.clef,
         keys: [randomNote.key],
-        duration: 'q',
+        duration: "q",
       }),
-    })
+    });
   }
 
   notes.forEach((note) => {
-    const { randomNote, staveNote } = note
+    const { randomNote, staveNote } = note;
     const lastNote =
-      notesQueue.value.length > 0 ? notesQueue.value[notesQueue.value.length - 1] : null
+      notesQueue.value.length > 0
+        ? notesQueue.value[notesQueue.value.length - 1]
+        : null;
 
     const annotation = new Annotation(randomNote.note)
-      .setFont('Arial', 12)
-      .setVerticalJustification(Annotation.VerticalJustify.BOTTOM)
-    staveNote.addModifier(annotation, 0)
-    const voice = new Voice({ numBeats: 1, beatValue: 1 }).setStrict(false)
-    voice.addTickables([staveNote])
-    new Formatter().joinVoices([voice]).format([voice])
-    if (randomNote.clef === 'treble') {
-      voice.draw(context, staveTreble)
+      .setFont("Arial", 12)
+      .setVerticalJustification(Annotation.VerticalJustify.BOTTOM);
+    staveNote.addModifier(annotation, 0);
+    const voice = new Voice({ numBeats: 1, beatValue: 1 }).setStrict(false);
+    voice.addTickables([staveNote]);
+    new Formatter().joinVoices([voice]).format([voice]);
+    if (randomNote.clef === "treble") {
+      voice.draw(context, staveTreble);
     } else {
-      voice.draw(context, staveBass)
+      voice.draw(context, staveBass);
     }
-    const svgNote = staveNote.getSVGElement()
-    modifySVGAttribute(staveNote, 'visibility', 'hidden')
+    const svgNote = staveNote.getSVGElement();
+    modifyStaveNoteAnnotation(staveNote, "visibility", "hidden");
     if (!svgNote) {
-      console.error('SVG element not found for note:', staveNote)
-      return
+      console.error("SVG element not found for note:", staveNote);
+      return;
     }
 
-    const startX = lastNote ? lastNote.meta.currentX + noteSpacing : initialStartingX
-    const distance = startX - stopX
-    const delay = (distance / pixelsPerSecond) * noteDelay
-
-    notesQueue.value.push({
+    const startX = lastNote
+      ? lastNote.meta.currentX + noteSpacing
+      : initialStartingX;
+    const distance = startX - stopX;
+    const delay = (distance / pixelsPerSecond) * noteDelay;
+    const noteQueueItem: NoteQueueItem = {
       note: staveNote,
+      randomNote: randomNote,
       voice,
       meta: {
         index: notesQueue.value.length,
@@ -424,164 +453,187 @@ function addNotes(n = 5) {
         currentX: startX,
         delay: delay,
         old: false,
-        answered: false,
-        removed: false,
+        state: "default",
         fadeOutStarted: false,
         elapsedStartTime: 0,
         progress: 0,
       },
       raf: undefined,
-    })
+    };
 
-    svgNote.setAttribute('data-id', notesQueue.value.length.toString())
-    svgNote.setAttribute('data-start-x', startX.toString())
-    svgNote.setAttribute('data-clef', randomNote.clef)
-    svgNote.setAttribute('data-note', randomNote.note)
-    svgNote.setAttribute('data-octave', randomNote.octave.toString())
-  })
+    notesQueue.value.push(noteQueueItem);
+
+    svgNote.setAttribute("data-id", notesQueue.value.length.toString());
+    svgNote.setAttribute("data-start-x", startX.toString());
+    svgNote.setAttribute("data-clef", randomNote.clef);
+    svgNote.setAttribute("data-note", randomNote.note);
+    svgNote.setAttribute("data-octave", randomNote.octave.toString());
+    svgNote.setAttribute("data-state", noteQueueItem.meta.state);
+  });
 }
 
 function startExercise() {
-  const container = vfContainer.value
+  const container = vfContainer.value;
   if (!container) {
-    console.error('Container not found')
-    return
+    console.error("Container not found");
+    return;
   }
 
-  container.innerHTML = ''
+  container.innerHTML = "";
 
-  renderer = new Renderer(container, Renderer.Backends.SVG)
-  if (exercise === 'mixed') {
-    renderer.resize(1000, 220)
-  } else if (exercise === 'treble' || exercise === 'bass') {
-    renderer.resize(1000, 120)
+  renderer = new Renderer(container, Renderer.Backends.SVG);
+  if (exercise === "mixed") {
+    renderer.resize(1000, 230);
+  } else if (exercise === "treble" || exercise === "bass") {
+    renderer.resize(1000, 140);
   }
-  context = renderer.getContext()
-  context.beginPath()
-  context.moveTo(50, 0) // Start at top (y=0)
-  context.lineTo(50, 200) // Go down to bottom (y=200)
-  context.stroke()
-  context.beginPath()
-  context.moveTo(150, 0) // Start at top (y=0)
-  context.lineTo(150, 200) // Go down to bottom (y=200)
-  context.stroke()
-  context.beginPath()
-  context.moveTo(200, 0) // Start at top (y=0)
-  context.lineTo(200, 200) // Go down to bottom (y=200)
-  context.stroke()
+  context = renderer.getContext();
 
-  if (exercise === 'mixed') {
-    staveTreble = new Stave(0, 0, 1000)
-    staveTreble.addClef('treble')
-    staveTreble.setContext(context).draw()
-    staveBass = new Stave(0, 100, 1000)
-    staveBass.addClef('bass')
-    staveBass.setContext(context).draw()
-  } else if (exercise === 'treble') {
-    staveTreble = new Stave(0, 0, 1000)
-    staveTreble.addClef(exercise)
-    staveTreble.setContext(context).draw()
-  } else if (exercise === 'bass') {
-    staveBass = new Stave(0, 0, 1000)
-    staveBass.addClef(exercise)
-    staveBass.setContext(context).draw()
+  if (exercise === "mixed") {
+    staveTreble = new Stave(0, 0, 1000);
+    staveTreble.addClef("treble");
+    staveTreble.setContext(context).draw();
+    staveBass = new Stave(0, 100, 1000);
+    staveBass.addClef("bass");
+    staveBass.setContext(context).draw();
+  } else if (exercise === "treble") {
+    staveTreble = new Stave(0, 0, 1000);
+    staveTreble.addClef(exercise);
+    staveTreble.setContext(context).draw();
+  } else if (exercise === "bass") {
+    staveBass = new Stave(0, 0, 1000);
+    staveBass.addClef(exercise);
+    staveBass.setContext(context).draw();
   }
 
-  addNotes(5)
+  addNotes(5);
 
   waitForNoteGroup()
-    .then(() => notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem)))
-    .catch((err) => console.error(err.message))
+    .then(() =>
+      notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem))
+    )
+    .catch((err) => console.error(err.message));
 }
 
-function handleResetGame() {
-  resetGame()
+function handleResetGame(event: MouseEvent) {
+  event.preventDefault();
+  event.stopPropagation();
+  resetGame();
 }
 
-function resetGame(startAgain = true) {
+async function resetGame(startAgain = true) {
   notesQueue.value.forEach((item) => {
     if (item.raf) {
-      cancelAnimationFrame(item.raf)
+      cancelAnimationFrame(item.raf);
     }
-  })
-  state.value = 'scrolling'
-  userGuess.value = ''
-  feedback.value = ''
-  notesQueue.value = []
-  resetQuestionTimer()
-  resetProgressTimer()
+  });
 
-  saveStats()
-  resetStats()
+  state.value = "scrolling";
+  await nextTick();
+
+  userGuess.value = "";
+  notesQueue.value = [];
+  resetQuestionTimer();
+  resetProgressTimer();
 
   if (startAgain) {
-    startExercise()
+    startExercise();
   }
 }
 
 function endGame() {
-  state.value = 'feedback'
-  feedback.value = 'Game Over'
-}
-
-function initializeStats() {
-  if (!localStorage.getItem('stats')) {
-    localStorage.setItem(
-      'stats',
-      JSON.stringify({
-        exercises: {
-          treble: [],
-          bass: [],
-          mixed: [],
-        },
-      }),
-    )
-  }
-}
-
-function saveStats() {
-  if (stats.value.totalGuesses === 0) return
-
-  const savedStats = localStorage.getItem('stats')
-  if (!savedStats) return
-
-  const parsedStats: SavedStats = JSON.parse(savedStats)
-  // Prevent double saving the same exercise
-  if (
-    parsedStats.exercises[stats.value.exercise].find((s) => s.startTime === stats.value.startTime)
-  ) {
-    return
-  }
-  stats.value.endTime = new Date().toISOString()
-  parsedStats.exercises[stats.value.exercise].push(stats.value)
-  localStorage.setItem('stats', JSON.stringify(parsedStats))
+  saveStats();
+  state.value = "game-over";
 }
 
 onMounted(() => {
-  visible.value = false
-  initializeStats()
+  visible.value = false;
+  initializeStats();
 
   setTimeout(async () => {
-    visible.value = true
-    await nextTick()
+    visible.value = true;
+    await nextTick();
 
-    startExercise()
-  }, 1000)
-})
+    startExercise();
+  }, 1000);
+});
 
 onUnmounted(() => {
-  saveStats()
-  resetGame(false)
-})
+  saveStats();
+  resetGame(false);
+});
 </script>
 
 <style scoped>
-input {
-  padding: 0.5em;
-  margin: 1em 0.5em 1em 0;
-  font-size: 1em;
-}
 .vf-stavenote {
   transition: opacity 0.5s ease-out;
+}
+
+.note-buttons {
+  position: relative;
+  height: 300px;
+}
+
+.test {
+  position: absolute;
+  line-height: initial;
+  padding: 1rem 2rem;
+  top: 40%;
+  left: 40%;
+  transform-origin: center;
+}
+
+.test:nth-child(1) {
+  transform: rotate(-90deg) translate(120px) rotate(90deg);
+}
+.test:nth-child(2) {
+  transform: rotate(-40deg) translate(120px) rotate(40deg);
+}
+.test:nth-child(3) {
+  transform: rotate(10deg) translate(120px) rotate(-10deg);
+}
+.test:nth-child(4) {
+  transform: rotate(60deg) translate(120px) rotate(-60deg);
+}
+.test:nth-child(5) {
+  transform: rotate(120deg) translate(120px) rotate(-120deg);
+}
+.test:nth-child(6) {
+  transform: rotate(170deg) translate(120px) rotate(-170deg);
+}
+.test:nth-child(7) {
+  transform: rotate(220deg) translate(120px) rotate(-220deg);
+}
+
+@media (width >= 40rem) {
+  .note-buttons {
+    height: 400px;
+  }
+  .test {
+    line-height: 40px;
+    top: 45%;
+    left: 45%;
+  }
+  .test:nth-child(1) {
+    transform: rotate(-90deg) translate(180px) rotate(90deg);
+  }
+  .test:nth-child(2) {
+    transform: rotate(-40deg) translate(180px) rotate(40deg);
+  }
+  .test:nth-child(3) {
+    transform: rotate(10deg) translate(180px) rotate(-10deg);
+  }
+  .test:nth-child(4) {
+    transform: rotate(60deg) translate(180px) rotate(-60deg);
+  }
+  .test:nth-child(5) {
+    transform: rotate(120deg) translate(180px) rotate(-120deg);
+  }
+  .test:nth-child(6) {
+    transform: rotate(170deg) translate(180px) rotate(-170deg);
+  }
+  .test:nth-child(7) {
+    transform: rotate(220deg) translate(180px) rotate(-220deg);
+  }
 }
 </style>
