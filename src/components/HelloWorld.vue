@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import { resetLocalStorage } from "@/utils/stats";
+
 defineProps<{
-  msg: string
-}>()
+  msg: string;
+}>();
 </script>
 
 <template>
-  <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <h3>
-      You’ve successfully created a project with
-      <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
-      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>. What's next?
-    </h3>
-  </div>
+  <h1 class="text-3xl mt-20">Piano Note Accuracy Exercises</h1>
+  <p>Click one of the navigation links to start.</p>
+  <h2 class="text-2xl mt-10">Miscellaneous</h2>
+  <button
+    @click="resetLocalStorage"
+    class="border-color-[#0353a4] border-1 cursor-pointer px-4 py-2 text-black hover:bg-[#0353a4] hover:text-white transition-colors"
+  >
+    Reset Stats
+  </button>
 </template>
 
 <style scoped>

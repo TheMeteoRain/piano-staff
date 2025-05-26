@@ -19,5 +19,6 @@ RUN pnpm build
 
 # Output image
 FROM nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.base.conf /etc/nginx/nginx.conf
+COPY nginx.default.conf /etc/nginx/nginx.conf.d/default.conf
 COPY --from=build /opt/app/dist /usr/share/nginx/html
