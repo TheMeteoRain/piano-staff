@@ -22,7 +22,6 @@ jobs:
       - name: Dump outputs for debugging
         run: |
           echo "PRs Created: ${{ steps.release.outputs.prs_created }}"
-          echo "All outputs: ${{ toJson(steps) }}"
 
   debug-outputs:
     needs: release-please
