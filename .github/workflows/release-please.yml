@@ -34,9 +34,9 @@ jobs:
       - name: Print outputs from release-please
         run: |
           echo "prs_created: ${{ needs.release-please.outputs.prs_created }}"
-          echo "All outputs: ${{ toJson(needs.release-please.outputs) }}"
+          echo "All outputs: ${{ needs.release-please.outputs }}"
           echo "prs_created: ${{ needs.release.outputs.prs_created }}"
-          echo "All outputs: ${{ toJson(needs.release.outputs) }}"
+          echo "All outputs: ${{ needs.release.outputs }}"
 
   update-manifest:
     needs: release-please
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: needs.release.outputs.pr.headBranchName
+          ref: ${{ fromJson(needs.release.outputs.pr).headBranchName }}
           fetch-depth: 0
 
       - name: Get version from package.json
