@@ -64,4 +64,5 @@ jobs:
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
           git add public/manifest.json
           git commit --amend --no-edit
+          git pull --rebase origin ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}
           git push
