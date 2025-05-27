@@ -69,53 +69,56 @@ pnpm test:e2e
 pnpm lint
 ```
 
-## ✍️ Commit Message Guidelines for Version Bumping
+## ✍️ Commit Message Guidelines
 
-This project uses [repease-please](https://github.com/marketplace/actions/release-please-action) to automatically bump the version on merge based on your commit messages.
+We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for commit messages. This helps with readability, automated changelogs, and versioning.
 
-To ensure correct versioning, follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) guidelines.
+**Format:**
 
-### 🔺 Major Version Bump (X.0.0)
+```
+<type>(optional-scope): <description>
 
-Triggered when the commit message includes:
+[optional body]
 
-- `"BREAKING CHANGE"` anywhere
-- `"major"` anywhere
-- Conventional commit format: `refactor!: drop support for Node 6`
+[optional footer(s)]
+```
 
-### 🔸 Minor Version Bump (0.X.0)
+**Examples:**
 
-Triggered when:
+```
+> feat: add search bar to header
+> fix(auth): handle expired token on refresh
+> chore: update dependencies
+> feat(api)!: remove deprecated endpoint
+> refactor!: migrate to new database schema
+```
 
-- The commit message starts with `feat`
-- Example: `feat: add user login support`
-- Contains the word `minor`.
-- Custom triggers can be defined via `minor-wording`
+The `!` after the type (or in the footer) indicates a **breaking change**.
 
-### 🔹 Patch Version Bump (0.0.X)
+**Breaking Changes:**
 
-Default for all other changes.
+To signal a breaking change, you can either:
 
-Triggered by commit messages like:
+- Add a `!` after the type/scope (e.g. `feat!`, `fix(core)!`)
+- Or add a `BREAKING CHANGE:` section in the footer
 
-- `fix: handle null pointer in API`
-- `patch: correct spelling errors`
-- Custom triggers can be defined via `patch-wording`.
+Example:
 
-### 🧪 Pre-release Version Bump
+```
+> feat!: remove deprecated login method
+> BREAKING CHANGE: The old login() function has been removed. Use loginWithToken() instead.
+```
 
-Triggered by commit messages containing:
+**Common types:**
 
-- `pre-alpha`
-- `pre-beta`
-- `pre-rc`
-- Example bump: `1.6.0-alpha.1` → `1.6.0-alpha.2` or `1.6.0-alpha.1` → `1.6.0-beta.0`
-
-### 🧠 Tips
-
-- Use conventional commits for consistency: `type(scope): message`.
-- You can customize trigger keywords using `minor-wording`, `major-wording`, `patch-wording`, and `rc-wording` in the workflow config.
-- If needed, override the detected version bump manually with the `version-type` input.
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation only changes
+- `ci`: CI/CD only changes
+- `style`: Code style changes (formatting, missing semicolons, etc.)
+- `refactor`: Code changes that neither fix a bug nor add a feature
+- `test`: Adding or correcting tests
+- `chore`: Changes to the build process or auxiliary tools
 
 ### Run Dockerfile
 
@@ -124,9 +127,9 @@ docker build -t note-exercise .
 ```
 
 ```sh
-docker rm -f piano-nginx
+docker rm -f note-exercise-nginx
 ```
 
 ```sh
-docker run --name piano-nginx -d -p 8080:80 note-exercise
+docker run --name note-exercise-nginx -d -p 8080:80 note-exercise
 ```
