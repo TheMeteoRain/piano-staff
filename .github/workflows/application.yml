@@ -1,0 +1,78 @@
+name: Application jobs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    outputs:
+      pnpm_store_path: ${{ steps.pnpm-store.outputs.PNPM_STORE_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/asdf-setup
+
+      - name: Get pnpm store path
+        id: pnpm-store
+        run: |
+          echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          echo "Using pnpm store path: $(pnpm store path)"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.PNPM_STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: pnpm install
+        run: pnpm install
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/asdf-setup
+
+      - name: Restore pnpm store cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ needs.install.outputs.pnpm_store_path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: pnpm install
+        run: pnpm install
+
+      - name: pnpm lint
+        run: pnpm lint
+
+  test:
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/asdf-setup
+
+      - name: Restore pnpm store cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ needs.install.outputs.pnpm_store_path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: pnpm install
+        run: pnpm install
+
+      - name: pnpm test:unit
+        run: pnpm test:unit

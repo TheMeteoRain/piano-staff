@@ -50,7 +50,7 @@
 
         <h2 class="text-center text-2xl font-bold mt-10">Per note accuracy</h2>
         <div
-          v-for="(guess, key, index) in stats.guesses"
+          v-for="(guess, key, _index) in stats.guesses"
           :key="key"
           class="stat"
         >
