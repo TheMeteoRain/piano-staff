@@ -13,6 +13,10 @@ name: release-please
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      prs_created: ${{ steps.release.outputs.prs_created }}
+      pr: ${{ steps.release.outputs.pr }}
+      prs: ${{ steps.release.outputs.prs }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
@@ -31,6 +35,8 @@ jobs:
         run: |
           echo "prs_created: ${{ needs.release-please.outputs.prs_created }}"
           echo "All outputs: ${{ toJson(needs.release-please.outputs) }}"
+          echo "prs_created: ${{ needs.release.outputs.prs_created }}"
+          echo "All outputs: ${{ toJson(needs.release.outputs) }}"
 
   update-manifest:
     needs: release-please
