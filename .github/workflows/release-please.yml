@@ -22,11 +22,11 @@ jobs:
   update-manifest:
     needs: release-please
     runs-on: ubuntu-latest
-    if: ${{ steps.release-please.outputs.prs_created == 'true' }}
+    if: ${{ needs.release-please.outputs.prs_created == 'true' }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: steps.release-please.outputs.pr.headBranchName
+          ref: needs.release-please.outputs.pr.headBranchName
           fetch-depth: 0
 
       - name: Get version from package.json
