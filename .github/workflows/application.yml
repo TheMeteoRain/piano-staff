@@ -21,7 +21,7 @@ jobs:
         id: pnpm-store
         run: |
           echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-          echo "Using pnpm store path: ${{ steps.pnpm-store.outputs.PNPM_STORE_PATH }}"
+          echo "Using pnpm store path: $(pnpm store path)"
 
       - name: Cache pnpm store
         uses: actions/cache@v4
@@ -74,5 +74,5 @@ jobs:
       - name: pnpm install
         run: pnpm install
 
-      - name: pnpm test
-        run: pnpm test
+      - name: pnpm test:unit
+        run: pnpm test:unit
