@@ -17,6 +17,7 @@ jobs:
       prs_created: ${{ steps.release.outputs.prs_created }}
       pr: ${{ steps.release.outputs.pr }}
       prs: ${{ steps.release.outputs.prs }}
+      version: ${{ steps.release.outputs.version }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
@@ -34,15 +35,9 @@ jobs:
           ref: ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}
           fetch-depth: 0
 
-      - name: Get version from package.json
-        id: get-version
-        run: |
-          VERSION=$(jq -r '.version' package.json)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       - name: Update public/manifest.json
         run: |
-          jq --arg version "$VERSION" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
+          jq --arg version "${{ needs.release-please.outputs.version }}" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
 
       - name: Commit and push updated manifest.json
         run: |
