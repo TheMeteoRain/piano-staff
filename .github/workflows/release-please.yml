@@ -23,20 +23,6 @@ jobs:
         with:
           token: ${{ secrets.PROJECT_TOKEN }}
           release-type: node
-      - name: Dump outputs for debugging
-        run: |
-          echo "PRs Created: ${{ steps.release.outputs.prs_created }}"
-
-  debug-outputs:
-    needs: release-please
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print outputs from release-please
-        run: |
-          echo "prs_created: ${{ needs.release-please.outputs.prs_created }}"
-          echo "All outputs: ${{ needs.release-please.outputs }}"
-          echo "prs_created: ${{ needs.release.outputs.prs_created }}"
-          echo "All outputs: ${{ needs.release.outputs }}"
 
   update-manifest:
     needs: release-please
