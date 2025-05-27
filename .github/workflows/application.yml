@@ -16,9 +16,6 @@ jobs:
 
       - uses: ./.github/actions/asdf-setup
 
-      - name: pnpm install
-        run: pnpm install
-
       - name: Get pnpm store path
         id: pnpm-store
         run: |
@@ -37,6 +34,9 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+
+      - name: pnpm install
+        run: pnpm install
 
   lint:
     runs-on: ubuntu-latest
