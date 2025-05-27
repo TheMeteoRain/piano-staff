@@ -19,9 +19,9 @@ jobs:
           release-type: node
 
   update-manifest:
-    needs: release
+    needs: release-please
     runs-on: ubuntu-latest
-    if: ${{ needs.release.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.release_created }}
     steps:
       - uses: actions/checkout@v4
 
