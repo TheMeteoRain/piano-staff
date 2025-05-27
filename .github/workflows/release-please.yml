@@ -35,6 +35,8 @@ jobs:
         run: |
           echo "prs_created: ${{ needs.release-please.outputs.prs_created }}"
           echo "All outputs: ${{ toJson(needs.release-please.outputs) }}"
+          echo "prs_created: ${{ needs.release.outputs.prs_created }}"
+          echo "All outputs: ${{ toJson(needs.release.outputs) }}"
 
   update-manifest:
     needs: release-please
