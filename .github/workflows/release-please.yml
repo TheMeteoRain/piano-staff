@@ -22,7 +22,7 @@ jobs:
   update-manifest:
     needs: release-please
     runs-on: ubuntu-latest
-    if: ${{ needs.release-please.outputs.prs_created == 'true' }}
+    if: needs.release-please.outputs.prs_created == 'true'
     steps:
       - uses: actions/checkout@v4
         with:
