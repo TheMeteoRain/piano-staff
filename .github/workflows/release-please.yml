@@ -22,22 +22,27 @@ jobs:
   update-manifest:
     needs: release-please
     runs-on: ubuntu-latest
-    if: ${{ needs.release-please.outputs.releases_created }}
+    if: ${{ needs.release-please.outputs.pr_created }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: needs.release-please.outputs.pr.headBranchName
+          fetch-depth: 0
 
-      - name: Get version from tag
+      - name: Get version from package.json
         id: get-version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Update manifest.json
+      - name: Update public/manifest.json
         run: |
           jq --arg version "$VERSION" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
 
-      - name: Commit manifest update
+      - name: Commit and push updated manifest.json
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add public/manifest.json
-          git commit -m "chore(manifest): update version to $VERSION"
+          git commit --amend
           git push
