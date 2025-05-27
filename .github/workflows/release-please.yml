@@ -15,31 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           token: ${{ secrets.PROJECT_TOKEN }}
           release-type: node
-      - name: Dump outputs for debugging
-        run: |
-          echo "PRs Created: ${{ steps.release-please.outputs.prs_created }}"
-          echo "All outputs: ${{ toJson(steps) }}"
-
-  debug-outputs:
-    needs: release-please
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print outputs from release-please
-        run: |
-          echo "prs_created: ${{ needs.release-please.outputs.prs_created }}"
-          echo "All outputs: ${{ toJson(needs.release-please.outputs) }}"
 
   update-manifest:
-    needs: release-please
+    needs: release
     runs-on: ubuntu-latest
-    if: ${{ needs.release-please.outputs.prs_created == 'true' }}
+    if: ${{ needs.release.outputs.prs_created == 'true' }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: needs.release-please.outputs.pr.headBranchName
+          ref: needs.release.outputs.pr.headBranchName
           fetch-depth: 0
 
       - name: Get version from package.json
