@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.1.2](https://github.com/TheMeteoRain/piano-staff/compare/v0.1.1...v0.1.2) (2025-05-27)
+
+
+### Bug Fixes
+
+* **pnpm:** approve-builds warning ([1d7bd6d](https://github.com/TheMeteoRain/piano-staff/commit/1d7bd6d3daaa5fbb49d225160008cb42a6e66bd5))
+
 ## [0.1.1](https://github.com/TheMeteoRain/piano-staff/compare/v0.1.0...v0.1.1) (2025-05-27)
 
 
