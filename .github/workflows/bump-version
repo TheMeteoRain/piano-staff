@@ -1,0 +1,38 @@
+name: Bump version
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+  bump-version:
+    name: 'Bump Version on master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.ref }}
+      - name: 'cat package.json'
+        run: cat ./package.json
+      - name:  'Automated Version Bump'
+        uses:  'phips28/gh-action-bump-version@master'
+        env:
+          PACKAGEJSON_DIR:  'frontend'
+          PACKAGE_FILENAME:  'app.json'
+        with:
+          minor-wording:  'add,Adds,new'
+          major-wording:  'MAJOR,cut-major'
+          patch-wording:  'patch,fixes'     # Providing patch-wording will override commits
+                                            # defaulting to a patch bump.
+          rc-wording:     'RELEASE,alpha'
+          tag-prefix:  'v'
+      - name: 'cat package.json'
+        run: cat ./package.json
+      - name: 'Output Step'
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
+        
