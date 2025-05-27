@@ -19,6 +19,7 @@ jobs:
         with:
           release-type: node
           token: ${{ secrets.PROJECT_TOKEN }}
+
   update-manifest:
     needs: release
     runs-on: ubuntu-latest
