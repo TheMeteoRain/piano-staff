@@ -77,6 +77,7 @@ jobs:
         run: pnpm install
 
       - name: pnpm test coverage
+        id: coverage
         run: |
           pnpm coverage
           echo "COVERAGE_DIR=$(pwd)/coverage" >> $GITHUB_OUTPUT
