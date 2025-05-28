@@ -1,0 +1,6 @@
+ignoredBuiltDependencies:
+  - cypress
+onlyBuiltDependencies:
+  - "@tailwindcss/oxide"
+  - vue-demi
+  - esbuild
