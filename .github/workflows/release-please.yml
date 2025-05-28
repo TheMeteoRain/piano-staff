@@ -24,30 +24,26 @@ jobs:
         with:
           token: ${{ secrets.PROJECT_TOKEN }}
           release-type: node
-      - name: debug outputs
-        run: |
-          echo "PRs created: ${{ steps.release.outputs.prs_created }}"
-          echo "PR: ${{ steps.release.outputs.pr }}"
-          echo "PRs: ${{ steps.release.outputs.prs }}"
-          echo "Version: ${{ steps.release.outputs.version }}"
 
   update-manifest:
     needs: release-please
     runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.prs_created == 'true' }}
     steps:
-      - name: Debug outputs
-        run: |
-          echo "PR: ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}"
-          echo "Version: ${{ needs.release-please.outputs.version }}"
       - uses: actions/checkout@v4
         with:
           ref: ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}
           fetch-depth: 0
 
+      - name: Get version from package.json
+        id: get-version
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Update public/manifest.json
         run: |
-          jq --arg version "${{ needs.release-please.outputs.version }}" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
+          jq --arg version "$VERSION" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
 
       - name: Commit and push updated manifest.json
         run: |
