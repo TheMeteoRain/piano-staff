@@ -1,0 +1,15 @@
+@import "./base.css";
+
+#app {
+  max-width: 764px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-weight: normal;
+}
+
+@media (min-width: 1024px) {
+  #app {
+    display: grid;
+    padding: 0 2rem;
+  }
+}
