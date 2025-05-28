@@ -45,11 +45,12 @@ jobs:
         run: |
           jq --arg version "$VERSION" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
 
+      # squash the PR into a single commit
       - name: Commit and push updated manifest.json
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
+          git pull --rebase origin ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}
           git add public/manifest.json
           git commit --amend --no-edit
-          git pull --rebase origin ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}
-          git push
+          git push --force-with-lease
