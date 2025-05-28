@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.1.3](https://github.com/TheMeteoRain/piano-staff/compare/v0.1.2...v0.1.3) (2025-05-28)
+
+
+### Bug Fixes
+
+* manifest.json version manually ([77b748d](https://github.com/TheMeteoRain/piano-staff/commit/77b748d3b948e5f38c8a396c76cd8004a72f2986))
+
 ## [0.1.2](https://github.com/TheMeteoRain/piano-staff/compare/v0.1.1...v0.1.2) (2025-05-27)
 
 
