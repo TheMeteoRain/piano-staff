@@ -47,7 +47,7 @@ jobs:
 
       - name: Update public/version.json
         run: |
-          jq --arg version "$VERSION" --arg sha "$GITHUB_SHA" \
+          jq --arg version "$VERSION" --arg sha "$(git rev-parse @)" \
             '.version = $version | .sha = $sha' \
             public/version.json > tmp.json && mv tmp.json public/version.json
 
