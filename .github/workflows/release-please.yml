@@ -22,7 +22,7 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          token: ${{ secrets.PROJECT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
 
   update-files:
