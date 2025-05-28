@@ -25,7 +25,7 @@ jobs:
           token: ${{ secrets.PROJECT_TOKEN }}
           release-type: node
 
-  update-manifest:
+  update-files:
     needs: release-please
     runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.prs_created == 'true' }}
@@ -45,11 +45,18 @@ jobs:
         run: |
           jq --arg version "$VERSION" '.version = $version' public/manifest.json > tmp.json && mv tmp.json public/manifest.json
 
+      - name: Update public/version.json
+        run: |
+          jq --arg version "$VERSION" --arg sha "$GITHUB_SHA" \
+            '.version = $version' | .sha = $sha \
+            public/version.json > tmp.json && mv tmp.json public/version.json
+
       # squash the PR into a single commit
       - name: Commit and push updated manifest.json
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
           git add public/manifest.json
+          git add public/version.json
           git commit --amend --no-edit
           git push --force-with-lease
