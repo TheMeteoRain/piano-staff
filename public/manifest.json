@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Piano Exercise",
   "short_name": "PianoEx",
-  "version": "",
+  "version": "0.1.2",
   "lang": "en",
   "description": "A web application for practicing piano exercises",
   "start_url": "/",
