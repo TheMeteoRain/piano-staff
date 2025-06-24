@@ -38,7 +38,7 @@ jobs:
       - uses: ./.github/actions/pnpm
 
       - name: pnpm build
-        uses: pnpm build
+        run: pnpm build
         env:
           VITE_FARO_ACTIVE: ${{ vars.FARO_ACTIVE }}
           VITE_FARO_URL: ${{ vars.FARO_URL }}
