@@ -9,7 +9,6 @@ import faroUploader from '@grafana/faro-rollup-plugin'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
-  console.debug(mode, env.VITE_FARO_ACTIVE, env.VITE_FARO_URL)
   const plugins: PluginOption[] = [
     vue(),
     vueJsx(),
@@ -25,6 +24,7 @@ export default defineConfig(({ mode }) => {
         stackId: env.VITE_FARO_STACK_ID,
         apiKey: env.VITE_FARO_API_KEY,
         gzipContents: true,
+        keepSourcemaps: false,
         verbose: true,
       }),
     )
@@ -41,6 +41,9 @@ export default defineConfig(({ mode }) => {
       coverage: {
         provider: 'v8',
       },
+    },
+    build: {
+      sourcemap: true,
     },
   }
 })
