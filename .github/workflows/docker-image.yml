@@ -48,12 +48,11 @@ jobs:
           VITE_FARO_STACK_ID: ${{ secrets.FARO_STACK_ID }}
           VITE_FARO_API_KEY: ${{ secrets.FARO_API_KEY }}
 
-      - uses: actions/cache@v4
-        id: cache-build
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
         with:
+          name: dist
           path: ./dist
-          key: dist-${{ github.sha }}
-          restore-keys: dist-
 
   docker:
     needs: [get-tag, build]
@@ -64,11 +63,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        id: restore-build
+      - name: Download dist
+        uses: actions/download-artifact@v4
         with:
+          name: dist
           path: ./dist
-          key: dist-${{ github.sha }}
+      - run: ls -la
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
