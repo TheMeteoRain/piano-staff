@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.2.0...v0.3.0) (2025-06-24)
+
+
+### Features
+
+* **metrics:** Send web tracing metrics ([b3140ff](https://github.com/TheMeteoRain/piano-staff/commit/b3140ff480e381ffc6dd090462784ba01d3281fe))
+* Show application information ([65dbf05](https://github.com/TheMeteoRain/piano-staff/commit/65dbf054e5bf806ed893eb6c08aede601948d179))
+
+
+### Bug Fixes
+
+* **.env:** Change names ([0ae3b6b](https://github.com/TheMeteoRain/piano-staff/commit/0ae3b6b438d9ade244c3df58474d3dc73ac7f85c))
+* **ci:** Correct keyword ([a3878cb](https://github.com/TheMeteoRain/piano-staff/commit/a3878cbe3ac0242e0875c10e05833a436c87133e))
+
 ## [0.2.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.1.2...v0.2.0) (2025-05-28)
 
 
