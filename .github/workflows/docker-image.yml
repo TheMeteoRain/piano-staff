@@ -3,17 +3,16 @@ name: Build docker image
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
   workflow_dispatch:
 
 jobs:
-  docker:
+  get-tag:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    outputs:
+      tag: ${{ steps.get-tag.outputs.tag }}
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Determine tag
@@ -22,10 +21,52 @@ jobs:
           if [[ "${{ github.event_name }}" == "push" ]]; then
             TAG="${{ github.ref_name }}"
           else
-            TAG=$(git fetch --tags && git tag -l 'v*.*.*' | sort -V | tail -n 1)
+            git fetch --tags
+            TAG=$(git tag -l 'v*.*.*' | sort -V | tail -n 1)
           fi
           echo "Using tag: $TAG"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: get-tag
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/asdf-setup
+      - uses: ./.github/actions/pnpm
+
+      - name: pnpm build
+        run: pnpm build
+        env:
+          VITE_FARO_ACTIVE: ${{ vars.FARO_ACTIVE }}
+          VITE_FARO_URL: ${{ vars.FARO_URL }}
+          VITE_FARO_APP_NAME: ${{ vars.FARO_APP_NAME }}
+          VITE_FARO_ENDPOINT: ${{ secrets.FARO_ENDPOINT }}
+          VITE_FARO_APP_ID: ${{ secrets.FARO_APP_ID }}
+          VITE_FARO_STACK_ID: ${{ secrets.FARO_STACK_ID }}
+          VITE_FARO_API_KEY: ${{ secrets.FARO_API_KEY }}
+
+      - uses: actions/cache@v4
+        id: cache-build
+        with:
+          path: ./dist
+          key: dist-${{ github.sha }}
+          restore-keys: dist-
+
+  docker:
+    needs: [get-tag, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/cache@v4
+        id: restore-build
+        with:
+          path: ./dist
+          key: dist-${{ github.sha }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -43,7 +84,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          context: .
           push: true
           tags: |
             ghcr.io/themeteorain/piano-staff/frontend:latest
-            ghcr.io/themeteorain/piano-staff/frontend:${{ steps.get-tag.outputs.tag }}
+            ghcr.io/themeteorain/piano-staff/frontend:${{ needs.get-tag.outputs.tag }}
