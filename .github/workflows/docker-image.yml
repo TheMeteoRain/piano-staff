@@ -7,7 +7,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  get-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get-tag.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine tag
+        id: get-tag
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            TAG="${{ github.ref_name }}"
+          else
+            git fetch --tags
+            TAG=$(git tag -l 'v*.*.*' | sort -V | tail -n 1)
+          fi
+          echo "Using tag: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: get-tag
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -18,6 +39,14 @@ jobs:
 
       - name: pnpm build
         uses: pnpm build
+        env:
+          VITE_FARO_ACTIVE: ${{ vars.FARO_ACTIVE }}
+          VITE_FARO_URL: ${{ vars.FARO_URL }}
+          VITE_FARO_APP_NAME: ${{ vars.FARO_APP_NAME }}
+          VITE_FARO_ENDPOINT: ${{ secrets.FARO_ENDPOINT }}
+          VITE_FARO_APP_ID: ${{ secrets.FARO_APP_ID }}
+          VITE_FARO_STACK_ID: ${{ secrets.FARO_STACK_ID }}
+          VITE_FARO_API_KEY: ${{ secrets.FARO_API_KEY }}
 
       - uses: actions/cache@v4
         id: cache-build
@@ -27,6 +56,7 @@ jobs:
           restore-keys: dist-
 
   docker:
+    needs: [get-tag, build]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,17 +67,6 @@ jobs:
         with:
           path: ./dist
           key: dist-${{ github.sha }}
-
-      - name: Determine tag
-        id: get-tag
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            TAG="${{ github.ref_name }}"
-          else
-            TAG=$(git fetch --tags && git tag -l 'v*.*.*' | sort -V | tail -n 1)
-          fi
-          echo "Using tag: $TAG"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -69,4 +88,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/themeteorain/piano-staff/frontend:latest
-            ghcr.io/themeteorain/piano-staff/frontend:${{ steps.get-tag.outputs.tag }}
+            ghcr.io/themeteorain/piano-staff/frontend:${{ needs.get-tag.outputs.tag }}
