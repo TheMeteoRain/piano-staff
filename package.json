@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@grafana/faro-rollup-plugin": "^0.5.1",
+    "@iconify/vue": "^5.0.0",
     "@tsconfig/node22": "^22.0.1",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.14.0",

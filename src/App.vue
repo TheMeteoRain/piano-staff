@@ -1,17 +1,28 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import AppVersion from './components/AppInfo.vue'
+const route = useRoute()
+const isRoot = computed(() => route.path === '/')
 </script>
 
 <template>
-  <header>
-    <nav class="grid grid-flow-col">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/clef-treble">Treble</RouterLink>
-      <RouterLink to="/clef-bass">Bass</RouterLink>
-      <RouterLink to="/mixed">Mixed</RouterLink>
-    </nav>
-  </header>
-  <RouterView />
+  <div class="h-screen flex flex-col">
+    <header>
+      <nav class="grid grid-flow-col">
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/clef-treble">Treble</RouterLink>
+        <RouterLink to="/clef-bass">Bass</RouterLink>
+        <RouterLink to="/mixed">Mixed</RouterLink>
+      </nav>
+    </header>
+
+    <div class="flex-grow">
+      <RouterView />
+    </div>
+
+    <AppVersion v-if="isRoot" />
+  </div>
 </template>
 
 <style scoped>
