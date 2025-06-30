@@ -11,6 +11,7 @@ interface ImportMetaCustomEnv {
   readonly VITE_FARO_ACTIVE: string
   readonly VITE_FARO_URL: string
   readonly VITE_FARO_APP_NAME: string
+  readonly VITE_DEBUG: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

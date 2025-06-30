@@ -7,6 +7,7 @@ import App from './App.vue'
 import router from './router'
 import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
 import { TracingInstrumentation } from '@grafana/faro-web-tracing'
+import { pwaPlugin } from '@/plugins/pwa'
 
 interface VersionInfo {
   version: string
@@ -52,6 +53,7 @@ async function main() {
     'https://github.com/TheMeteoRain/piano-staff'
 
   app.use(createPinia())
+  app.use(pwaPlugin())
   app.use(router)
 
   app.mount('#app')

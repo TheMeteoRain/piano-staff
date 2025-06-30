@@ -1,13 +1,44 @@
 {
+  "display_override": ["window-controls-overlay"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Start Treble Training",
+      "short_name": "Treble",
+      "description": "Practice reading notes in the treble clef",
+      "url": "/clef-treble"
+    },
+    {
+      "name": "Start Bass Training",
+      "short_name": "Bass",
+      "description": "Practice reading notes in the bass clef",
+      "url": "/clef-bass"
+    },
+    {
+      "name": "Start Mixed Clef Training",
+      "short_name": "Mixed",
+      "description": "Practice reading notes using both clefs",
+      "url": "/mixed"
+    }
+  ],
+  "protocol_handlers": [{ "protocol": "mailto", "url": "/newEmail?to=%s" }],
+  "categories": ["music", "education"],
+  "orientation": "any",
   "manifest_version": 3,
-  "name": "Piano Exercise",
-  "short_name": "PianoEx",
+  "name": "Stave Training",
+  "short_name": "Stave Training",
   "version": "0.3.0",
   "lang": "en",
-  "description": "A web application for practicing piano exercises",
+  "description": "An application for training musical stave.",
   "start_url": "/",
   "author": "Akash Singh",
   "icons": [
+    {
+      "src": "/icons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/icons/web-app-manifest-192x192.png",
       "sizes": "192x192",

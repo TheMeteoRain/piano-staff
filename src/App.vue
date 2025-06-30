@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRoute } from 'vue-router'
+import AppVersion from '@/components/AppInfo.vue'
 import { computed } from 'vue'
-import AppVersion from './components/AppInfo.vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+
 const route = useRoute()
 const isRoot = computed(() => route.path === '/')
 </script>
