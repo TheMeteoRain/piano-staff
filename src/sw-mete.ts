@@ -114,17 +114,18 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('message', async (event) => {
-  console.log(event)
+  if (data.debug) console.log(event)
   if (event.data.type === 'CACHE_UPDATED') {
     const { updatedURL } = event.data.payload
 
-    console.log(`A newer version of ${updatedURL} is available!`)
+    if (data.debug)
+      console.log(`A newer version of ${updatedURL} is available!`)
   } else if (event.data.type === 'GET_VERSION') {
     event.ports[0].postMessage(SW_VERSION)
   } else if (event.data.type === 'INSTALL_PROMPT_EVENT') {
     event.ports[0].postMessage(deferredPrompt)
   } else if (event.data.type === 'UPDATE') {
-    console.log('UPDATE')
+    if (data.debug) console.log('UPDATE')
     await self.skipWaiting()
     clientsClaim()
     event.ports[0].postMessage(true)

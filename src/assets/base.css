@@ -1,54 +1,372 @@
-@import "./tailwind.css";
+@import './tailwind.css';
 
-/* color palette from <https://github.com/vuejs/theme> */
+/* Primary and Surface Palettes */
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  --text: #06040b;
+  --background: #f9f8fc;
+  --primary: #5d21de;
+  --secondary: #d59ddd;
+  --accent: #d17ac6;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  --text-50: #f0ecf8;
+  --text-100: #e0daf1;
+  --text-200: #c2b4e4;
+  --text-300: #a38fd6;
+  --text-400: #8469c9;
+  --text-500: #6644bb;
+  --text-600: #513696;
+  --text-700: #3d2970;
+  --text-800: #291b4b;
+  --text-900: #140e25;
+  --text-950: #0a0713;
 
-  --vt-c-indigo: #2c3e50;
+  --background-0: #f1eff8;
+  --background-50: #f0edf7;
+  --background-100: #e0dbf0;
+  --background-200: #c2b8e0;
+  --background-300: #a394d1;
+  --background-400: #8570c2;
+  --background-500: #664db3;
+  --background-600: #523d8f;
+  --background-700: #3d2e6b;
+  --background-800: #291f47;
+  --background-900: #140f24;
+  --background-950: #0a0812;
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --p-surface-0: var(--background-950);
+  --p-surface-50: var(--background-900);
+  --p-surface-100: var(--background-800);
+  --p-surface-200: var(--background-700);
+  --p-surface-300: var(--background-600);
+  --p-surface-400: var(--background-500);
+  --p-surface-500: var(--background-400);
+  --p-surface-600: var(--background-300);
+  --p-surface-700: var(--background-200);
+  --p-surface-800: var(--background-100);
+  --p-surface-900: var(--background-50);
+  --p-surface-950: var(--background-0);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --p-danger: #e42222;
+  --p-warning: #ffd43a;
+  --p-info: #158de3;
+  --p-success: #3d9209;
+
+  --primary-50: #efe9fc;
+  --primary-100: #dfd3f8;
+  --primary-200: #bea6f2;
+  --primary-300: #9e7aeb;
+  --primary-400: #7d4ee4;
+  --primary-500: #5d21de;
+  --primary-600: #4a1bb1;
+  --primary-700: #381485;
+  --primary-800: #250d59;
+  --primary-900: #13072c;
+  --primary-950: #090316;
+
+  --p-primary-50: var(--primary-50);
+  --p-primary-100: var(--primary-100);
+  --p-primary-200: var(--primary-200);
+  --p-primary-300: var(--primary-300);
+  --p-primary-400: var(--primary-400);
+  --p-primary-500: var(--primary-500);
+  --p-primary-600: var(--primary-600);
+  --p-primary-700: var(--primary-700);
+  --p-primary-800: var(--primary-800);
+  --p-primary-900: var(--primary-900);
+  --p-primary-950: var(--primary-950);
+
+  --secondary-50: #f7ecf8;
+  --secondary-100: #efd9f2;
+  --secondary-200: #dfb4e4;
+  --secondary-300: #cf8ed7;
+  --secondary-400: #bf68ca;
+  --secondary-500: #ae42bd;
+  --secondary-600: #8c3597;
+  --secondary-700: #692871;
+  --secondary-800: #461b4b;
+  --secondary-900: #230d26;
+  --secondary-950: #110713;
+
+  --accent-50: #f8ecf7;
+  --accent-100: #f2d9ef;
+  --accent-200: #e5b3de;
+  --accent-300: #d88dce;
+  --accent-400: #cb67be;
+  --accent-500: #be41ad;
+  --accent-600: #98348b;
+  --accent-700: #722768;
+  --accent-800: #4c1a45;
+  --accent-900: #260d23;
+  --accent-950: #130711;
 }
 
-/* semantic color variables for this project */
+/* Light */
 :root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
+  --p-primary-color: var(--p-primary-500);
+  --p-primary-contrast-color: var(--p-surface-900);
+  --p-primary-hover-color: var(--p-primary-600);
+  --p-primary-active-color: var(--p-primary-700);
+  --p-content-border-color: var(--p-surface-200);
+  --p-content-hover-background: var(--p-surface-100);
+  --p-content-hover-color: var(--p-surface-800);
+  --p-highlight-background: var(--p-primary-50);
+  --p-highlight-color: var(--p-primary-700);
+  --p-highlight-focus-background: var(--p-primary-100);
+  --p-highlight-focus-color: var(--p-primary-800);
+  --p-text-color: var(--p-surface-700);
+  --p-text-hover-color: var(--p-surface-800);
+  --p-text-muted-color: var(--p-surface-500);
+  --p-text-hover-muted-color: var(--p-surface-600);
 }
 
+/* Dark mode override with app-dark class */
+:root[data-theme='dark'] {
+  --text: #f6f4fb;
+  --background: #040307;
+  --primary: #5d21de;
+  --secondary: #5b2262;
+  --accent: #852e79;
+
+  --text-50: #0a0713;
+  --text-100: #140e25;
+  --text-200: #291b4b;
+  --text-300: #3d2970;
+  --text-400: #513696;
+  --text-500: #6644bb;
+  --text-600: #8469c9;
+  --text-700: #a38fd6;
+  --text-800: #c2b4e4;
+  --text-900: #e0daf1;
+  --text-950: #f0ecf8;
+
+  --background-0: #0a0812;
+  --background-50: #140f24;
+  --background-100: #291f47;
+  --background-200: #3d2e6b;
+  --background-300: #523d8f;
+  --background-400: #664db3;
+  --background-500: #8570c2;
+  --background-600: #a394d1;
+  --background-700: #c2b8e0;
+  --background-800: #e0dbf0;
+  --background-900: #f0edf7;
+  --background-950: #f1eff8;
+
+  --p-surface-0: var(--background-950);
+  --p-surface-50: var(--background-900);
+  --p-surface-100: var(--background-800);
+  --p-surface-200: var(--background-700);
+  --p-surface-300: var(--background-600);
+  --p-surface-400: var(--background-500);
+  --p-surface-500: var(--background-400);
+  --p-surface-600: var(--background-300);
+  --p-surface-700: var(--background-200);
+  --p-surface-800: var(--background-100);
+  --p-surface-900: var(--background-50);
+  --p-surface-950: var(--background-0);
+
+  --primary-0: #110628;
+  --primary-50: #090316;
+  --primary-100: #13072c;
+  --primary-200: #250d59;
+  --primary-300: #381485;
+  --primary-400: #4a1bb1;
+  --primary-500: #5d21de;
+  --primary-600: #7d4ee4;
+  --primary-700: #9e7aeb;
+  --primary-800: #bea6f2;
+  --primary-900: #dfd3f8;
+  --primary-950: #efe9fc;
+
+  --p-primary-0: var(--primary-0);
+  --p-primary-50: var(--primary-50);
+  --p-primary-100: var(--primary-100);
+  --p-primary-200: var(--primary-200);
+  --p-primary-300: var(--primary-300);
+  --p-primary-400: var(--primary-400);
+  --p-primary-500: var(--primary-500);
+  --p-primary-600: var(--primary-600);
+  --p-primary-700: var(--primary-700);
+  --p-primary-800: var(--primary-800);
+  --p-primary-900: var(--primary-900);
+  --p-primary-950: var(--primary-950);
+
+  --secondary-50: #110713;
+  --secondary-100: #230d26;
+  --secondary-200: #461b4b;
+  --secondary-300: #692871;
+  --secondary-400: #8c3597;
+  --secondary-500: #ae42bd;
+  --secondary-600: #bf68ca;
+  --secondary-700: #cf8ed7;
+  --secondary-800: #dfb4e4;
+  --secondary-900: #efd9f2;
+  --secondary-950: #f7ecf8;
+
+  --accent-50: #130711;
+  --accent-100: #260d23;
+  --accent-200: #4c1a45;
+  --accent-300: #722768;
+  --accent-400: #98348b;
+  --accent-500: #be41ad;
+  --accent-600: #cb67be;
+  --accent-700: #d88dce;
+  --accent-800: #e5b3de;
+  --accent-900: #f2d9ef;
+  --accent-950: #f8ecf7;
+
+  --p-primary-color: var(--p-primary-700);
+  --p-primary-contrast-color: var(--p-surface-50);
+  --p-primary-hover-color: var(--p-primary-300);
+  --p-primary-active-color: var(--p-primary-200);
+  --p-content-border-color: var(--p-surface-700);
+  --p-content-hover-background: var(--p-surface-800);
+  --p-content-hover-color: var(--p-surface-0);
+  --p-highlight-background: color-mix(
+    in srgb,
+    var(--p-primary-400),
+    transparent 84%
+  );
+  --p-highlight-color: rgba(255, 255, 255, 0.87);
+  --p-highlight-focus-background: color-mix(
+    in srgb,
+    var(--p-primary-400),
+    transparent 76%
+  );
+  --p-highlight-focus-color: rgba(255, 255, 255, 0.87);
+  --p-text-color: var(--p-surface-0);
+  --p-text-hover-color: var(--p-surface-0);
+  --p-text-muted-color: var(--p-surface-400);
+  --p-text-hover-muted-color: var(--p-surface-300);
+}
+
+/*
+ * Dark Mode
+ * Defaults to system, change the dark variant selector to match the CSS variable configuration.
+ * For example;
+ * @custom-variant dark (&:where(.app-dark, .app-dark *));
+ * should match to;
+ * :root[class="app-dark"]
+*/
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+  :root:not([data-theme]) {
+    --text: #f6f4fb;
+    --background: #040307;
+    --primary: #5d21de;
+    --secondary: #5b2262;
+    --accent: #852e79;
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+    --text-50: #0a0713;
+    --text-100: #140e25;
+    --text-200: #291b4b;
+    --text-300: #3d2970;
+    --text-400: #513696;
+    --text-500: #6644bb;
+    --text-600: #8469c9;
+    --text-700: #a38fd6;
+    --text-800: #c2b4e4;
+    --text-900: #e0daf1;
+    --text-950: #f0ecf8;
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+    --background-0: #0a0812;
+    --background-50: #140f24;
+    --background-100: #291f47;
+    --background-200: #3d2e6b;
+    --background-300: #523d8f;
+    --background-400: #664db3;
+    --background-500: #8570c2;
+    --background-600: #a394d1;
+    --background-700: #c2b8e0;
+    --background-800: #e0dbf0;
+    --background-900: #f0edf7;
+    --background-950: #f1eff8;
+
+    --p-surface-0: var(--background-950);
+    --p-surface-50: var(--background-900);
+    --p-surface-100: var(--background-800);
+    --p-surface-200: var(--background-700);
+    --p-surface-300: var(--background-600);
+    --p-surface-400: var(--background-500);
+    --p-surface-500: var(--background-400);
+    --p-surface-600: var(--background-300);
+    --p-surface-700: var(--background-200);
+    --p-surface-800: var(--background-100);
+    --p-surface-900: var(--background-50);
+    --p-surface-950: var(--background-0);
+
+    --primary-0: #110628;
+    --primary-50: #090316;
+    --primary-100: #13072c;
+    --primary-200: #250d59;
+    --primary-300: #381485;
+    --primary-400: #4a1bb1;
+    --primary-500: #5d21de;
+    --primary-600: #7d4ee4;
+    --primary-700: #9e7aeb;
+    --primary-800: #bea6f2;
+    --primary-900: #dfd3f8;
+    --primary-950: #efe9fc;
+
+    --p-primary-0: var(--primary-0);
+    --p-primary-50: var(--primary-50);
+    --p-primary-100: var(--primary-100);
+    --p-primary-200: var(--primary-200);
+    --p-primary-300: var(--primary-300);
+    --p-primary-400: var(--primary-400);
+    --p-primary-500: var(--primary-500);
+    --p-primary-600: var(--primary-600);
+    --p-primary-700: var(--primary-700);
+    --p-primary-800: var(--primary-800);
+    --p-primary-900: var(--primary-900);
+    --p-primary-950: var(--primary-950);
+
+    --secondary-50: #110713;
+    --secondary-100: #230d26;
+    --secondary-200: #461b4b;
+    --secondary-300: #692871;
+    --secondary-400: #8c3597;
+    --secondary-500: #ae42bd;
+    --secondary-600: #bf68ca;
+    --secondary-700: #cf8ed7;
+    --secondary-800: #dfb4e4;
+    --secondary-900: #efd9f2;
+    --secondary-950: #f7ecf8;
+
+    --accent-50: #130711;
+    --accent-100: #260d23;
+    --accent-200: #4c1a45;
+    --accent-300: #722768;
+    --accent-400: #98348b;
+    --accent-500: #be41ad;
+    --accent-600: #cb67be;
+    --accent-700: #d88dce;
+    --accent-800: #e5b3de;
+    --accent-900: #f2d9ef;
+    --accent-950: #f8ecf7;
+
+    --p-primary-color: var(--p-primary-700);
+    --p-primary-contrast-color: var(--p-surface-50);
+    --p-primary-hover-color: var(--p-primary-300);
+    --p-primary-active-color: var(--p-primary-200);
+    --p-content-border-color: var(--p-surface-700);
+    --p-content-hover-background: var(--p-surface-800);
+    --p-content-hover-color: var(--p-surface-0);
+    --p-highlight-background: color-mix(
+      in srgb,
+      var(--p-primary-400),
+      transparent 84%
+    );
+    --p-highlight-color: rgba(255, 255, 255, 0.87);
+    --p-highlight-focus-background: color-mix(
+      in srgb,
+      var(--p-primary-400),
+      transparent 76%
+    );
+    --p-highlight-focus-color: rgba(255, 255, 255, 0.87);
+    --p-text-color: var(--p-surface-0);
+    --p-text-hover-color: var(--p-surface-0);
+    --p-text-muted-color: var(--p-surface-400);
+    --p-text-hover-muted-color: var(--p-surface-300);
   }
 }
 
@@ -63,9 +381,9 @@
   }
 
   body {
-    min-height: 100vh;
-    color: var(--vt-c-text-light-1);
-    background: var(--vt-c-white);
+    max-height: 100vh;
+    color: var(--text);
+    background: var(--background);
     transition:
       color 0.5s,
       background-color 0.5s;
@@ -74,14 +392,14 @@
       Inter,
       -apple-system,
       BlinkMacSystemFont,
-      "Segoe UI",
+      'Segoe UI',
       Roboto,
       Oxygen,
       Ubuntu,
       Cantarell,
-      "Fira Sans",
-      "Droid Sans",
-      "Helvetica Neue",
+      'Fira Sans',
+      'Droid Sans',
+      'Helvetica Neue',
       sans-serif;
     font-size: 15px;
     text-rendering: optimizeLegibility;

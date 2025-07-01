@@ -1,27 +1,3 @@
-<template>
-  <EndScreen
-    v-if="state == 'game-over'"
-    :stats="lastSavedStats"
-    :reset="handleResetGame"
-  />
-  <div class="grid" v-if="state != 'game-over' && visible">
-    <ProgressBar :progress="progress" />
-    <div ref="vfContainer" class="staff-container pt-4 overflow-hidden"></div>
-
-    <div class="note-buttons">
-      <button
-        v-for="note in notes"
-        :key="note"
-        @click="handleGuess(note)"
-        :disabled="state !== 'waiting'"
-        class="test cursor-pointer disabled:cursor-not-allowed"
-      >
-        {{ note }}
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue'
 import {
@@ -39,6 +15,7 @@ import { useStats, type Stats } from '@/utils/stats'
 
 type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
 export type Clef = 'treble' | 'bass' | 'mixed'
+type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'game-over'
 type NoteQueueItem = {
   note: StaveNote
   randomNote: RandomNote
@@ -75,11 +52,13 @@ const initialStatsState: Stats = {
 }
 const { stats, initializeStats, saveStats, lastSavedStats } =
   useStats(initialStatsState)
-
+const prefersDarkScheme = window.matchMedia(
+  '(prefers-color-scheme: dark)',
+).matches
 const vfContainer = ref<HTMLDivElement | null>(null)
 const userGuess = ref<Note | ''>('')
 const notes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-const state = ref<'scrolling' | 'waiting' | 'game-over'>('scrolling')
+const state = ref<GameState>('not-playing')
 const notesQueue = ref<NoteQueueItem[]>([])
 const visible = ref<boolean>(false)
 const noteSpacing = 50
@@ -241,7 +220,7 @@ function animateNote(noteItem: NoteQueueItem) {
       })
       guestionTimer()
       meta.state = 'in-question'
-      colorizeSVGElement(svgNote, '#0353a4')
+      colorizeNoteElement(svgNote, 'var(--p-info)')
     }
     if (
       !meta.fadeOutStarted &&
@@ -321,10 +300,10 @@ function handleGuess(guessNote: Note | '') {
   const correctNote = item.note.keys[0].charAt(0)
 
   if (guessNote === correctNote) {
-    colorizeSVGElement(svgNote, '#16a34a')
+    colorizeNoteElement(svgNote, 'var(--p-success)')
     updateStats(true, item as NoteQueueItem)
   } else {
-    colorizeSVGElement(svgNote, '#e11d48')
+    colorizeNoteElement(svgNote, 'var(--p-danger)')
     updateStats(false, item as NoteQueueItem)
     if (
       Object.entries(stats.value.guesses).reduce(
@@ -358,9 +337,13 @@ function modifyStaveNoteAnnotation(
   }
 }
 
-function colorizeSVGElement(svg: SVGElement, color: string) {
+function colorizeNoteElement(svg: SVGElement, color: string) {
   svg.setAttribute('fill', color)
   svg.setAttribute('stroke', color)
+  svg.querySelectorAll('path')?.forEach((el) => {
+    el.setAttribute('fill', color)
+    el.setAttribute('stroke', color)
+  })
 }
 
 function removeNote(note: NoteQueueItem) {
@@ -458,6 +441,7 @@ function addNotes(n = 5) {
 
     notesQueue.value.push(noteQueueItem)
 
+    if (prefersDarkScheme) colorizeNoteElement(svgNote, 'var(--text)')
     svgNote.setAttribute('data-id', notesQueue.value.length.toString())
     svgNote.setAttribute('data-start-x', startX.toString())
     svgNote.setAttribute('data-clef', randomNote.clef)
@@ -484,24 +468,55 @@ function startExercise() {
   }
   context = renderer.getContext()
 
+  const staves = []
   if (exercise === 'mixed') {
     staveTreble = new Stave(0, 0, 1000)
     staveTreble.addClef('treble')
     staveTreble.setContext(context).draw()
+    staves.push(staveTreble)
     staveBass = new Stave(0, 100, 1000)
     staveBass.addClef('bass')
     staveBass.setContext(context).draw()
+    staves.push(staveBass)
   } else if (exercise === 'treble') {
     staveTreble = new Stave(0, 0, 1000)
     staveTreble.addClef(exercise)
     staveTreble.setContext(context).draw()
+    staves.push(staveTreble)
   } else if (exercise === 'bass') {
     staveBass = new Stave(0, 0, 1000)
     staveBass.addClef(exercise)
     staveBass.setContext(context).draw()
+    staves.push(staveBass)
   }
 
+  const staveSvg = document.querySelector('#stave svg')
+  if (staveSvg) {
+    staveSvg.setAttribute('fill', 'var(--text)')
+    staveSvg.setAttribute('stroke', 'var(--text)')
+    staveSvg.setAttribute('shadowColor', 'var(--text)')
+    staveSvg.querySelectorAll('g.vf-clef').forEach((el) => {
+      el.setAttribute('fill', 'var(--text)')
+      console.log('asd')
+    })
+    staveSvg.querySelectorAll('g.vf-stavebarline')?.forEach((el) => {
+      el.setAttribute('fill', 'var(--text)')
+    })
+  } else {
+    console.error('Stave SVG element not found.')
+  }
+
+  // staves.forEach((stave) => {
+  //   const staveSvg = stave.getSVGElement()
+  //   if (staveSvg) {
+  //     colorizeStaveElement(staveSvg, 'white')
+  //   } else {
+  //     console.error('Stave SVG element not found.')
+  //   }
+  // })
+
   addNotes(5)
+  state.value = 'scrolling'
 
   waitForNoteGroup()
     .then(() =>
@@ -559,6 +574,43 @@ onUnmounted(() => {
 })
 </script>
 
+<template>
+  <EndScreen
+    v-if="state == 'game-over'"
+    :stats="lastSavedStats"
+    :reset="handleResetGame"
+  />
+
+  <div v-if="state == 'not-playing'" class="mt-10">
+    <div class="justify-self-center mt-5">
+      <i
+        class="pi pi-spin pi-spinner"
+        style="font-size: 5rem; color: var(--primary)"
+      />
+    </div>
+  </div>
+  <div class="grid" v-if="state != 'game-over' && visible">
+    <ProgressBar :progress="progress" />
+    <div
+      ref="vfContainer"
+      id="stave"
+      class="staff-container pt-4 overflow-hidden"
+    ></div>
+
+    <div class="note-buttons">
+      <button
+        v-for="note in notes"
+        :key="note"
+        @click="handleGuess(note)"
+        :disabled="state !== 'waiting'"
+        class="test cursor-pointer disabled:cursor-not-allowed"
+      >
+        {{ note }}
+      </button>
+    </div>
+  </div>
+</template>
+
 <style scoped>
 .vf-stavenote {
   transition: opacity 0.5s ease-out;
@@ -567,6 +619,16 @@ onUnmounted(() => {
 .note-buttons {
   position: relative;
   height: 300px;
+}
+
+button {
+  border-radius: 30px;
+  box-shadow: 0 0px 15px var(--primary-300);
+  border: 1px solid var(--secondary);
+}
+button:disabled {
+  border: 1px solid var(--secondary);
+  box-shadow: none;
 }
 
 .test {

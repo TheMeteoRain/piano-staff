@@ -1,3 +1,22 @@
+<script setup lang="ts">
+import type { Stats } from '@/utils/stats'
+import Button from '@/volt/Button.vue'
+
+type EndScreenProps = {
+  reset: (event: MouseEvent) => void
+  stats: Stats
+}
+const { reset, stats } = defineProps<EndScreenProps>()
+
+function animate(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement
+  const result__content = target.querySelector(
+    '.result__content',
+  ) as HTMLElement
+  result__content.classList.toggle('animate')
+}
+</script>
+
 <template>
   <div class="result grid" @click="animate">
     <div
@@ -20,7 +39,7 @@
             {{
               Object.entries(stats.guesses).reduce(
                 (prev, [key, guess]) => prev + guess.correctGuesses,
-                0
+                0,
               )
             }}
           </div>
@@ -31,7 +50,7 @@
             {{
               Object.entries(stats.guesses).reduce(
                 (prev, [key, guess]) => prev + guess.incorrectGuesses,
-                0
+                0,
               )
             }}
           </div>
@@ -42,7 +61,7 @@
             {{
               Object.entries(stats.guesses).reduce(
                 (prev, [key, guess]) => prev + guess.totalGuesses,
-                0
+                0,
               )
             }}
           </div>
@@ -59,36 +78,13 @@
         </div>
       </div>
     </div>
-    <button
-      @click="reset"
-      class="bg-[#0466c8] text-white px-4 py-2 rounded hover:bg-[#023e7d] transition-colors cursor-pointer"
-    >
-      Retry
-    </button>
+    <Button @click="reset"> Retry </Button>
   </div>
 </template>
 
-<script setup lang="ts">
-import type { Stats } from "@/utils/stats";
-
-type EndScreenProps = {
-  reset: (event: MouseEvent) => void;
-  stats: Stats;
-};
-const { reset, stats } = defineProps<EndScreenProps>();
-
-function animate(event: MouseEvent) {
-  const target = event.currentTarget as HTMLElement;
-  const result__content = target.querySelector(
-    ".result__content"
-  ) as HTMLElement;
-  result__content.classList.toggle("animate");
-}
-</script>
-
 <style scoped>
 .end-screen {
-  height: calc(100vh - 150px);
+  height: calc(100vh - 5rem - 5rem);
 }
 
 .result {

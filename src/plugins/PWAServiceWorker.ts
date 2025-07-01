@@ -7,7 +7,7 @@ export type PWAPluginInjectReturnType = ReturnType<typeof useRegisterSW> & {
   registration: Ref<ServiceWorkerRegistration | undefined>
 }
 
-export function pwaPlugin() {
+export function PWAServiceWorkerPlugin() {
   const registration = ref<ServiceWorkerRegistration | undefined>(undefined)
   const state = useRegisterSW({
     onRegisteredSW(swUrl, r) {
@@ -43,7 +43,7 @@ export function pwaPlugin() {
   }
 }
 
-export function usePWA() {
+export function usePWAServiceWorker() {
   const state = inject(pwaKey)
   if (!state) throw new Error('PWA plugin not provided')
   return state
