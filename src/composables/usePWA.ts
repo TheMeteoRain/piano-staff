@@ -23,11 +23,12 @@ export function usePWA() {
 
   const handleAppInstalled = (_e: Event) => {
     pwaStore.checkIfInstalled()
+    pwaStore.checkIsMobile()
     toast.add({
       severity: 'success',
       summary: 'Success',
       group: 'tc',
-      detail: 'App installed locally',
+      detail: 'App installed to device',
       life: 5000,
     })
   }
