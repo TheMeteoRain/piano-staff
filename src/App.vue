@@ -60,7 +60,7 @@ function closeToast(t: ToastMessageOptions) {
           @click="navigate"
           :variant="isActive ? undefined : 'outlined'"
           label="Home"
-          :class="['w-full h-[5rem] border-l-0 border-b-0']"
+          :class="['w-full h-[5rem] border-l-0 border-b-0 rounded-none']"
         >
           <template #icon> <Icon icon="mdi:home" width="20" /> </template
         ></Button>
@@ -75,7 +75,7 @@ function closeToast(t: ToastMessageOptions) {
           @click="navigate"
           :variant="isExactActive ? undefined : 'outlined'"
           label="Training"
-          :class="['w-full h-[5rem] border-l-0 border-b-0']"
+          :class="['w-full h-[5rem] border-l-0 border-b-0 rounded-none']"
         >
           <template #icon>
             <Icon icon="mdi:music-clef-treble" width="20" /> </template
@@ -91,7 +91,9 @@ function closeToast(t: ToastMessageOptions) {
           @click="navigate"
           :variant="isActive ? undefined : 'outlined'"
           label="Settings"
-          :class="['w-full h-[5rem] border-l-0 border-b-0 border-r-0']"
+          :class="[
+            'w-full h-[5rem] border-l-0 border-b-0 border-r-0 rounded-none',
+          ]"
         >
           <template #icon> <Icon icon="mdi:settings" width="20" /> </template
         ></Button>
