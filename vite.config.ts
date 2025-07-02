@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       registerType: 'prompt',
       strategies: 'injectManifest',
       srcDir: 'src',
-      filename: 'sw-mete.ts',
+      filename: 'service-worker.ts',
       manifest,
       injectManifest: {
         globPatterns: ['**/*.{js,wasm,css,html,json}'], // match what you want cached

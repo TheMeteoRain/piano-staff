@@ -20,8 +20,8 @@ const data = {
   networkTimeoutSeconds: 0,
   fallback: 'index.html',
 }
-const SW_VERSION = '0.1.1'
 const cacheName = cacheNames.runtime
+const SW_VERSION = '1'
 
 function buildStrategy(): Strategy {
   if (data.race) {
