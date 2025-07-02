@@ -156,7 +156,7 @@ function installPWA() {
       <template #footer>
         <a href="https://www.buymeacoffee.com/meteorain" target="_blank"
           ><img
-            src="/default-yellow.webp"
+            src="/support-1.webp"
             alt="Buy Me A Coffee"
             style="height: 60px !important; width: 217px !important"
         /></a>
