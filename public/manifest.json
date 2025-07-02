@@ -1,6 +1,48 @@
 {
+  "name": "Musical Sight",
+  "short_name": "MusicalSight",
+  "manifest_version": 3,
+  "version": "0.3.0",
+  "categories": ["music", "education"],
+  "display": "standalone",
   "display_override": ["window-controls-overlay"],
-  "screenshots": [],
+  "orientation": "portrait",
+  "lang": "en",
+  "description": "Companion application to help improve your music reading skill.",
+  "start_url": "/",
+  "author": "Akash Singh",
+  "theme_color": "#5d21de",
+  "background_color": "#ffffff",
+  "di,splay": "standalone",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://piano.akash.fi/manifest.json"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Home screen showing main navigation and featured content"
+    },
+    {
+      "src": "/screenshots/training.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Training view displaying exercises"
+    },
+    {
+      "src": "/screenshots/training-mixed.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Training view displaying exercise itself"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Start Treble Training",
@@ -22,16 +64,6 @@
     }
   ],
   "protocol_handlers": [{ "protocol": "mailto", "url": "/newEmail?to=%s" }],
-  "categories": ["music", "education"],
-  "orientation": "any",
-  "manifest_version": 3,
-  "name": "Stave Training",
-  "short_name": "Stave Training",
-  "version": "0.3.0",
-  "lang": "en",
-  "description": "An application for training musical stave.",
-  "start_url": "/",
-  "author": "Akash Singh",
   "icons": [
     {
       "src": "/icons/web-app-manifest-192x192.png",
@@ -51,8 +83,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "theme_color": "#0353a4",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }
