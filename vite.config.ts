@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
       filename: 'service-worker.ts',
       manifest,
       injectManifest: {
-        globPatterns: ['**/*.{js,wasm,css,html,json}'], // match what you want cached
+        globPatterns: ['**/*.{js,wasm,css,html,json,webp}'], // match what you want cached
         globDirectory: 'dist', // default is `dist`, override if needed
         sourcemap: false,
       },
