@@ -8,6 +8,7 @@ import { resetLocalStorage } from '@/utils/stats'
 import SecondaryButton from '@/volt/SecondaryButton.vue'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
+import setTheme from '@/utils/setTheme'
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -50,23 +51,7 @@ const theme = useStorage('theme', 'System', localStorage)
 const options = ref(['System', 'Light', 'Dark'])
 
 watch(theme, async (newValue) => {
-  if (newValue === 'Light') {
-    document.documentElement.classList.remove('dark')
-  }
-  if (!newValue || newValue === 'System') {
-    const prefersDarkScheme = window.matchMedia(
-      '(prefers-color-scheme: dark)',
-    ).matches
-    if (prefersDarkScheme) {
-      document.documentElement.classList.add('dark')
-      document.documentElement.setAttribute('data-theme', 'dark')
-    }
-  } else {
-    document.documentElement.setAttribute('data-theme', newValue.toLowerCase())
-  }
-  if (newValue === 'Dark') {
-    document.documentElement.classList.add('dark', newValue.toLowerCase())
-  }
+  setTheme(newValue)
 })
 </script>
 
