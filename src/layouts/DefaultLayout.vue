@@ -3,7 +3,6 @@ import { usePWAServiceWorker } from '@/plugins/PWAServiceWorker'
 import Button from '@/volt/Button.vue'
 import Message from '@/volt/Message.vue'
 import SecondaryButton from '@/volt/SecondaryButton.vue'
-import { Icon } from '@iconify/vue'
 
 defineProps({
   header: String,
@@ -33,21 +32,22 @@ async function refreshApp() {
   <div v-if="needRefresh" class="card">
     <Message>
       <p>New version available</p>
+      <br />
       <div class="grid gap-5 grid-flow-col">
-        <Button @click="refreshApp" label="Update">
-          <template #icon>
-            <Icon icon="mdi:cellphone-arrow-down" width="20" />
-          </template>
-        </Button>
         <SecondaryButton
           @click="needRefresh = false"
           label="Cancel"
           variant="raised"
         >
           <template #icon>
-            <Icon icon="mdi:cellphone-arrow-down" width="20" />
+            <i class="pi pi-times" style="font-size: 1rem"></i>
           </template>
         </SecondaryButton>
+        <Button @click="refreshApp" label="Update">
+          <template #icon>
+            <i class="pi pi-refresh" style="font-size: 1rem"></i>
+          </template>
+        </Button>
       </div>
     </Message>
   </div>
