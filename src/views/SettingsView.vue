@@ -50,11 +50,22 @@ const theme = useStorage('theme', 'System', localStorage)
 const options = ref(['System', 'Light', 'Dark'])
 
 watch(theme, async (newValue) => {
-  console.log(newValue)
-  if (newValue === 'System') {
-    document.documentElement.removeAttribute('data-theme')
+  if (newValue === 'Light') {
+    document.documentElement.classList.remove('dark')
+  }
+  if (!newValue || newValue === 'System') {
+    const prefersDarkScheme = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches
+    if (prefersDarkScheme) {
+      document.documentElement.classList.add('dark')
+      document.documentElement.setAttribute('data-theme', 'dark')
+    }
   } else {
     document.documentElement.setAttribute('data-theme', newValue.toLowerCase())
+  }
+  if (newValue === 'Dark') {
+    document.documentElement.classList.add('dark', newValue.toLowerCase())
   }
 })
 </script>

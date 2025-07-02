@@ -35,17 +35,17 @@ const theme = ref<ButtonPassThroughOptions>({
         p-small:text-sm p-small:px-[0.625rem] p-small:py-[0.375rem]
         p-large:text-[1.125rem] p-large:px-[0.875rem] p-large:py-[0.625rem]
         p-raised:shadow-sm p-rounded:rounded-[2rem]
-        p-outlined:bg-transparent enabled:hover:p-outlined:bg-primary-50 enabled:active:p-outlined:bg-primary-100
+        p-outlined:bg-(--primary-50) enabled:hover:p-outlined:bg-primary-50 enabled:active:p-outlined:bg-primary-100
         p-outlined:border-primary-200 enabled:hover:p-outlined:border-primary-200 enabled:active:p-outlined:border-primary-200
         p-outlined:text-primary enabled:hover:p-outlined:text-primary enabled:active:p-outlined:text-primary
-        dark:p-outlined:bg-transparent dark:enabled:hover:p-outlined:bg-primary/5 dark:enabled:active:p-outlined:bg-primary/15
+        dark:p-outlined:bg-(--primary-50) dark:enabled:hover:p-outlined:bg-primary/5 dark:enabled:active:p-outlined:bg-primary/15
         dark:p-outlined:border-primary-700 dark:enabled:hover:p-outlined:border-primary-700 dark:enabled:active:p-outlined:border-primary-700
         dark:p-outlined:text-primary dark:enabled:hover:p-outlined:text-primary dark:enabled:active:p-outlined:text-primary
-        p-text:bg-transparent enabled:hover:p-text:bg-primary-50 enabled:active:p-text:bg-primary-100
-        p-text:border-transparent enabled:hover:p-text:border-transparent enabled:active:p-text:border-transparent
+        p-text:bg-(--primary-50) enabled:hover:p-text:bg-primary-50 enabled:active:p-text:bg-primary-100
+        p-text:border-(--primary-50) enabled:hover:p-text:border-(--primary-50) enabled:active:p-text:border-(--primary-50)
         p-text:text-primary enabled:hover:p-text:text-primary enabled:active:p-text:text-primary
-        dark:p-text:bg-transparent dark:enabled:hover:p-text:bg-primary/5 dark:enabled:active:p-text:bg-primary/15
-        dark:p-text:border-transparent dark:enabled:hover:p-text:border-transparent dark:enabled:active:p-text:border-transparent
+        dark:p-text:bg-(--primary-50) dark:enabled:hover:p-text:bg-primary/5 dark:enabled:active:p-text:bg-primary/15
+        dark:p-text:border-(--primary-50) dark:enabled:hover:p-text:border-(--primary-50) dark:enabled:active:p-text:border-(--primary-50)
         dark:p-text:text-primary dark:enabled:hover:p-text:text-primary dark:enabled:active:p-text:text-primary rounded-none
     `,
   loadingIcon: `animate-spin`,

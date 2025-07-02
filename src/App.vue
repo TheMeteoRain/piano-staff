@@ -13,8 +13,20 @@ const toast = useToast()
 usePWA()
 onMounted(() => {
   const theme = localStorage.getItem('theme')
+  if (theme === 'System') {
+    const prefersDarkScheme = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches
+    if (prefersDarkScheme) {
+      document.documentElement.classList.add('dark')
+      document.documentElement.setAttribute('data-theme', 'dark')
+    }
+  }
   if (theme === 'Dark' || theme === 'Light') {
     document.documentElement.setAttribute('data-theme', theme.toLowerCase())
+  }
+  if (theme === 'Dark') {
+    document.documentElement.classList.add('dark')
   }
 })
 
