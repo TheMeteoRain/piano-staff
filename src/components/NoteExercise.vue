@@ -497,7 +497,6 @@ function startExercise() {
     staveSvg.setAttribute('shadowColor', 'var(--text)')
     staveSvg.querySelectorAll('g.vf-clef').forEach((el) => {
       el.setAttribute('fill', 'var(--text)')
-      console.log('asd')
     })
     staveSvg.querySelectorAll('g.vf-stavebarline')?.forEach((el) => {
       el.setAttribute('fill', 'var(--text)')

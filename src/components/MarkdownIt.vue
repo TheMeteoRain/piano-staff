@@ -4,7 +4,7 @@ import MarkdownIt from 'markdown-it'
 defineProps({
   source: {
     type: String,
-    default: 'asd',
+    default: '',
   },
 })
 
