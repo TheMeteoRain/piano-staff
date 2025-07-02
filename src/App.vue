@@ -46,11 +46,9 @@ function closeToast(t: ToastMessageOptions) {
     </template>
   </Toast>
 
-  <div class="h-screen flex flex-col">
-    <div class="flex-grow" id="content">
-      <RouterView />
-      <div class="box h-[5rem]" :data-hidden="false" />
-    </div>
+  <div class="h-[calc(100vh-5rem)]" id="content">
+    <RouterView />
+    <div class="box h-[5rem]" :data-hidden="false" />
   </div>
   <footer>
     <nav class="box flex fixed bottom-0 left-0 right-0" :data-hidden="false">

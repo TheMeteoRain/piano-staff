@@ -39,7 +39,7 @@ const confirmSave = () => {
         severity: 'error',
         summary: 'Rejected',
         group: 'tc',
-        detail: 'Stats are not reseted',
+        detail: 'Stats have not been reseted',
         life: 3000,
       })
     },
@@ -60,33 +60,28 @@ watch(theme, async (newValue) => {
 </script>
 
 <template>
-  <header>
-    <h1 class="text-3xl">Settings</h1>
-  </header>
-  <main>
-    <section>
-      <div class="card flex flex-col justify-center align-items-center w-full">
-        <div>
-          <label for="theme" class="mr-5">Theme</label>
-          <SelectButton v-model="theme" :options="options" id="theme" />
-        </div>
-        <br />
-        <SecondaryButton
-          variant="outlined"
-          @click="confirmSave()"
-          label="Reset Stats"
-        >
-          <template #icon>
-            <Icon icon="mdi:cellphone-arrow-down" width="20" />
-          </template>
-        </SecondaryButton>
-        <br />
-        <Fieldset legend="App Information">
-          <AppVersion />
-        </Fieldset>
+  <section>
+    <div class="card flex flex-col justify-center align-items-center w-full">
+      <div>
+        <label for="theme" class="mr-5">Theme</label>
+        <SelectButton v-model="theme" :options="options" id="theme" />
       </div>
-    </section>
-  </main>
+      <br />
+      <SecondaryButton
+        variant="outlined"
+        @click="confirmSave()"
+        label="Reset Stats"
+      >
+        <template #icon>
+          <Icon icon="mdi:cellphone-arrow-down" width="20" />
+        </template>
+      </SecondaryButton>
+      <br />
+      <Fieldset legend="App Information">
+        <AppVersion />
+      </Fieldset>
+    </div>
+  </section>
 </template>
 
 <style>

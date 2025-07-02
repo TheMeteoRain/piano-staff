@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { withLayout } from '@/layouts/withDefaultLayout'
 
 const router = createRouter({
   scrollBehavior(_to, _from, _savedPosition) {
@@ -11,16 +12,17 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: withLayout(HomeView),
+      props: { header: 'Musical Sight' },
     },
-
     {
       path: '/training',
       children: [
         {
           path: '',
           name: 'training-overview',
-          component: () => import('../views/TrainingView.vue'),
+          component: withLayout(() => import('../views/TrainingView.vue')),
+          props: { header: 'Training' },
         },
         {
           path: 'clef-treble',
@@ -39,24 +41,16 @@ const router = createRouter({
         },
       ],
     },
-
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/SettingsView.vue'),
+      component: withLayout(() => import('../views/SettingsView.vue')),
+      props: { header: 'Settings' },
     },
     {
       path: '/licenses',
       name: 'licenses',
       component: () => import('../views/LicensesView.vue'),
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
     },
   ],
 })
