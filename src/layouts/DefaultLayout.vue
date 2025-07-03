@@ -26,7 +26,7 @@ async function refreshApp() {
 </script>
 
 <template>
-  <header :class="[needRefresh && 'mb-0']">
+  <header>
     <h1 class="text-3xl">{{ header }}</h1>
   </header>
   <div v-if="needRefresh" class="card">
