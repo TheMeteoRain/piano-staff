@@ -1,27 +1,104 @@
 {
+  "name": "Musical Sight",
+  "short_name": "MusicalSight",
   "manifest_version": 3,
-  "name": "Piano Exercise",
-  "short_name": "PianoEx",
   "version": "0.3.0",
+  "categories": ["music", "education"],
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "orientation": "portrait",
   "lang": "en",
-  "description": "A web application for practicing piano exercises",
+  "description": "Companion application to help improve your music reading skill.",
   "start_url": "/",
   "author": "Akash Singh",
+  "theme_color": "#5d21de",
+  "background_color": "#ffffff",
+  "di,splay": "standalone",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://piano.akash.fi/manifest.json"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Home screen showing main navigation and featured content"
+    },
+    {
+      "src": "/screenshots/training.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Training view displaying exercises"
+    },
+    {
+      "src": "/screenshots/training-mixed.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Training view displaying exercise itself"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Treble Training",
+      "short_name": "Treble",
+      "description": "Practice reading notes in the treble clef",
+      "url": "/clef-treble"
+    },
+    {
+      "name": "Start Bass Training",
+      "short_name": "Bass",
+      "description": "Practice reading notes in the bass clef",
+      "url": "/clef-bass"
+    },
+    {
+      "name": "Start Mixed Clef Training",
+      "short_name": "Mixed",
+      "description": "Practice reading notes using both clefs",
+      "url": "/mixed"
+    }
+  ],
+  "protocol_handlers": [{ "protocol": "mailto", "url": "/newEmail?to=%s" }],
   "icons": [
     {
-      "src": "/icons/web-app-manifest-192x192.png",
-      "sizes": "192x192",
+      "src": "/icons/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "16x16 32x32"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
       "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-162-monochrome.png",
+      "type": "image/png",
+      "sizes": "162x162",
+      "purpose": "monochrome maskable"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "type": "image/png",
+      "sizes": "192x192",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/web-app-manifest-512x512.png",
-      "sizes": "512x512",
+      "src": "/icons/icon-512-maskable.png",
       "type": "image/png",
+      "sizes": "512x512",
       "purpose": "maskable"
     }
-  ],
-  "theme_color": "#0353a4",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }

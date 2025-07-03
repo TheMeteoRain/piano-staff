@@ -7,6 +7,10 @@ import App from './App.vue'
 import router from './router'
 import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk'
 import { TracingInstrumentation } from '@grafana/faro-web-tracing'
+import { PWAServiceWorkerPlugin } from '@/plugins/PWAServiceWorker'
+import PrimeVue from 'primevue/config'
+import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 
 interface VersionInfo {
   version: string
@@ -51,7 +55,13 @@ async function main() {
   app.config.globalProperties.$github =
     'https://github.com/TheMeteoRain/piano-staff'
 
+  app.use(PrimeVue, {
+    unstyled: true,
+  })
+  app.use(ConfirmationService)
+  app.use(ToastService)
   app.use(createPinia())
+  app.use(PWAServiceWorkerPlugin())
   app.use(router)
 
   app.mount('#app')

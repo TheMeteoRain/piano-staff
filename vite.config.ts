@@ -5,6 +5,10 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 import faroUploader from '@grafana/faro-rollup-plugin'
+import { VitePWA } from 'vite-plugin-pwa'
+import fs from 'fs'
+
+const manifest = JSON.parse(fs.readFileSync('./public/manifest.json', 'utf-8'))
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,7 +18,26 @@ export default defineConfig(({ mode }) => {
     vueJsx(),
     vueDevTools(),
     tailwindcss(),
+    VitePWA({
+      registerType: 'prompt',
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'service-worker.ts',
+      manifest,
+      injectManifest: {
+        globPatterns: ['**/*.{js,wasm,css,html,json,webp}'], // match what you want cached
+        globDirectory: 'dist', // default is `dist`, override if needed
+        sourcemap: false,
+      },
+      injectRegister: null,
+      mode: mode === 'production' ? 'production' : 'development',
+      devOptions: {
+        enabled: mode !== 'production',
+        type: 'module',
+      },
+    }),
   ]
+
   if (mode === 'production' && env.VITE_FARO_ACTIVE === 'true') {
     plugins.push(
       faroUploader({

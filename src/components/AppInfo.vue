@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { getCurrentInstance } from 'vue'
 import { Icon } from '@iconify/vue'
+import Button from '@/volt/Button.vue'
+import AppLink from '@/components/AppLink.vue'
 const versionInfo =
   getCurrentInstance()?.appContext.config.globalProperties.$versionInfo
 const githubLink =
@@ -8,45 +10,50 @@ const githubLink =
 </script>
 
 <template>
-  <footer
+  <div
     class="text-base sm:text-lg text-gray-500 text-center mt-8 grid grid-cols-2 grid-rows-2 gap-2 wrap-anywhere items-center"
   >
-    <div>
-      <a
-        :href="`${githubLink}/releases/tag/v${versionInfo.version}`"
-        target="_blank"
-        >Version: {{ versionInfo.version }}</a
+    <AppLink :to="githubLink">
+      <Button
+        variant="outlined"
+        :label="`Version: ${versionInfo.version}`"
+        class="h-[75px] w-[100%]"
       >
-    </div>
-    <div>
-      <a :href="githubLink" target="_blank"
-        >Github
-        <Icon icon="mdi:github" width="20" :inline="true" class="icon-inline"
-      /></a>
-    </div>
-    <div>
-      <a :href="`${githubLink}/commit/${versionInfo.sha}`" target="_blank">
-        {{ versionInfo.sha.slice(0, 7) }}...
-        <Icon
-          icon="mdi:source-commit"
-          width="20"
-          :inline="true"
-          class="icon-inline"
-        />
-      </a>
-    </div>
-    <div>
-      <a :href="`${githubLink}/discussions`" target="_blank">
-        Share your ideas
-        <Icon
-          icon="mdi:open-in-new"
-          width="20"
-          :inline="true"
-          class="icon-inline"
-        />
-      </a>
-    </div>
-  </footer>
+        <template #icon>
+          <Icon icon="mdi:information-variant" width="30" /></template
+      ></Button>
+    </AppLink>
+    <AppLink :to="githubLink">
+      <Button variant="outlined" label="Github" class="h-[75px] w-[100%]">
+        <template #icon> <Icon icon="mdi:github" width="20" /></template
+      ></Button>
+    </AppLink>
+
+    <AppLink :to="`${githubLink}/commit/${versionInfo.sha}`">
+      <Button
+        variant="outlined"
+        :label="`${versionInfo.sha.slice(0, 7)}...`"
+        class="h-[75px] w-[100%]"
+      >
+        <template #icon> <Icon icon="mdi:source-commit" width="20" /></template
+      ></Button>
+    </AppLink>
+
+    <AppLink :to="`${githubLink}/discussions`">
+      <Button
+        variant="outlined"
+        label="Share your ideas"
+        class="h-[75px] w-[100%]"
+      >
+        <template #icon> <Icon icon="mdi:discussion" width="20" /></template
+      ></Button>
+    </AppLink>
+    <AppLink to="/licenses">
+      <Button variant="outlined" label="Licenses" class="h-[75px] w-[100%]">
+        <template #icon> <Icon icon="mdi:license" width="20" /></template
+      ></Button>
+    </AppLink>
+  </div>
 </template>
 
 <style scoped>
