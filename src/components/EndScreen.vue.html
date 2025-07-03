@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/51</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/54</span>
+                <span class='fraction'>0/51</span>
             </div>
         
             
@@ -179,11 +179,26 @@
 <a name='L114'></a><a href='#L114'>114</a>
 <a name='L115'></a><a href='#L115'>115</a>
 <a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a>
-<a name='L120'></a><a href='#L120'>120</a>
-<a name='L121'></a><a href='#L121'>121</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -246,29 +261,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -303,7 +295,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >&lt;template&gt;<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >&lt;script setup lang="ts"&gt;<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+import type { Stats } from '@/utils/stats'
+<span class="cstat-no" title="statement not covered" >import Button from '@/volt/Button.vue'</span>
+&nbsp;
+type EndScreenProps = {
+  reset: (event: MouseEvent) =&gt; void
+  stats: Stats
+}
+const { reset, stats } = defineProps&lt;EndScreenProps&gt;()
+&nbsp;
+<span class="cstat-no" title="statement not covered" >function animate(event: MouseEvent) {</span>
+<span class="cstat-no" title="statement not covered" >  const target = event.currentTarget as HTMLElement</span>
+<span class="cstat-no" title="statement not covered" >  const result__content = target.querySelector(</span>
+<span class="cstat-no" title="statement not covered" >    '.result__content',</span>
+<span class="cstat-no" title="statement not covered" >  ) as HTMLElement</span>
+<span class="cstat-no" title="statement not covered" >  result__content.classList.toggle('animate')</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&lt;/script&gt;
+&nbsp;
+&lt;template&gt;
 <span class="cstat-no" title="statement not covered" >  &lt;div class="result grid" @click="animate"&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div</span>
 <span class="cstat-no" title="statement not covered" >      class="result__content end-screen relative transition-transform duration-1000 cursor-pointer"</span>
@@ -325,7 +336,7 @@
             {{
 <span class="cstat-no" title="statement not covered" >              Object.entries(stats.guesses).reduce(</span>
                 (prev, [key, guess]) =&gt; prev + guess.correctGuesses,
-                0
+                0,
               )
             }}
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
@@ -336,7 +347,7 @@
             {{
 <span class="cstat-no" title="statement not covered" >              Object.entries(stats.guesses).reduce(</span>
                 (prev, [key, guess]) =&gt; prev + guess.incorrectGuesses,
-                0
+                0,
               )
             }}
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
@@ -347,7 +358,7 @@
             {{
 <span class="cstat-no" title="statement not covered" >              Object.entries(stats.guesses).reduce(</span>
                 (prev, [key, guess]) =&gt; prev + guess.totalGuesses,
-                0
+                0,
               )
             }}
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
@@ -364,36 +375,13 @@
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;button</span>
-<span class="cstat-no" title="statement not covered" >      @click="reset"</span>
-<span class="cstat-no" title="statement not covered" >      class="bg-[#0466c8] text-white px-4 py-2 rounded hover:bg-[#023e7d] transition-colors cursor-pointer"</span>
-<span class="cstat-no" title="statement not covered" >    &gt;</span>
-      Retry
-<span class="cstat-no" title="statement not covered" >    &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;Button @click="reset"&gt; Retry &lt;/Button&gt;</span>
 <span class="cstat-no" title="statement not covered" >  &lt;/div&gt;</span>
 &lt;/template&gt;
 &nbsp;
-&lt;script setup lang="ts"&gt;
-import type { Stats } from "@/utils/stats";
-&nbsp;
-type EndScreenProps = {
-  reset: (event: MouseEvent) =&gt; void;
-  stats: Stats;
-};
-const { reset, stats } = defineProps&lt;EndScreenProps&gt;();
-&nbsp;
-<span class="cstat-no" title="statement not covered" >function animate(event: MouseEvent) {</span>
-<span class="cstat-no" title="statement not covered" >  const target = event.currentTarget as HTMLElement;</span>
-<span class="cstat-no" title="statement not covered" >  const result__content = target.querySelector(</span>
-<span class="cstat-no" title="statement not covered" >    ".result__content"</span>
-<span class="cstat-no" title="statement not covered" >  ) as HTMLElement;</span>
-<span class="cstat-no" title="statement not covered" >  result__content.classList.toggle("animate");</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-&lt;/script&gt;
-&nbsp;
 &lt;style scoped&gt;
 .end-screen {
-  height: calc(100vh - 150px);
+  height: calc(100vh - 5rem - 5rem);
 }
 &nbsp;
 .result {
@@ -430,7 +418,7 @@ const { reset, stats } = defineProps&lt;EndScreenProps&gt;();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-24T13:44:42.366Z
+                at 2025-07-03T09:53:25.965Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

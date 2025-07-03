@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/components/ProgressBar.vue</title>
+    <title>Code coverage report for src/layouts/withDefaultLayout.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> ProgressBar.vue</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/layouts</a> withDefaultLayout.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
@@ -94,17 +94,25 @@
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -115,56 +123,39 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >&lt;template&gt;<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >  &lt;div class="progress-bar"&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div class="progress-bar__fill" :style="{ width: progress + '%' }"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  &lt;/div&gt;</span>
-&lt;/template&gt;
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import {<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+  defineAsyncComponent,
+  defineComponent,
+  h,
+  type AsyncComponentLoader,
+  type Component,
+} from 'vue'
+<span class="cstat-no" title="statement not covered" >import DefaultLayout from './DefaultLayout.vue'</span>
 &nbsp;
-&lt;script lang="ts"&gt;
-<span class="cstat-no" title="statement not covered" >export default {</span>
-<span class="cstat-no" title="statement not covered" >  name: 'ProgressBar',</span>
-<span class="cstat-no" title="statement not covered" >  props: {</span>
-<span class="cstat-no" title="statement not covered" >    progress: {</span>
-<span class="cstat-no" title="statement not covered" >      type: Number,</span>
-<span class="cstat-no" title="statement not covered" >      required: true,</span>
-<span class="cstat-no" title="statement not covered" >      default: 0,</span>
-<span class="cstat-no" title="statement not covered" >      validator: (value: number) =&gt; value &gt;= 0 &amp;&amp; value &lt;= 100,</span>
+type ViewType = Component | AsyncComponentLoader
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function withLayout(view: ViewType) {</span>
+<span class="cstat-no" title="statement not covered" >  const isAsyncLoader =</span>
+<span class="cstat-no" title="statement not covered" >    typeof view === 'function' &amp;&amp; !('then' in (view as AsyncComponentLoader))</span>
+  // If view is an async loader function, wrap it with defineAsyncComponent
+<span class="cstat-no" title="statement not covered" >  const AsyncView = isAsyncLoader</span>
+<span class="cstat-no" title="statement not covered" >    ? defineAsyncComponent(view as AsyncComponentLoader)</span>
+<span class="cstat-no" title="statement not covered" >    : view</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return defineComponent({</span>
+<span class="cstat-no" title="statement not covered" >    props: {</span>
+<span class="cstat-no" title="statement not covered" >      header: String,</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
+<span class="cstat-no" title="statement not covered" >    setup(props) {</span>
+<span class="cstat-no" title="statement not covered" >      return () =&gt;</span>
+<span class="cstat-no" title="statement not covered" >        h(DefaultLayout, props, {</span>
+<span class="cstat-no" title="statement not covered" >          default: () =&gt; h(AsyncView, props),</span>
+<span class="cstat-no" title="statement not covered" >        })</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  })</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-&lt;/script&gt;
-&nbsp;
-&lt;style scoped&gt;
-.progress-bar {
-  width: 100%;
-  height: 5px;
-  background-color: var(--background);
-  overflow: hidden;
-}
-&nbsp;
-.progress-bar__fill {
-  height: 100%;
-  background-color: var(--p-info);
-  transition: width 0.3s ease;
-}
-&lt;/style&gt;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

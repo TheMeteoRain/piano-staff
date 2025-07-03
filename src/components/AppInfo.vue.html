@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/44</span>
+                <span class='fraction'>0/47</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/44</span>
+                <span class='fraction'>0/47</span>
             </div>
         
             
@@ -137,7 +137,16 @@
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -155,6 +164,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -164,13 +174,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -214,6 +228,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >&lt;script setup lang="ts"&gt;<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
 <span class="cstat-no" title="statement not covered" >import { getCurrentInstance } from 'vue'</span>
 <span class="cstat-no" title="statement not covered" >import { Icon } from '@iconify/vue'</span>
+<span class="cstat-no" title="statement not covered" >import Button from '@/volt/Button.vue'</span>
+<span class="cstat-no" title="statement not covered" >import AppLink from '@/components/AppLink.vue'</span>
 <span class="cstat-no" title="statement not covered" >const versionInfo =</span>
 <span class="cstat-no" title="statement not covered" >  getCurrentInstance()?.appContext.config.globalProperties.$versionInfo</span>
 <span class="cstat-no" title="statement not covered" >const githubLink =</span>
@@ -221,45 +237,50 @@
 &lt;/script&gt;
 &nbsp;
 &lt;template&gt;
-<span class="cstat-no" title="statement not covered" >  &lt;footer</span>
+<span class="cstat-no" title="statement not covered" >  &lt;div</span>
 <span class="cstat-no" title="statement not covered" >    class="text-base sm:text-lg text-gray-500 text-center mt-8 grid grid-cols-2 grid-rows-2 gap-2 wrap-anywhere items-center"</span>
   &gt;
-<span class="cstat-no" title="statement not covered" >    &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;a</span>
-<span class="cstat-no" title="statement not covered" >        :href="`${githubLink}/releases/tag/v${versionInfo.version}`"</span>
-<span class="cstat-no" title="statement not covered" >        target="_blank"</span>
-<span class="cstat-no" title="statement not covered" >        &gt;Version: {{ versionInfo.version }}&lt;/a</span>
-<span class="cstat-no" title="statement not covered" >      &gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;a :href="githubLink" target="_blank"</span>
-<span class="cstat-no" title="statement not covered" >        &gt;Github</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Icon icon="mdi:github" width="20" :inline="true" class="icon-inline"</span>
-<span class="cstat-no" title="statement not covered" >      /&gt;&lt;/a&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;a :href="`${githubLink}/commit/${versionInfo.sha}`" target="_blank"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        {{ versionInfo.sha.slice(0, 7) }}...</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Icon</span>
-<span class="cstat-no" title="statement not covered" >          icon="mdi:source-commit"</span>
-<span class="cstat-no" title="statement not covered" >          width="20"</span>
-<span class="cstat-no" title="statement not covered" >          :inline="true"</span>
-<span class="cstat-no" title="statement not covered" >          class="icon-inline"</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/a&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;a :href="`${githubLink}/discussions`" target="_blank"&gt;</span>
-        Share your ideas
-<span class="cstat-no" title="statement not covered" >        &lt;Icon</span>
-<span class="cstat-no" title="statement not covered" >          icon="mdi:open-in-new"</span>
-<span class="cstat-no" title="statement not covered" >          width="20"</span>
-<span class="cstat-no" title="statement not covered" >          :inline="true"</span>
-<span class="cstat-no" title="statement not covered" >          class="icon-inline"</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/a&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  &lt;/footer&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;AppLink :to="githubLink"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Button</span>
+<span class="cstat-no" title="statement not covered" >        variant="outlined"</span>
+<span class="cstat-no" title="statement not covered" >        :label="`Version: ${versionInfo.version}`"</span>
+<span class="cstat-no" title="statement not covered" >        class="h-[75px] w-[100%]"</span>
+      &gt;
+<span class="cstat-no" title="statement not covered" >        &lt;template #icon&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;Icon icon="mdi:information-variant" width="30" /&gt;&lt;/template</span>
+<span class="cstat-no" title="statement not covered" >      &gt;&lt;/Button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/AppLink&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;AppLink :to="githubLink"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Button variant="outlined" label="Github" class="h-[75px] w-[100%]"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;template #icon&gt; &lt;Icon icon="mdi:github" width="20" /&gt;&lt;/template</span>
+<span class="cstat-no" title="statement not covered" >      &gt;&lt;/Button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/AppLink&gt;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    &lt;AppLink :to="`${githubLink}/commit/${versionInfo.sha}`"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Button</span>
+<span class="cstat-no" title="statement not covered" >        variant="outlined"</span>
+<span class="cstat-no" title="statement not covered" >        :label="`${versionInfo.sha.slice(0, 7)}...`"</span>
+<span class="cstat-no" title="statement not covered" >        class="h-[75px] w-[100%]"</span>
+      &gt;
+<span class="cstat-no" title="statement not covered" >        &lt;template #icon&gt; &lt;Icon icon="mdi:source-commit" width="20" /&gt;&lt;/template</span>
+<span class="cstat-no" title="statement not covered" >      &gt;&lt;/Button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/AppLink&gt;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    &lt;AppLink :to="`${githubLink}/discussions`"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Button</span>
+<span class="cstat-no" title="statement not covered" >        variant="outlined"</span>
+<span class="cstat-no" title="statement not covered" >        label="Share your ideas"</span>
+<span class="cstat-no" title="statement not covered" >        class="h-[75px] w-[100%]"</span>
+      &gt;
+<span class="cstat-no" title="statement not covered" >        &lt;template #icon&gt; &lt;Icon icon="mdi:discussion" width="20" /&gt;&lt;/template</span>
+<span class="cstat-no" title="statement not covered" >      &gt;&lt;/Button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/AppLink&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;AppLink to="/licenses"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Button variant="outlined" label="Licenses" class="h-[75px] w-[100%]"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;template #icon&gt; &lt;Icon icon="mdi:license" width="20" /&gt;&lt;/template</span>
+<span class="cstat-no" title="statement not covered" >      &gt;&lt;/Button&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/AppLink&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;/div&gt;</span>
 &lt;/template&gt;
 &nbsp;
 &lt;style scoped&gt;
@@ -292,7 +313,7 @@ a:hover {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-24T13:44:42.366Z
+                at 2025-07-03T09:53:25.965Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

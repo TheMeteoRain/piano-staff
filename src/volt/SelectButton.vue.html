@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/components/ProgressBar.vue</title>
+    <title>Code coverage report for src/volt/SelectButton.vue</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> ProgressBar.vue</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/volt</a> SelectButton.vue</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/20</span>
             </div>
         
             
@@ -97,22 +97,46 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -129,42 +153,63 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >&lt;template&gt;<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >  &lt;div class="progress-bar"&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div class="progress-bar__fill" :style="{ width: progress + '%' }"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;SelectButton</span>
+<span class="cstat-no" title="statement not covered" >        unstyled</span>
+<span class="cstat-no" title="statement not covered" >        :pt="theme"</span>
+<span class="cstat-no" title="statement not covered" >        :ptOptions="{</span>
+            mergeProps: ptViewMerge
+        }"
+    &gt;
+<span class="cstat-no" title="statement not covered" >        &lt;template v-for="(_, slotName) in $slots" #[slotName]="slotProps"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;slot :name="slotName" v-bind="slotProps ?? {}" /&gt;</span>
+        &lt;/template&gt;
+<span class="cstat-no" title="statement not covered" >    &lt;/SelectButton&gt;</span>
 &lt;/template&gt;
 &nbsp;
-&lt;script lang="ts"&gt;
-<span class="cstat-no" title="statement not covered" >export default {</span>
-<span class="cstat-no" title="statement not covered" >  name: 'ProgressBar',</span>
-<span class="cstat-no" title="statement not covered" >  props: {</span>
-<span class="cstat-no" title="statement not covered" >    progress: {</span>
-<span class="cstat-no" title="statement not covered" >      type: Number,</span>
-<span class="cstat-no" title="statement not covered" >      required: true,</span>
-<span class="cstat-no" title="statement not covered" >      default: 0,</span>
-<span class="cstat-no" title="statement not covered" >      validator: (value: number) =&gt; value &gt;= 0 &amp;&amp; value &lt;= 100,</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+&lt;script setup lang="ts"&gt;
+<span class="cstat-no" title="statement not covered" >import SelectButton, { type SelectButtonPassThroughOptions, type SelectButtonProps } from 'primevue/selectbutton';</span>
+<span class="cstat-no" title="statement not covered" >import { ref } from 'vue';</span>
+<span class="cstat-no" title="statement not covered" >import { ptViewMerge } from './utils';</span>
+&nbsp;
+interface Props extends /* @vue-ignore */ SelectButtonProps {}
+defineProps&lt;Props&gt;();
+&nbsp;
+<span class="cstat-no" title="statement not covered" >const theme = ref&lt;SelectButtonPassThroughOptions&gt;({</span>
+<span class="cstat-no" title="statement not covered" >    root: `inline-flex select-none rounded-md</span>
+        p-invalid:outline p-invalid:outline-offset-0 p-invalid:outline-red-400 dark:p-invalid:outline-red-300`,
+<span class="cstat-no" title="statement not covered" >    pcToggleButton: {</span>
+<span class="cstat-no" title="statement not covered" >        root: `inline-flex items-center justify-center overflow-hidden relative cursor-pointer select-none grow</span>
+            border border-surface-100 dark:border-surface-950
+            rounded-none first:rounded-s-md last:rounded-e-md
+            bg-surface-100 dark:bg-surface-950
+            text-surface-500 dark:text-surface-400
+            p-checked:text-surface-700 dark:p-checked:text-surface-0
+            text-base font-medium
+            focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-primary focus-visible:relative focus-visible:z-10
+            disabled:cursor-default
+            disabled:bg-surface-200 disabled:border-surface-200 disabled:text-surface-500
+            disabled:dark:bg-surface-700 disabled:dark:border-surface-700 disabled:dark:text-surface-400
+            p-invalid:border-red-400 dark:p-invalid:border-red-300
+            transition-colors duration-200
+            p-1 p-small:text-sm p-large:text-lg
+        `,
+<span class="cstat-no" title="statement not covered" >        content: `relative flex-auto inline-flex items-center justify-center gap-2 py-1 px-3</span>
+            rounded-md transition-colors duration-200
+            p-checked:bg-surface-0 dark:p-checked:bg-surface-800 p-checked:shadow-[0px_1px_2px_0px_rgba(0,0,0,0.02),0px_1px_2px_0px_rgba(0,0,0,0.04)]`,
+<span class="cstat-no" title="statement not covered" >        icon: ``,</span>
+<span class="cstat-no" title="statement not covered" >        label: ``</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >});</span>
 &lt;/script&gt;
-&nbsp;
-&lt;style scoped&gt;
-.progress-bar {
-  width: 100%;
-  height: 5px;
-  background-color: var(--background);
-  overflow: hidden;
-}
-&nbsp;
-.progress-bar__fill {
-  height: 100%;
-  background-color: var(--p-info);
-  transition: width 0.3s ease;
-}
-&lt;/style&gt;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

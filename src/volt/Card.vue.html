@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/components/ProgressBar.vue</title>
+    <title>Code coverage report for src/volt/Card.vue</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> ProgressBar.vue</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/volt</a> Card.vue</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/21</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/21</span>
             </div>
         
             
@@ -97,20 +97,12 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -118,53 +110,76 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >&lt;template&gt;<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >  &lt;div class="progress-bar"&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div class="progress-bar__fill" :style="{ width: progress + '%' }"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;Card</span>
+<span class="cstat-no" title="statement not covered" >    unstyled</span>
+<span class="cstat-no" title="statement not covered" >    :pt="theme"</span>
+<span class="cstat-no" title="statement not covered" >    :ptOptions="{</span>
+      mergeProps: ptViewMerge,
+    }"
+  &gt;
+<span class="cstat-no" title="statement not covered" >    &lt;template v-for="(_, slotName) in $slots" v-slot:[slotName]="slotProps"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;slot :name="slotName" v-bind="slotProps ?? {}" /&gt;</span>
+    &lt;/template&gt;
+<span class="cstat-no" title="statement not covered" >  &lt;/Card&gt;</span>
 &lt;/template&gt;
 &nbsp;
-&lt;script lang="ts"&gt;
-<span class="cstat-no" title="statement not covered" >export default {</span>
-<span class="cstat-no" title="statement not covered" >  name: 'ProgressBar',</span>
-<span class="cstat-no" title="statement not covered" >  props: {</span>
-<span class="cstat-no" title="statement not covered" >    progress: {</span>
-<span class="cstat-no" title="statement not covered" >      type: Number,</span>
-<span class="cstat-no" title="statement not covered" >      required: true,</span>
-<span class="cstat-no" title="statement not covered" >      default: 0,</span>
-<span class="cstat-no" title="statement not covered" >      validator: (value: number) =&gt; value &gt;= 0 &amp;&amp; value &lt;= 100,</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+&lt;script setup lang="ts"&gt;
+<span class="cstat-no" title="statement not covered" >import Card, {</span>
+  type CardPassThroughOptions,
+  type CardProps,
+} from 'primevue/card'
+<span class="cstat-no" title="statement not covered" >import { ref } from 'vue'</span>
+<span class="cstat-no" title="statement not covered" >import { ptViewMerge } from './utils'</span>
+&nbsp;
+interface Props extends /* @vue-ignore */ CardProps {}
+defineProps&lt;Props&gt;()
+&nbsp;
+<span class="cstat-no" title="statement not covered" >const theme = ref&lt;CardPassThroughOptions&gt;({</span>
+<span class="cstat-no" title="statement not covered" >  root: `flex flex-col rounded-xl</span>
+        bg-surface-0 dark:bg-surface-900 
+        text-surface-700 dark:text-surface-0
+        shadow-md`,
+<span class="cstat-no" title="statement not covered" >  header: ``,</span>
+<span class="cstat-no" title="statement not covered" >  body: `p-5 flex flex-col gap-2`,</span>
+<span class="cstat-no" title="statement not covered" >  caption: `flex flex-col gap-2`,</span>
+<span class="cstat-no" title="statement not covered" >  title: `font-medium text-xl`,</span>
+<span class="cstat-no" title="statement not covered" >  subtitle: `text-surface-500 dark:text-surface-400`,</span>
+<span class="cstat-no" title="statement not covered" >  content: ``,</span>
+<span class="cstat-no" title="statement not covered" >  footer: ``,</span>
+<span class="cstat-no" title="statement not covered" >})</span>
 &lt;/script&gt;
-&nbsp;
-&lt;style scoped&gt;
-.progress-bar {
-  width: 100%;
-  height: 5px;
-  background-color: var(--background);
-  overflow: hidden;
-}
-&nbsp;
-.progress-bar__fill {
-  height: 100%;
-  background-color: var(--p-info);
-  transition: width 0.3s ease;
-}
-&lt;/style&gt;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
