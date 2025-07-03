@@ -15,6 +15,10 @@ function setTheme(newTheme?: string) {
     document.documentElement.classList.remove('light')
     document.documentElement.classList.add('dark')
     document.documentElement.setAttribute(THEME_ATTRIBUTE_KEY, 'dark')
+  } else if (!prefersDarkScheme && (!theme || theme === 'system')) {
+    document.documentElement.classList.remove('light')
+    document.documentElement.classList.remove('dark')
+    document.documentElement.removeAttribute(THEME_ATTRIBUTE_KEY)
   } else if (theme === 'dark') {
     document.documentElement.classList.add(theme)
     document.documentElement.classList.remove('light')
