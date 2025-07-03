@@ -40,10 +40,10 @@ const theme = ref<ButtonPassThroughOptions>({
         p-small:text-sm p-small:px-[0.625rem] p-small:py-[0.375rem]
         p-large:text-[1.125rem] p-large:px-[0.875rem] p-large:py-[0.625rem]
         p-raised:shadow-sm p-rounded:rounded-[2rem]
-        p-outlined:bg-transparent enabled:hover:p-outlined:bg-surface-50 enabled:active:p-outlined:bg-surface-100
+        p-outlined:bg-(--background) enabled:hover:p-outlined:bg-surface-50 enabled:active:p-outlined:bg-surface-100
         p-outlined:border-surface-200 enabled:hover:p-outlined:border-surface-200 enabled:active:p-outlined:border-surface-200
         p-outlined:text-surface-500 enabled:hover:p-outlined:text-surface-500 enabled:active:p-outlined:text-surface-500
-        dark:p-outlined:bg-transparent dark:enabled:hover:p-outlined:bg-white/5 dark:enabled:active:p-outlined:bg-white/15
+        dark:p-outlined:bg-(--background) dark:enabled:hover:p-outlined:bg-white/5 dark:enabled:active:p-outlined:bg-white/15
         dark:p-outlined:border-surface-700 dark:enabled:hover:p-outlined:border-surface-700 dark:enabled:active:p-outlined:border-surface-700
         dark:p-outlined:text-surface-400 dark:enabled:hover:p-outlined:text-surface-400 dark:enabled:active:p-outlined:text-surface-400
         p-text:bg-transparent enabled:hover:p-text:bg-surface-50 enabled:active:p-text:bg-surface-100
