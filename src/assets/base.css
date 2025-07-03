@@ -4,6 +4,7 @@
 :root {
   --text: #06040b;
   --background: #f9f8fc;
+  --text-contrast: var(--background);
   --primary: #5d21de;
   --secondary: #d59ddd;
   --accent: #d17ac6;
@@ -123,6 +124,7 @@
 :root[class='dark'] {
   --text: #f6f4fb;
   --background: #040307;
+  --text-contrast: var(--background);
   --primary: #5d21de;
   --secondary: #5b2262;
   --accent: #852e79;
@@ -252,6 +254,7 @@
   :root(.dark) {
     --text: #f6f4fb;
     --background: #040307;
+    --text-contrast: var(--background);
     --primary: #5d21de;
     --secondary: #5b2262;
     --accent: #852e79;

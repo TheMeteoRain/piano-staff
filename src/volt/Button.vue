@@ -26,12 +26,12 @@ defineProps<Props>()
 const theme = ref<ButtonPassThroughOptions>({
   root: `inline-flex cursor-pointer select-none items-center justify-center overflow-hidden relative
         px-3 py-2 gap-2 rounded-md disabled:pointer-events-none disabled:opacity-60 transition-colors duration-200
-        bg-surface-100 enabled:hover:bg-surface-200 enabled:active:bg-surface-300
-        border border-surface-200 enabled:hover:border-surface-300 enabled:active:border-surface-400
-        text-surface-600 enabled:hover:text-surface-700 enabled:active:text-surface-800
-        dark:bg-surface-800 dark:enabled:hover:bg-surface-700 dark:enabled:active:bg-surface-600
-        dark:border-surface-800 dark:enabled:hover:border-surface-700 dark:enabled:active:border-surface-600
-        dark:text-surface-300 dark:enabled:hover:text-surface-200 dark:enabled:active:text-surface-100
+        bg-(--primary) enabled:hover:bg-(--primary-600) enabled:active:bg-(--primary-700)
+        border border-(--primary-700) enabled:hover:border-(--primary-800) enabled:active:border-(--primary-900)
+        text-(--text-contrast) enabled:hover:text-(--text-contrast) enabled:active:text-(--text-contrast)
+        dark:bg-(--primary) dark:enabled:hover:bg-(--primary-400) dark:enabled:active:bg-(--primary-300)
+        dark:border-(--primary-600) dark:enabled:hover:border-(--primary-700) dark:enabled:active:border-(--primary-800)
+        dark:text-(--text) dark:enabled:hover:text-(--text) dark:enabled:active:text-(--text)
         focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2
         focus-visible:outline-surface-600 dark:focus-visible:outline-surface-300
         p-vertical:flex-col p-fluid:w-full p-fluid:p-icon-only:w-10
@@ -41,17 +41,17 @@ const theme = ref<ButtonPassThroughOptions>({
         p-large:text-[1.125rem] p-large:px-[0.875rem] p-large:py-[0.625rem]
         p-raised:shadow-sm p-rounded:rounded-[2rem]
         p-outlined:bg-(--background) enabled:hover:p-outlined:bg-surface-100 enabled:active:p-outlined:bg-surface-200
-        p-outlined:border-surface-300 enabled:hover:p-outlined:border-surface-300 enabled:active:p-outlined:border-surface-400
-        p-outlined:text-surface-500 enabled:hover:p-outlined:text-surface-500 enabled:active:p-outlined:text-surface-500
+        p-outlined:border-(--primary) enabled:hover:p-outlined:border-(--primary) enabled:active:p-outlined:border-(--primary)
+        p-outlined:text-(--text) enabled:hover:p-outlined:text-(--text) enabled:active:p-outlined:text-(--text)
         dark:p-outlined:bg-(--background) dark:enabled:hover:p-outlined:bg-surface-500 dark:enabled:active:p-outlined:bg-surface-600
-        dark:p-outlined:border-surface-700 dark:enabled:hover:p-outlined:border-surface-700 dark:enabled:active:p-outlined:border-surface-700
-        dark:p-outlined:text-surface-200 dark:enabled:hover:p-outlined:text-surface-200 dark:enabled:active:p-outlined:text-surface-200
+        dark:p-outlined:border-(--primary) dark:enabled:hover:p-outlined:border-(--primary) dark:enabled:active:p-outlined:border-(--primary)
+        dark:p-outlined:text-(--text) dark:enabled:hover:p-outlined:text-(--text) dark:enabled:active:p-outlined:text-(--text)
         p-text:bg-transparent enabled:hover:p-text:bg-surface-50 enabled:active:p-text:bg-surface-100
         p-text:border-transparent enabled:hover:p-text:border-transparent enabled:active:p-text:border-transparent
-        p-text:text-surface-500 enabled:hover:p-text:text-surface-500 enabled:active:p-text:text-surface-500
+        p-text:text-(--text-contrast) enabled:hover:p-text:text-(--text-contrast) enabled:active:p-text:text-(--text-contrast)
         dark:p-text:bg-transparent dark:enabled:hover:p-text:bg-surface-800 dark:enabled:active:p-text:bg-surface-700
         dark:p-text:border-transparent dark:enabled:hover:p-text:border-transparent dark:enabled:active:p-text:border-transparent
-        dark:p-text:text-surface-400 dark:enabled:hover:p-text:text-surface-400 dark:enabled:active:p-text:text-surface-400
+        dark:p-text:text-(--text-contrast) dark:enabled:hover:p-text:text-(--text-contrast) dark:enabled:active:p-text:text-(--text-contrast)
     `,
   loadingIcon: ``,
   icon: `p-right:order-1 p-bottom:order-2`,
