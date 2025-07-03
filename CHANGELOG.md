@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.3.0...v0.4.0) (2025-07-03)
+
+
+### Features
+
+* Add PWA capability ([185559a](https://github.com/TheMeteoRain/piano-staff/commit/185559a0577cd0e8c27d6ad637278e28720c4597))
+* Stylize application ([3eb9bcf](https://github.com/TheMeteoRain/piano-staff/commit/3eb9bcf16d6fd8f6b1bd4954cce8caa87552516d))
+* Update manifest.json to support TWA ([ac4fe43](https://github.com/TheMeteoRain/piano-staff/commit/ac4fe432d30ea522062242e3daf57e70bf521c0b))
+* Update web and android icons ([7ce1be7](https://github.com/TheMeteoRain/piano-staff/commit/7ce1be74691f0c9b173a723668755dc5b67e8fcb))
+
+
+### Bug Fixes
+
+* Color theme variables ([045c888](https://github.com/TheMeteoRain/piano-staff/commit/045c888c5152fdc8648638ae880dc1c069aa4a25))
+
 ## [0.3.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.2.0...v0.3.0) (2025-06-24)
 
 
