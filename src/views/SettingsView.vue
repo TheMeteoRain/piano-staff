@@ -28,6 +28,7 @@ const confirmSave = () => {
     accept: () => {
       toast.add({
         severity: 'info',
+        closable: false,
         summary: 'Confirmed',
         group: 'tc',
         detail: 'Stats have been reseted',
@@ -38,6 +39,7 @@ const confirmSave = () => {
     reject: () => {
       toast.add({
         severity: 'error',
+        closable: false,
         summary: 'Rejected',
         group: 'tc',
         detail: 'Stats have not been reseted',
@@ -58,7 +60,7 @@ watch(theme, async (newValue) => {
 <template>
   <section>
     <div class="card flex flex-col justify-center align-items-center w-full">
-      <div>
+      <div class="flex justify-around items-center">
         <label for="theme" class="mr-5">Theme</label>
         <SelectButton v-model="theme" :options="options" id="theme" />
       </div>
