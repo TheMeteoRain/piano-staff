@@ -21,8 +21,8 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@grafana/faro-web-sdk": "^1.18.2",
-    "@grafana/faro-web-tracing": "^1.18.2",
+    "@grafana/faro-web-sdk": "^2.2.4",
+    "@grafana/faro-web-tracing": "^2.2.4",
     "@pixi/text-bitmap": "^7.4.3",
     "@tailwindcss/vite": "^4.1.6",
     "@types/markdown-it": "^14.1.2",

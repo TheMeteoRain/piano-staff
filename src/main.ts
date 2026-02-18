@@ -43,6 +43,10 @@ async function main() {
         version: versionInfo.version,
         environment: 'production',
       },
+      sessionTracking: {
+        samplingRate: 1,
+        persistent: true,
+      },
       instrumentations: [
         ...getWebInstrumentations(),
         new TracingInstrumentation(),
