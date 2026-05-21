@@ -39,6 +39,12 @@ const router = createRouter({
           name: 'mixed',
           component: () => import('../views/MixedView.vue'),
         },
+        {
+          path: 'settings',
+          name: 'training-settings',
+          component: withLayout(() => import('../views/Simple.vue')),
+          props: { header: 'Training Settings' },
+        },
       ],
     },
     {
