@@ -80,8 +80,6 @@ const noteQuestionSpot = 100
 const initialStartingX = 150
 const deleteNoteAtX = 0
 const pixelsPerSecond = 0.05 / secondsBetweenNotes
-const timer = ref(0)
-let timerStart = 0
 /** Wall time spent with the document hidden — subtract from performance.now() so game time pauses in background tabs. */
 let gameClockOffsetMs = 0
 let visibilityHiddenAt: number | null = null
@@ -197,7 +195,6 @@ function getRandomNote(): RandomNote {
 }
 
 function playNotes() {
-  timerStart = gameNow()
   console.log(notesQueue.value.length)
   notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem))
 }
@@ -209,7 +206,6 @@ function stopNotes() {
       cancelAnimationFrame(item.raf)
     }
   })
-  timer.value = gameNow() - timerStart
 }
 
 function animateNote(noteItem: NoteQueueItem) {
@@ -650,8 +646,7 @@ onUnmounted(() => {
       ref="vfContainer"
       id="stave"
       class="staff-container pt-4 overflow-hidden"
-    ></div>
-    <div>{{ timer }}</div>
+    />
     <div class="note-buttons">
       <button
         v-for="note in notes"
