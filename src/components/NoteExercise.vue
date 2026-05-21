@@ -12,9 +12,9 @@ import {
 import ProgressBar from './ProgressBar.vue'
 import EndScreen from './EndScreen.vue'
 import { useStats, type Stats } from '@/utils/stats'
+import type { Clef } from '@/types/global'
 
 type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
-export type Clef = 'treble' | 'bass' | 'mixed'
 type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'game-over'
 type NoteQueueItem = {
   note: StaveNote
@@ -42,8 +42,16 @@ type RandomNote = {
 
 type ExerciseProps = {
   exercise: Clef
+  secondsBetweenNotes: number
+  questionTimeLimit: number
+  showLastNoteQuessed: boolean
 }
-const { exercise } = defineProps<ExerciseProps>()
+const {
+  exercise,
+  secondsBetweenNotes = 3,
+  questionTimeLimit = 5,
+  showLastNoteQuessed = true,
+} = defineProps<ExerciseProps>()
 const initialStatsState: Stats = {
   guesses: {},
   exercise: exercise,
@@ -62,18 +70,40 @@ const state = ref<GameState>('not-playing')
 const notesQueue = ref<NoteQueueItem[]>([])
 const visible = ref<boolean>(false)
 const noteSpacing = 50
-const noteDelay = 1500
+const noteDelay = 1
 const progress = ref<number>(0)
-const questionTimeLimit = 5000
-let questionTimerIntervalID: number | null = null
-let questionStartTime: number = 0
-let progressTimerID: number | null = null
-const totalGuessesToDefeat = 3
-const noteFadeOutSpot = 45
+let questionStartGameMs: number = 0
+let questionLoopRafId: number | null = null
+const totalGuessesToDefeat = 10003
+const noteFadeOutSpot = showLastNoteQuessed ? 45 : 100
 const noteQuestionSpot = 100
-const initialStartingX = 200
-const stopX = 0
-const pixelsPerSecond = 50
+const initialStartingX = 150
+const deleteNoteAtX = 0
+const pixelsPerSecond = 0.05 / secondsBetweenNotes
+const timer = ref(0)
+let timerStart = 0
+/** Wall time spent with the document hidden — subtract from performance.now() so game time pauses in background tabs. */
+let gameClockOffsetMs = 0
+let visibilityHiddenAt: number | null = null
+
+function gameNow(): number {
+  return performance.now() - gameClockOffsetMs
+}
+
+function syncGameClockAfterVisibilityChange() {
+  if (document.visibilityState === 'hidden') {
+    if (
+      visibilityHiddenAt === null &&
+      (state.value === 'scrolling' || state.value === 'waiting')
+    ) {
+      visibilityHiddenAt = performance.now()
+    }
+  } else if (visibilityHiddenAt !== null) {
+    gameClockOffsetMs += performance.now() - visibilityHiddenAt
+    visibilityHiddenAt = null
+  }
+}
+
 let renderer = null
 let context: RenderContext
 let staveTreble: Stave
@@ -100,7 +130,7 @@ function updateStats(isCorrect: boolean, item: NoteQueueItem) {
     stats.value.guesses[noteKey] = {
       averageMs:
         (existingStat.averageMs * existingStat.totalGuesses +
-          (new Date().getTime() - questionStartTime)) /
+          (gameNow() - questionStartGameMs)) /
         (existingStat.totalGuesses + 1),
       totalGuesses: existingStat.totalGuesses + 1,
       correctGuesses: isCorrect
@@ -118,7 +148,7 @@ function updateStats(isCorrect: boolean, item: NoteQueueItem) {
   } else {
     // new entry
     stats.value.guesses[noteKey] = {
-      averageMs: new Date().getTime() - questionStartTime,
+      averageMs: gameNow() - questionStartGameMs,
       totalGuesses: 1,
       correctGuesses: isCorrect ? 1 : 0,
       incorrectGuesses: isCorrect ? 0 : 1,
@@ -166,32 +196,49 @@ function getRandomNote(): RandomNote {
   }
 }
 
+function playNotes() {
+  timerStart = gameNow()
+  console.log(notesQueue.value.length)
+  notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem))
+}
+
+function stopNotes() {
+  notesQueue.value.forEach((item) => {
+    item.meta.old = true
+    if (item.raf) {
+      cancelAnimationFrame(item.raf)
+    }
+  })
+  timer.value = gameNow() - timerStart
+}
+
 function animateNote(noteItem: NoteQueueItem) {
   if (state.value !== 'scrolling' || noteItem.meta.state == 'removed') return
   const { meta, note } = noteItem
 
   const duration = meta.delay
   const startX = meta.startX
-  const startTime = performance.now()
+  const startTime = gameNow()
 
   function step(now: DOMHighResTimeStamp) {
+    const gameT = now - gameClockOffsetMs
     let elapsed, progress, currentX
     if (meta.old) {
       // Resume from the old position
-      const remainingDistance = meta.currentX - stopX
+      const remainingDistance = meta.currentX - deleteNoteAtX
       const remainingDuration =
-        (remainingDistance / (meta.startX - stopX)) * duration
-      elapsed = now - meta.elapsedStartTime
+        (remainingDistance / (meta.startX - deleteNoteAtX)) * duration
+      elapsed = gameT - meta.elapsedStartTime
       progress = Math.min(elapsed / remainingDuration, 1)
       currentX = meta.currentX - remainingDistance * progress
     } else {
       // Starting animation
-      elapsed = now - startTime
+      elapsed = gameT - startTime
       progress = Math.min(elapsed / duration, 1)
-      currentX = startX - (startX - stopX) * progress
+      currentX = startX - (startX - deleteNoteAtX) * progress
     }
 
-    meta.elapsedStartTime = now
+    meta.elapsedStartTime = gameT
     meta.progress = progress
     meta.currentX = currentX
 
@@ -204,7 +251,7 @@ function animateNote(noteItem: NoteQueueItem) {
     svgNote.setAttribute('data-current-x', currentX.toString())
     svgNote.setAttribute('data-progress', progress.toString())
 
-    if (currentX > 0) {
+    if (currentX > deleteNoteAtX) {
       noteItem.raf = requestAnimationFrame(step)
     } else {
       removeNote(noteItem)
@@ -212,12 +259,7 @@ function animateNote(noteItem: NoteQueueItem) {
 
     if (currentX <= noteQuestionSpot && meta.state == 'default') {
       state.value = 'waiting'
-      notesQueue.value.forEach((item) => {
-        item.meta.old = true
-        if (item.raf) {
-          cancelAnimationFrame(item.raf)
-        }
-      })
+      stopNotes()
       guestionTimer()
       meta.state = 'in-question'
       colorizeNoteElement(svgNote, 'var(--p-info)')
@@ -235,7 +277,7 @@ function animateNote(noteItem: NoteQueueItem) {
     }
   }
   if (meta.old && meta.elapsedStartTime) {
-    const pauseDuration = performance.now() - meta.elapsedStartTime
+    const pauseDuration = gameNow() - meta.elapsedStartTime
     meta.elapsedStartTime += pauseDuration
   }
   noteItem.raf = requestAnimationFrame(step)
@@ -244,36 +286,37 @@ function animateNote(noteItem: NoteQueueItem) {
 function guestionTimer() {
   if (state.value !== 'waiting') return
 
-  questionStartTime = new Date().getTime()
-  // Don't know why this happens
-  // Type 'Timeout' is not assignable to type 'number'.
-  questionTimerIntervalID = setInterval(checkTime, 1000) as unknown as number
-  progressTimerID = setInterval(increaseProgress, 100) as unknown as number
+  questionStartGameMs = gameNow()
+  progress.value = 0
 
-  function checkTime() {
-    if (new Date().getTime() - questionStartTime > questionTimeLimit) {
-      handleGuess('')
-      resetQuestionTimer()
+  function tickQuestion() {
+    if (state.value !== 'waiting') {
+      if (questionLoopRafId !== null) {
+        cancelAnimationFrame(questionLoopRafId)
+        questionLoopRafId = null
+      }
+      return
     }
+    const elapsed = gameNow() - questionStartGameMs
+    const limitMs = questionTimeLimit * 1000
+    progress.value = Math.min(100, (elapsed / limitMs) * 100)
+    if (elapsed >= limitMs) {
+      handleGuess('')
+      return
+    }
+    questionLoopRafId = requestAnimationFrame(tickQuestion)
   }
-
-  function increaseProgress() {
-    progress.value = Math.min(100, progress.value + 2)
-  }
+  questionLoopRafId = requestAnimationFrame(tickQuestion)
 }
 
 function resetProgressTimer() {
-  if (progressTimerID) {
-    clearInterval(progressTimerID)
-    progressTimerID = null
-    progress.value = 0
-  }
+  progress.value = 0
 }
 
 function resetQuestionTimer() {
-  if (questionTimerIntervalID) {
-    clearInterval(questionTimerIntervalID)
-    questionTimerIntervalID = null
+  if (questionLoopRafId !== null) {
+    cancelAnimationFrame(questionLoopRafId)
+    questionLoopRafId = null
   }
 }
 
@@ -281,6 +324,7 @@ function handleGuess(guessNote: Note | '') {
   if (state.value !== 'waiting') return
 
   resetQuestionTimer()
+  progress.value = 100
 
   const item = notesQueue.value.find((item) => item.meta.state == 'in-question')
   if (!item) {
@@ -304,6 +348,9 @@ function handleGuess(guessNote: Note | '') {
     updateStats(true, item as NoteQueueItem)
   } else {
     colorizeNoteElement(svgNote, 'var(--p-danger)')
+    svgNote.style.setProperty('--note-x', `${item.meta.currentX}px`)
+    svgNote.classList.add('wrong')
+
     updateStats(false, item as NoteQueueItem)
     if (
       Object.entries(stats.value.guesses).reduce(
@@ -316,13 +363,13 @@ function handleGuess(guessNote: Note | '') {
     }
   }
 
-  resetProgressTimer()
-
   setTimeout(() => {
     state.value = 'scrolling'
     userGuess.value = ''
+    resetQuestionTimer()
+    resetProgressTimer()
     addNotes(1)
-    notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem))
+    playNotes()
   }, 2000)
 }
 
@@ -355,6 +402,7 @@ function removeNote(note: NoteQueueItem) {
   if (svg) {
     svg.remove()
   }
+  notesQueue.value.shift()
 }
 
 function waitForNoteGroup(maxAttempts = 10, delay = 100) {
@@ -419,8 +467,9 @@ function addNotes(n = 5) {
     const startX = lastNote
       ? lastNote.meta.currentX + noteSpacing
       : initialStartingX
-    const distance = startX - stopX
+    const distance = startX - deleteNoteAtX
     const delay = (distance / pixelsPerSecond) * noteDelay
+    // const delay = startX
     const noteQueueItem: NoteQueueItem = {
       note: staveNote,
       randomNote: randomNote,
@@ -518,9 +567,7 @@ function startExercise() {
   state.value = 'scrolling'
 
   waitForNoteGroup()
-    .then(() =>
-      notesQueue.value.forEach((item) => animateNote(item as NoteQueueItem)),
-    )
+    .then(() => playNotes())
     .catch((err) => console.error(err.message))
 }
 
@@ -536,6 +583,9 @@ async function resetGame(startAgain = true) {
       cancelAnimationFrame(item.raf)
     }
   })
+
+  gameClockOffsetMs = 0
+  visibilityHiddenAt = null
 
   state.value = 'scrolling'
   await nextTick()
@@ -555,9 +605,14 @@ function endGame() {
   state.value = 'game-over'
 }
 
+function onDocumentVisibilityChange() {
+  syncGameClockAfterVisibilityChange()
+}
+
 onMounted(() => {
   visible.value = false
   initializeStats()
+  document.addEventListener('visibilitychange', onDocumentVisibilityChange)
 
   setTimeout(async () => {
     visible.value = true
@@ -568,6 +623,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onDocumentVisibilityChange)
   saveStats()
   resetGame(false)
 })
@@ -595,7 +651,7 @@ onUnmounted(() => {
       id="stave"
       class="staff-container pt-4 overflow-hidden"
     ></div>
-
+    <div>{{ timer }}</div>
     <div class="note-buttons">
       <button
         v-for="note in notes"
@@ -630,6 +686,31 @@ button:disabled {
   box-shadow: none;
 }
 
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(var(--note-x, 0px));
+  }
+  15% {
+    transform: translateX(calc(var(--note-x, 0px) - 8px));
+  }
+  30% {
+    transform: translateX(calc(var(--note-x, 0px) + 8px));
+  }
+  45% {
+    transform: translateX(calc(var(--note-x, 0px) - 8px));
+  }
+  60% {
+    transform: translateX(calc(var(--note-x, 0px) + 8px));
+  }
+  75% {
+    transform: translateX(calc(var(--note-x, 0px) - 4px));
+  }
+}
+
+:deep(.wrong) {
+  animation: shake 0.4s linear;
+}
 .test {
   position: absolute;
   line-height: initial;
