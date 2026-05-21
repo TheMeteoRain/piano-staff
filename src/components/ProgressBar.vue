@@ -29,6 +29,5 @@ export default {
 .progress-bar__fill {
   height: 100%;
   background-color: var(--p-info);
-  transition: width 0.3s ease;
 }
 </style>
