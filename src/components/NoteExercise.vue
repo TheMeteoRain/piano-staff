@@ -60,9 +60,6 @@ const initialStatsState: Stats = {
 }
 const { stats, initializeStats, saveStats, lastSavedStats } =
   useStats(initialStatsState)
-const prefersDarkScheme = window.matchMedia(
-  '(prefers-color-scheme: dark)',
-).matches
 const vfContainer = ref<HTMLDivElement | null>(null)
 const userGuess = ref<Note | ''>('')
 const notes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
@@ -486,7 +483,7 @@ function addNotes(n = 5) {
 
     notesQueue.value.push(noteQueueItem)
 
-    if (prefersDarkScheme) colorizeNoteElement(svgNote, 'var(--text)')
+    colorizeNoteElement(svgNote, 'var(--text)')
     svgNote.setAttribute('data-id', notesQueue.value.length.toString())
     svgNote.setAttribute('data-start-x', startX.toString())
     svgNote.setAttribute('data-clef', randomNote.clef)
