@@ -61,7 +61,7 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeResolve((to, from, next) => {
   if (!document.startViewTransition) {
     // fallback - just navigate normally
     return next()
