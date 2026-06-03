@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
@@ -23,12 +23,8 @@ const initSettings = {
 
 export const useSettingsStore = defineStore('settings', () => {
   const localStorage = useLocalStorage()
-  const values = ref<Settings>(initSettings)
-
-  onMounted(() => {
-    localStorage.initializeStorageItems('settings', initSettings)
-    values.value = localStorage.getStorageItem('settings')
-  })
+  localStorage.initializeStorageItems('settings', initSettings)
+  const values = ref<Settings>(localStorage.getStorageItem('settings') as Settings)
 
   function set<K extends keyof Settings>(key: K, rawValue: unknown) {
     const result = SettingsSchema.safeParse({
