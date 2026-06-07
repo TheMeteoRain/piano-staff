@@ -3,13 +3,36 @@
 /* Primary and Surface Palettes */
 :root {
   --text: #1a1625;
-  --background: #f9f8fc;
+  /* deliberately not white — gray-lavender to avoid full-white glare */
+  --background: #efecf6;
   --text-contrast: var(--background);
   --primary: #5d21de;
   --primary-hover: var(--primary-400);
   --primary-active: var(--primary-600);
+  /* Filled controls: the ramps cross at 500, so this is #5d21de in both
+     themes — with --on-primary white text it stays AAA (7.66:1) everywhere */
+  --primary-fill: var(--primary-500);
+  --on-primary: #ffffff;
   --secondary: #d59ddd;
   --accent: #d17ac6;
+
+  /* Semantic tokens — values chosen for WCAG AAA on this theme's backgrounds */
+  --text-muted: var(--text-700);
+  --border-subtle: var(--primary-100);
+  --shadow-color: var(--primary-300);
+
+  /* Status colors — vivid tier for icons, note glyphs, outlines and large
+     text (>=4.5:1 on this background). AAA normal text at 7:1 on a light
+     background is physically dark, so text has its own tier below. */
+  --error: #c11048;
+  --success: #047857;
+  --info: #0369a1;
+  --neutral: #52525b;
+  /* AAA text tier */
+  --error-text: #9f1239;
+  --success-text: #064e3b;
+  --info-text: #0c4a6e;
+  --neutral-text: #3f3f46;
 
   --text-50: #f0ecf8;
   --text-100: #e0daf1;
@@ -23,8 +46,10 @@
   --text-900: #140e25;
   --text-950: #0a0713;
 
-  --background-0: #f1eff8;
-  --background-50: #f0edf7;
+  /* raised surfaces (cards, inputs) sit one step lighter than the page,
+     header one step deeper — none reach white */
+  --background-0: #f7f5fb;
+  --background-50: #e9e5f1;
   --background-100: #e0dbf0;
   --background-200: #c2b8e0;
   --background-300: #a394d1;
@@ -99,10 +124,10 @@
   --p-surface-900: var(--background-900);
   --p-surface-950: var(--background-950);
 
-  --p-danger: #e42222;
+  --p-danger: var(--error);
   --p-warning: #ffd43a;
-  --p-info: #158de3;
-  --p-success: #3d9209;
+  --p-info: var(--info);
+  --p-success: var(--success);
   --p-content-border-radius: 6px;
 
   --p-primary-color: var(--primary);
@@ -122,16 +147,38 @@
   --p-text-hover-muted-color: var(--p-surface-600);
 }
 
-/* Dark mode override with app-dark class */
-:root[class='dark'] {
+/* Dark mode override with app-dark class. Class membership (.dark), NOT an
+   exact [class='dark'] match — adding any other class to <html> must not
+   break theming. */
+:root.dark {
   --text: #e8e5f0;
   --background: #0a0812;
   --text-contrast: var(--text);
   --primary: #7d4ee4;
-  --primary-hover: var(--primary-700);
-  --primary-active: var(--primary-500);
+  /* hover still brightens and active darkens, but one step less far than
+     before so white button text keeps >=4.5:1 in every state */
+  --primary-hover: var(--primary-600);
+  --primary-active: var(--primary-400);
   --secondary: #5b2262;
   --accent: #852e79;
+
+  /* Semantic tokens — borders/shadows need different ramp steps per theme:
+     they must sit a few steps away from the background, and the background
+     moved. Text tokens can't be shared either once AAA is the bar. */
+  --text-muted: var(--text-800);
+  --border-subtle: var(--primary-300);
+  --shadow-color: var(--primary-300);
+
+  /* Status colors — on dark backgrounds vivid colors reach AAA themselves,
+     so the text tier reuses the vivid tier */
+  --error: #fc8b9b;
+  --success: #34d399;
+  --info: #38bdf8;
+  --neutral: #a1a1aa;
+  --error-text: var(--error);
+  --success-text: var(--success);
+  --info-text: var(--info);
+  --neutral-text: var(--neutral);
 
   --text-50: #0a0713;
   --text-100: #140e25;
@@ -250,6 +297,13 @@
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
+  }
+
+  /* html needs the background too: during view transitions the browser can
+     expose the document canvas, which is white by default — a visible flash
+     in dark theme */
+  html {
+    background: var(--background);
   }
 
   body {
