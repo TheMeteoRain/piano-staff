@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue'
+import { computed, markRaw, onMounted, ref, onUnmounted, nextTick } from 'vue'
 import {
   Renderer,
   Stave,
@@ -104,17 +104,6 @@ let context: RenderContext
 let staveTreble: Stave
 let staveBass: Stave
 let lastRandomNote = ''
-
-watch(
-  () => notesQueue.value,
-  (newQueue) => {
-    newQueue.forEach((item) => {
-      if (item.meta.state === 'removed') return
-      item.note.getSVGElement()?.setAttribute('data-state', item.meta.state)
-    })
-  },
-  { deep: true },
-)
 
 function updateStats(isCorrect: boolean, item: NoteQueueItem) {
   const noteKey = item.randomNote.key.replace('/', '')
@@ -255,6 +244,7 @@ function animateNote(noteItem: NoteQueueItem) {
       stopNotes()
       guestionTimer()
       meta.state = 'in-question'
+      svgNote.setAttribute('data-state', meta.state)
       colorizeNoteElement(svgNote, 'var(--p-info)')
     }
     if (
@@ -464,9 +454,11 @@ function addNotes(n = 5) {
     const delay = (distance / pixelsPerSecond) * noteDelay
     // const delay = startX
     const noteQueueItem: NoteQueueItem = {
-      note: staveNote,
+      // raw: VexFlow object graphs are huge — letting Vue deep-proxy them
+      // costs a full reactive traversal on every animation frame
+      note: markRaw(staveNote),
       randomNote: randomNote,
-      voice,
+      voice: markRaw(voice),
       meta: {
         index: notesQueue.value.length,
         startX,
