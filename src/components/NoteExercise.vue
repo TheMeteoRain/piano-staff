@@ -667,8 +667,8 @@ button {
   border-radius: 50%;
 
   /* Enhanced visual styling */
-  background: var(--primary);
-  color: var(--text-contrast);
+  background: var(--primary-fill);
+  color: var(--on-primary);
   font-size: 1.125rem;
   font-weight: 600;
 
@@ -759,8 +759,8 @@ button:not(:disabled)::after {
 }
 
 button:disabled {
-  background: var(--primary);
-  color: var(--text-contrast);
+  background: var(--primary-fill);
+  color: var(--on-primary);
   border: 2px solid var(--primary);
   box-shadow: none;
   filter: saturate(0.45);
