@@ -107,7 +107,9 @@ function syncGameClockAfterVisibilityChange() {
   if (document.visibilityState === 'hidden') {
     if (
       visibilityHiddenAt === null &&
-      (state.value === 'scrolling' || state.value === 'waiting')
+      (state.value === 'scrolling' ||
+        state.value === 'waiting' ||
+        state.value === 'pause')
     ) {
       visibilityHiddenAt = performance.now()
     }
@@ -221,6 +223,13 @@ function animateNote(noteItem: NoteQueueItem) {
   const startTime = gameNow()
 
   function step(now: DOMHighResTimeStamp) {
+    // Kill leaked loops: stopNotes() can miss a callback that is already
+    // queued in the current frame batch (its stored rAF id is stale). Notes
+    // must only ever animate while scrolling — bail out otherwise.
+    if (state.value !== 'scrolling' || noteItem.meta.state === 'removed') {
+      noteItem.raf = undefined
+      return
+    }
     const gameT = now - gameClockOffsetMs
     let elapsed, progress, currentX
     if (meta.old) {
