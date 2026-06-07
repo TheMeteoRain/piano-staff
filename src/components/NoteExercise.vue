@@ -15,7 +15,7 @@ import { useStats, type Stats } from '@/utils/stats'
 import type { Clef } from '@/types/global'
 
 type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
-type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'game-over'
+type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'pause' | 'game-over'
 type NoteQueueItem = {
   note: StaveNote
   randomNote: RandomNote
@@ -45,12 +45,15 @@ type ExerciseProps = {
   secondsBetweenNotes: number
   questionTimeLimit: number
   showLastNoteQuessed: boolean
+  /** seconds the game pauses after an answer before scrolling resumes */
+  pauseDuration?: number
 }
 const {
   exercise,
   secondsBetweenNotes = 3,
   questionTimeLimit = 5,
   showLastNoteQuessed = true,
+  pauseDuration = 2,
 } = defineProps<ExerciseProps>()
 const initialStatsState: Stats = {
   guesses: {},
@@ -69,9 +72,24 @@ const visible = ref<boolean>(false)
 const noteSpacing = 50
 const noteDelay = 1
 const progress = ref<number>(0)
+const pauseDurationMs = pauseDuration * 1000
+let pauseLoopRafId: number | null = null
 let questionStartGameMs: number = 0
 let questionLoopRafId: number | null = null
 const totalGuessesToDefeat = 10003
+/** incorrect guesses so far — the game ends when this reaches totalGuessesToDefeat */
+const incorrectGuessTotal = computed(() =>
+  Object.values(stats.value.guesses).reduce(
+    (sum, guess) => sum + guess.incorrectGuesses,
+    0,
+  ),
+)
+const correctGuessTotal = computed(() =>
+  Object.values(stats.value.guesses).reduce(
+    (sum, guess) => sum + guess.correctGuesses,
+    0,
+  ),
+)
 const noteFadeOutSpot = showLastNoteQuessed ? 45 : 100
 const noteQuestionSpot = 100
 const initialStartingX = 150
@@ -232,6 +250,7 @@ function animateNote(noteItem: NoteQueueItem) {
     svgNote.setAttribute('transform', `translate(${currentX}, 0)`)
     svgNote.setAttribute('data-current-x', currentX.toString())
     svgNote.setAttribute('data-progress', progress.toString())
+    svgNote.style.setProperty('--note-x', `${currentX}px`)
 
     if (currentX > deleteNoteAtX) {
       noteItem.raf = requestAnimationFrame(step)
@@ -307,27 +326,34 @@ function handleGuess(guessNote: Note | '') {
   if (state.value !== 'waiting') return
 
   resetQuestionTimer()
-  progress.value = 100
+  // keep the question fill where it stopped — the pause overlay fills over it,
+  // and resetProgressTimer() clears both when scrolling resumes
 
   const item = notesQueue.value.find((item) => item.meta.state == 'in-question')
   if (!item) {
+    // should not happen — but never leave the game dead in 'waiting'
     console.error('No item found in notesQueue')
+    startPauseTimer()
     return
   }
 
   const svgNote = item.note.getSVGElement()
   if (!svgNote) {
     console.error('SVG element not found for note:', item.note)
+    startPauseTimer()
     return
   }
 
   modifyStaveNoteAnnotation(item.note as StaveNote, 'visibility', 'visible')
   item.meta.state = 'answered'
+  svgNote.setAttribute('data-state', item.meta.state)
 
   const correctNote = item.note.keys[0].charAt(0)
 
   if (guessNote === correctNote) {
     colorizeNoteElement(svgNote, 'var(--p-success)')
+    svgNote.style.setProperty('--note-x', `${item.meta.currentX}px`)
+    svgNote.classList.add('correct')
     updateStats(true, item as NoteQueueItem)
   } else {
     colorizeNoteElement(svgNote, 'var(--p-danger)')
@@ -335,25 +361,50 @@ function handleGuess(guessNote: Note | '') {
     svgNote.classList.add('wrong')
 
     updateStats(false, item as NoteQueueItem)
-    if (
-      Object.entries(stats.value.guesses).reduce(
-        (prev, [, guess]) => prev + guess.incorrectGuesses,
-        0,
-      ) >= totalGuessesToDefeat
-    ) {
+    if (incorrectGuessTotal.value >= totalGuessesToDefeat) {
       endGame()
       return
     }
   }
 
-  setTimeout(() => {
-    state.value = 'scrolling'
-    userGuess.value = ''
-    resetQuestionTimer()
-    resetProgressTimer()
-    addNotes(1)
-    playNotes()
-  }, 2000)
+  startPauseTimer()
+}
+
+function startPauseTimer() {
+  state.value = 'pause'
+  // game clock, not wall clock — the pause freezes in background tabs
+  const pauseStart = gameNow()
+  // drain the question fill back to zero over the full pause — the drain is
+  // visible for the whole pause regardless of how early the answer came
+  const drainFrom = progress.value
+
+  function tickPause() {
+    if (state.value !== 'pause') {
+      pauseLoopRafId = null
+      return
+    }
+    const elapsed = gameNow() - pauseStart
+    progress.value = drainFrom * Math.max(0, 1 - elapsed / pauseDurationMs)
+    if (elapsed >= pauseDurationMs) {
+      pauseLoopRafId = null
+      state.value = 'scrolling'
+      userGuess.value = ''
+      resetQuestionTimer()
+      resetProgressTimer()
+      addNotes(1)
+      playNotes()
+      return
+    }
+    pauseLoopRafId = requestAnimationFrame(tickPause)
+  }
+  pauseLoopRafId = requestAnimationFrame(tickPause)
+}
+
+function resetPauseTimer() {
+  if (pauseLoopRafId !== null) {
+    cancelAnimationFrame(pauseLoopRafId)
+    pauseLoopRafId = null
+  }
 }
 
 function modifyStaveNoteAnnotation(
@@ -579,6 +630,7 @@ async function resetGame(startAgain = true) {
   notesQueue.value = []
   resetQuestionTimer()
   resetProgressTimer()
+  resetPauseTimer()
 
   if (startAgain) {
     startExercise()
@@ -646,6 +698,23 @@ onUnmounted(() => {
       >
         {{ note }}
       </button>
+
+      <div
+        class="guess-tally absolute h-full content-center justify-self-center pointer-events-none select-none text-center"
+      >
+        <!-- :key remounts the element on each increment, replaying the splash -->
+        <div
+          :key="correctGuessTotal"
+          class="tally-correct text-3xl font-bold tabular-nums text-(--success-text)"
+        >
+          {{ correctGuessTotal }}
+        </div>
+        <div
+          class="mt-1 text-sm font-semibold tabular-nums text-(--error-text)"
+        >
+          {{ incorrectGuessTotal }} / {{ totalGuessesToDefeat }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -747,9 +816,75 @@ button:not(:disabled)::after {
   }
 }
 
+/* splash when the correct-guess count goes up: the number pops and a
+   success-colored ring ripples outward */
+.tally-correct {
+  position: relative;
+  animation: tally-pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+/* droplet splash: each box-shadow is one droplet — they burst from behind
+   the number, fly outward at uneven distances and shrink away (negative
+   spread) like spray */
+.tally-correct::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  opacity: 0;
+  animation: tally-splash 0.65s ease-out;
+}
+
+@keyframes tally-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes tally-splash {
+  0% {
+    opacity: 1;
+    box-shadow:
+      0 0 0 0 var(--success),
+      0 0 0 -1px var(--success),
+      0 0 0 0 var(--success),
+      0 0 0 -1px var(--success),
+      0 0 0 0 var(--success),
+      0 0 0 -1px var(--success),
+      0 0 0 0 var(--success),
+      0 0 0 -1px var(--success);
+  }
+  100% {
+    opacity: 0;
+    box-shadow:
+      0 -28px 0 -2px var(--success),
+      19px -21px 0 -3px var(--success),
+      27px 3px 0 -2px var(--success),
+      17px 20px 0 -3px var(--success),
+      -2px 26px 0 -2px var(--success),
+      -20px 18px 0 -3px var(--success),
+      -26px -3px 0 -2px var(--success),
+      -16px -22px 0 -3px var(--success);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   button:not(:disabled),
-  button:not(:disabled)::after {
+  button:not(:disabled)::after,
+  .tally-correct,
+  .tally-correct::after {
     animation: none;
   }
 
@@ -774,24 +909,47 @@ button:disabled {
     transform: translateX(var(--note-x, 0px));
   }
   15% {
-    transform: translateX(calc(var(--note-x, 0px) - 8px));
+    transform: translateX(calc(var(--note-x, 0px) - 4px));
   }
   30% {
-    transform: translateX(calc(var(--note-x, 0px) + 8px));
+    transform: translateX(calc(var(--note-x, 0px) + 4px));
   }
   45% {
-    transform: translateX(calc(var(--note-x, 0px) - 8px));
+    transform: translateX(calc(var(--note-x, 0px) - 4px));
   }
   60% {
-    transform: translateX(calc(var(--note-x, 0px) + 8px));
+    transform: translateX(calc(var(--note-x, 0px) + 2px));
   }
   75% {
-    transform: translateX(calc(var(--note-x, 0px) - 4px));
+    transform: translateX(calc(var(--note-x, 0px) - 2px));
+  }
+}
+
+/* The transform attribute is always translate(x, 0) — the note's vertical
+   staff position lives in its path data, so y offsets are relative to 0.
+   translateX(--note-x) must be carried through every frame because the CSS
+   transform replaces the SVG transform attribute during the animation. */
+/* single hop: fast rise that eases off at the peak, accelerating fall */
+@keyframes jump {
+  0% {
+    transform: translateX(var(--note-x, 0px)) translateY(0px);
+    animation-timing-function: ease-out;
+  }
+  45% {
+    transform: translateX(var(--note-x, 0px)) translateY(-8px);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translateX(var(--note-x, 0px)) translateY(0px);
   }
 }
 
 :deep(.wrong) {
   animation: shake 0.4s linear;
+}
+
+:deep(.correct) {
+  animation: jump 0.3s;
 }
 
 .note-button {
