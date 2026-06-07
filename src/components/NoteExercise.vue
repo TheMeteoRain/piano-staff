@@ -453,7 +453,7 @@ function waitForNoteGroup(maxAttempts = 10, delay = 100) {
     let attempts = 0
     function check() {
       const groups = document
-        .querySelector('svg')
+        .querySelector('#stave svg')
         ?.querySelectorAll('g.vf-stavenote')
       if (groups && groups.length > 0) {
         resolve(true)
@@ -535,6 +535,10 @@ function addNotes(n = 5) {
 
     notesQueue.value.push(noteQueueItem)
 
+    // position immediately — the first animation frame may only run AFTER the
+    // next paint (e.g. when added from within a rAF callback), and an
+    // un-translated note would flash at its raw draw position for one frame
+    svgNote.setAttribute('transform', `translate(${startX}, 0)`)
     colorizeNoteElement(svgNote, 'var(--text)')
     svgNote.setAttribute('data-id', notesQueue.value.length.toString())
     svgNote.setAttribute('data-start-x', startX.toString())
@@ -542,6 +546,7 @@ function addNotes(n = 5) {
     svgNote.setAttribute('data-note', randomNote.note)
     svgNote.setAttribute('data-octave', randomNote.octave.toString())
     svgNote.setAttribute('data-state', noteQueueItem.meta.state)
+    svgNote.setAttribute('data-current-x', startX.toString())
   })
 }
 
