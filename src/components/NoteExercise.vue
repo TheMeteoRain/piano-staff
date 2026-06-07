@@ -560,30 +560,33 @@ function startExercise() {
   container.innerHTML = ''
 
   renderer = new Renderer(container, Renderer.Backends.SVG)
+  // small headroom above the staves — without it the tallest up-stems get
+  // clipped at the canvas edge
+  const staveHeadroom = 10
   if (exercise === 'mixed') {
-    renderer.resize(1000, 230)
+    renderer.resize(1000, 230 + staveHeadroom)
   } else if (exercise === 'treble' || exercise === 'bass') {
-    renderer.resize(1000, 140)
+    renderer.resize(1000, 140 + staveHeadroom)
   }
   context = renderer.getContext()
 
   const staves = []
   if (exercise === 'mixed') {
-    staveTreble = new Stave(0, 0, 1000)
+    staveTreble = new Stave(0, staveHeadroom, 1000)
     staveTreble.addClef('treble')
     staveTreble.setContext(context).draw()
     staves.push(staveTreble)
-    staveBass = new Stave(0, 100, 1000)
+    staveBass = new Stave(0, staveHeadroom + 100, 1000)
     staveBass.addClef('bass')
     staveBass.setContext(context).draw()
     staves.push(staveBass)
   } else if (exercise === 'treble') {
-    staveTreble = new Stave(0, 0, 1000)
+    staveTreble = new Stave(0, staveHeadroom, 1000)
     staveTreble.addClef(exercise)
     staveTreble.setContext(context).draw()
     staves.push(staveTreble)
   } else if (exercise === 'bass') {
-    staveBass = new Stave(0, 0, 1000)
+    staveBass = new Stave(0, staveHeadroom, 1000)
     staveBass.addClef(exercise)
     staveBass.setContext(context).draw()
     staves.push(staveBass)
@@ -614,11 +617,44 @@ function startExercise() {
   // })
 
   addNotes(5)
+  drawQuestionMarkers(staves)
   state.value = 'scrolling'
 
   waitForNoteGroup()
     .then(() => playNotes())
     .catch((err) => console.error(err.message))
+}
+
+/** Dashed vertical guide marking where the question happens — one local
+ * segment per stave (so in mixed mode the gap between the staves stays
+ * clear), drawn behind the notes. No extra canvas space needed. */
+function drawQuestionMarkers(staves: Stave[]) {
+  const svg = document.querySelector('#stave svg')
+  const firstNote = notesQueue.value[0]?.note.getSVGElement()
+  if (!svg || staves.length === 0 || !firstNote) return
+
+  // visual x of a note when it reaches the question spot: the notehead's
+  // drawn position plus the noteQuestionSpot translate
+  const head = (firstNote.querySelector('.vf-notehead') ??
+    firstNote) as SVGGraphicsElement
+  const headBox = head.getBBox()
+  const x = headBox.x + headBox.width / 2 + noteQuestionSpot
+
+  for (const stave of staves) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+    line.setAttribute('x1', `${x}`)
+    line.setAttribute('x2', `${x}`)
+    line.setAttribute('y1', `${stave.getYForLine(0) - 10}`)
+    line.setAttribute('y2', `${stave.getYForLine(4) + 10}`)
+    // faded, almost-invisible guide: one ramp step off the background in
+    // both themes — same step the progress bar track uses
+    line.setAttribute('stroke', 'var(--background-200)')
+    line.setAttribute('stroke-width', '1')
+    line.setAttribute('stroke-dasharray', '12 10')
+    line.setAttribute('class', 'question-marker')
+    // first child: behind the staff lines and every note that scrolls past
+    svg.insertBefore(line, svg.firstChild)
+  }
 }
 
 function handleResetGame(event: MouseEvent) {
