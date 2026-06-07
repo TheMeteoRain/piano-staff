@@ -24,7 +24,9 @@ const initSettings = {
 export const useSettingsStore = defineStore('settings', () => {
   const localStorage = useLocalStorage()
   localStorage.initializeStorageItems('settings', initSettings)
-  const values = ref<Settings>(localStorage.getStorageItem('settings') as Settings)
+  const values = ref<Settings>(
+    localStorage.getStorageItem('settings') as Settings,
+  )
 
   function set<K extends keyof Settings>(key: K, rawValue: unknown) {
     const result = SettingsSchema.safeParse({
@@ -41,10 +43,10 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  const computedValue = (key: keyof Settings) =>
+  const computedValue = <K extends keyof Settings>(key: K) =>
     computed({
       get: () => values.value[key],
-      set: (value) => set(key, value),
+      set: (value: Settings[K]) => set(key, value),
     })
   const secondsBetweenNotes = computedValue('secondsBetweenNotes')
   const questionTimeLimit = computedValue('questionTimeLimit')
