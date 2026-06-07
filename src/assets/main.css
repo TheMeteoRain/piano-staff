@@ -3,6 +3,9 @@
 #content {
   view-transition-name: content;
   max-height: calc(100vh - 5rem);
+  /* opaque so view-transition snapshots are solid sheets — without this the
+     old page shows through the gaps of the incoming one */
+  background-color: var(--background);
 }
 @view-transition {
   navigation: auto;
@@ -53,6 +56,9 @@ nav {
   animation-timing-function: ease-out;
   animation-direction: normal;
   overflow: hidden;
+  /* the browser default is plus-lighter (additive) — overlapping snapshots
+     ADD their colors and wash out toward white without this */
+  mix-blend-mode: normal;
 }
 
 /* old view slides out to the left */
@@ -84,6 +90,38 @@ nav {
   mix-blend-mode: normal;
   z-index: 1;
   overflow: hidden;
+}
+
+/* Secondary navigation: the new view fades in with a small downward settle
+   over the old one. The whole page is visible from the first frame — no
+   full-screen sweep, so no blank leading edge. */
+:root[data-transition='vertical']::view-transition-old(content) {
+  animation-name: fade-out-still;
+}
+
+:root[data-transition='vertical']::view-transition-new(content) {
+  animation-name: drop-fade-in;
+  z-index: 1;
+}
+
+@keyframes fade-out-still {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes drop-fade-in {
+  from {
+    transform: translateY(-24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slide-out {
