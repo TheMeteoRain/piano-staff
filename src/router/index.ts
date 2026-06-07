@@ -41,9 +41,7 @@ const router = createRouter({
         },
         {
           path: 'settings',
-          name: 'training-settings',
-          component: withLayout(() => import('../views/Simple.vue')),
-          props: { header: 'Training Settings' },
+          redirect: { name: 'exercise-settings' },
         },
       ],
     },
@@ -52,6 +50,18 @@ const router = createRouter({
       name: 'settings',
       component: withLayout(() => import('../views/SettingsView.vue')),
       props: { header: 'Settings' },
+    },
+    {
+      path: '/settings/exercise',
+      name: 'exercise-settings',
+      component: withLayout(() => import('../views/ExerciseSettingsView.vue')),
+      props: { header: 'Exercise Settings' },
+    },
+    {
+      path: '/settings/about',
+      name: 'app-info',
+      component: withLayout(() => import('../views/AboutView.vue')),
+      props: { header: 'App Info' },
     },
     {
       path: '/licenses',
