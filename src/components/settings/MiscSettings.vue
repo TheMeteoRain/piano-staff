@@ -9,6 +9,9 @@ import { useToast } from 'primevue/usetoast'
 import { resetLocalStorage } from '@/utils/stats'
 import setTheme from '@/utils/setTheme'
 
+/** FLAG: reset-stats feature is incomplete — hidden for now */
+const showResetStats = false
+
 const confirm = useConfirm()
 const toast = useToast()
 
@@ -71,7 +74,9 @@ watch(theme, async (newValue) => {
         class="mt-2"
       />
     </div>
-    <div>
+    <!-- FLAG: reset-stats is incomplete — hidden until the feature is done.
+         Flip showResetStats in the script to bring it back. -->
+    <div v-if="showResetStats">
       <!-- Exception: destructive action — error color for label, icon and outline -->
       <SecondaryButton
         variant="outlined"

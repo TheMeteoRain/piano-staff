@@ -28,8 +28,10 @@ function animate(event: MouseEvent) {
         <h1 class="text-center text-3xl font-bold">Try again!</h1>
         <p class="text-center text-lg">Tap to show statistics.</p>
       </div>
+      <!-- content-start + overflow: long stat lists (mixed mode) scroll inside
+           the card instead of running over the Retry button and the nav -->
       <div
-        class="result__back absolute content-center gap-5 top-0 bottom-0 right-0 left-0"
+        class="result__back absolute content-start gap-5 overflow-y-auto top-0 bottom-0 right-0 left-0"
       >
         <h1 class="text-center text-3xl font-bold">Statistics</h1>
         <h2 class="text-center text-2xl font-bold mt-10">Overall</h2>
@@ -71,10 +73,15 @@ function animate(event: MouseEvent) {
         <div
           v-for="(guess, key, _index) in stats.guesses"
           :key="key"
-          class="stat"
+          class="stat stat--note"
         >
-          <div class="stat_item text-right">{{ key }}</div>
-          <div class="stat_item text-left">{{ guess.guessRate }}%</div>
+          <div class="stat_item text-center">{{ key }}</div>
+          <div class="stat_item text-center">
+            {{ guess.correctGuesses }}/{{ guess.totalGuesses }}
+          </div>
+          <div class="stat_item text-center">
+            {{ Math.round(guess.guessRate) }}%
+          </div>
         </div>
       </div>
     </div>
@@ -102,6 +109,14 @@ function animate(event: MouseEvent) {
   grid-template-columns: 1fr 1fr;
   justify-self: center;
   grid-gap: calc(var(--spacing) * 20);
+}
+
+/* per-note rows: three equal columns so note, tries and accuracy line up
+   with even spacing */
+.stat--note {
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: calc(var(--spacing) * 8);
+  min-width: 16rem;
 }
 .stat_item {
 }

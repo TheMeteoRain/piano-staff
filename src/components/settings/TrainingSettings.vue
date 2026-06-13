@@ -45,6 +45,40 @@ const settings = useSettingsStore()
       v-model="settings.questionTimeLimit"
     />
     <div>
+      <label for="pauseDuration" class="font-bold block mb-1">
+        Pause after answer (seconds)
+      </label>
+      <small id="pauseDuration-help" class="block text-(--text-muted)">
+        Breather before the notes start moving again. 0 removes the pause.
+      </small>
+    </div>
+    <InputNumber
+      size="large"
+      inputId="pauseDuration"
+      name="pauseDuration"
+      aria-describedby="pauseDuration-help"
+      :min="0"
+      :max="10"
+      v-model="settings.pauseDuration"
+    />
+    <div>
+      <label for="errorsAllowed" class="font-bold block mb-1">
+        Mistakes allowed
+      </label>
+      <small id="errorsAllowed-help" class="block text-(--text-muted)">
+        Wrong answers before the exercise ends.
+      </small>
+    </div>
+    <InputNumber
+      size="large"
+      inputId="errorsAllowed"
+      name="errorsAllowed"
+      aria-describedby="errorsAllowed-help"
+      :min="1"
+      :max="100"
+      v-model="settings.errorsAllowed"
+    />
+    <div>
       <label for="showLastNoteQuessed" class="font-bold block mb-1">
         Show last note quessed
       </label>

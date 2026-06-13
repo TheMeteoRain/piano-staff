@@ -1,4 +1,3 @@
-import { nextTick } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { withLayout } from '@/layouts/withDefaultLayout'
@@ -72,16 +71,9 @@ const router = createRouter({
   ],
 })
 
-/** Resolved when the navigation that is currently inside a view transition
- * has finished patching the DOM — so the browser snapshots the real new page
- * instead of the stale old one. */
-let domUpdated: (() => void) | null = null
-router.afterEach(() => {
-  nextTick(() => {
-    domUpdated?.()
-    domUpdated = null
-  })
-})
+// main-nav order, left to right; deep pages inherit their section's index
+const NAV_ORDER = ['', 'training', 'settings']
+const navIndex = (path: string) => NAV_ORDER.indexOf(path.split('/')[1] ?? '')
 
 router.beforeResolve((to, from, next) => {
   if (!document.startViewTransition) {
@@ -89,32 +81,16 @@ router.beforeResolve((to, from, next) => {
     return next()
   }
 
-  // Secondary navigation animates vertically; main-nav navigation keeps the
-  // horizontal slide. Secondary = the TARGET is a deep page, reached from
-  // its own section or from another deep page (e.g. exercise -> exercise
-  // settings). Navigating to a section root is always main-nav motion.
-  const section = (path: string) => path.split('/')[1] ?? ''
-  const depth = (path: string) => path.split('/').filter(Boolean).length
-  const vertical =
-    from.matched.length > 0 &&
-    depth(to.path) >= 2 &&
-    (section(to.path) === section(from.path) || depth(from.path) >= 2)
-  // data attribute, NOT a class — the theme system keys off html classes
-  if (vertical) {
-    document.documentElement.setAttribute('data-transition', 'vertical')
-  } else {
-    document.documentElement.removeAttribute('data-transition')
-  }
+  // slide direction follows nav order: going backward (e.g. Training -> Home)
+  // reverses the default left-to-right slide
+  const goingBack = navIndex(to.path) < navIndex(from.path)
+  document.documentElement.classList.toggle('back-transition', goingBack)
 
-  const transition = document.startViewTransition(
-    () =>
-      new Promise<void>((resolve) => {
-        domUpdated = resolve
-        next()
-      }),
-  )
+  const transition = document.startViewTransition(() => {
+    next()
+  })
   transition.finished.finally(() => {
-    document.documentElement.removeAttribute('data-transition')
+    document.documentElement.classList.remove('back-transition')
   })
 })
 

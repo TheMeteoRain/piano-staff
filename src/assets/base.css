@@ -299,6 +299,15 @@
     scroll-behavior: smooth;
   }
 
+  /* hide scrollbars app-wide — scrolling itself still works */
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* legacy Edge */
+  }
+  *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
   /* html needs the background too: during view transitions the browser can
      expose the document canvas, which is white by default — a visible flash
      in dark theme */

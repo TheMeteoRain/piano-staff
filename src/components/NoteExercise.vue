@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, markRaw, onMounted, ref, onUnmounted, nextTick } from 'vue'
+import { computed, markRaw, onMounted, ref, onUnmounted, nextTick, watch } from 'vue'
 import {
   Renderer,
   Stave,
@@ -47,6 +47,10 @@ type ExerciseProps = {
   showLastNoteQuessed: boolean
   /** seconds the game pauses after an answer before scrolling resumes */
   pauseDuration?: number
+  /** seed for the note sequence — same seed, same sequence (tests, repros) */
+  seed?: number
+  /** wrong answers before the exercise ends */
+  errorsAllowed?: number
 }
 const {
   exercise,
@@ -54,7 +58,22 @@ const {
   questionTimeLimit = 5,
   showLastNoteQuessed = true,
   pauseDuration = 2,
+  seed = undefined,
+  errorsAllowed = 3,
 } = defineProps<ExerciseProps>()
+
+/** mulberry32 — tiny deterministic PRNG, used when a seed is given */
+function mulberry32(seedValue: number) {
+  let a = seedValue >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = a
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+let rng = seed !== undefined ? mulberry32(seed) : Math.random
 const initialStatsState: Stats = {
   guesses: {},
   exercise: exercise,
@@ -68,7 +87,6 @@ const userGuess = ref<Note | ''>('')
 const notes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 const state = ref<GameState>('not-playing')
 const notesQueue = ref<NoteQueueItem[]>([])
-const visible = ref<boolean>(false)
 const noteSpacing = 50
 const noteDelay = 1
 const progress = ref<number>(0)
@@ -76,8 +94,7 @@ const pauseDurationMs = pauseDuration * 1000
 let pauseLoopRafId: number | null = null
 let questionStartGameMs: number = 0
 let questionLoopRafId: number | null = null
-const totalGuessesToDefeat = 10003
-/** incorrect guesses so far — the game ends when this reaches totalGuessesToDefeat */
+/** incorrect guesses so far — the game ends when this reaches errorsAllowed */
 const incorrectGuessTotal = computed(() =>
   Object.values(stats.value.guesses).reduce(
     (sum, guess) => sum + guess.incorrectGuesses,
@@ -170,7 +187,7 @@ function updateStats(isCorrect: boolean, item: NoteQueueItem) {
 function getRandomNote(): RandomNote {
   let clef: Clef = exercise
   if (exercise === 'mixed') {
-    clef = Math.random() < 0.5 ? 'treble' : 'bass'
+    clef = rng() < 0.5 ? 'treble' : 'bass'
   } else if (exercise === 'bass') {
     clef = 'bass'
   } else if (exercise === 'treble') {
@@ -180,13 +197,13 @@ function getRandomNote(): RandomNote {
 
   let note: Note, octave: number
   do {
-    note = notes[Math.floor(Math.random() * notes.length)]
-    octave = octaves[Math.floor(Math.random() * octaves.length)]
+    note = notes[Math.floor(rng() * notes.length)]
+    octave = octaves[Math.floor(rng() * octaves.length)]
 
     // constraint bass clef to maximum of C4
     while (clef === 'bass' && octave === 4 && note != 'C') {
-      note = notes[Math.floor(Math.random() * notes.length)]
-      octave = octaves[Math.floor(Math.random() * octaves.length)]
+      note = notes[Math.floor(rng() * notes.length)]
+      octave = octaves[Math.floor(rng() * octaves.length)]
     }
   } while (lastRandomNote === `${note}/${octave}`)
 
@@ -370,7 +387,7 @@ function handleGuess(guessNote: Note | '') {
     svgNote.classList.add('wrong')
 
     updateStats(false, item as NoteQueueItem)
-    if (incorrectGuessTotal.value >= totalGuessesToDefeat) {
+    if (incorrectGuessTotal.value >= errorsAllowed) {
       endGame()
       return
     }
@@ -387,6 +404,22 @@ function startPauseTimer() {
   // visible for the whole pause regardless of how early the answer came
   const drainFrom = progress.value
 
+  function resumeScrolling() {
+    pauseLoopRafId = null
+    state.value = 'scrolling'
+    userGuess.value = ''
+    resetQuestionTimer()
+    resetProgressTimer()
+    addNotes(1)
+    playNotes()
+  }
+
+  // a pause of 0 removes the breather entirely
+  if (pauseDurationMs <= 0) {
+    resumeScrolling()
+    return
+  }
+
   function tickPause() {
     if (state.value !== 'pause') {
       pauseLoopRafId = null
@@ -395,13 +428,7 @@ function startPauseTimer() {
     const elapsed = gameNow() - pauseStart
     progress.value = drainFrom * Math.max(0, 1 - elapsed / pauseDurationMs)
     if (elapsed >= pauseDurationMs) {
-      pauseLoopRafId = null
-      state.value = 'scrolling'
-      userGuess.value = ''
-      resetQuestionTimer()
-      resetProgressTimer()
-      addNotes(1)
-      playNotes()
+      resumeScrolling()
       return
     }
     pauseLoopRafId = requestAnimationFrame(tickPause)
@@ -559,6 +586,11 @@ function startExercise() {
 
   container.innerHTML = ''
 
+  // fresh sequence on every game start, so a seeded RETRY replays the exact
+  // same notes (a remount resets these anyway; this covers resetGame)
+  rng = seed !== undefined ? mulberry32(seed) : Math.random
+  lastRandomNote = ''
+
   renderer = new Renderer(container, Renderer.Backends.SVG)
   // small headroom above the staves — without it the tallest up-stems get
   // clipped at the canvas edge
@@ -663,7 +695,7 @@ function handleResetGame(event: MouseEvent) {
   resetGame()
 }
 
-async function resetGame(startAgain = true) {
+async function resetGame() {
   notesQueue.value.forEach((item) => {
     if (item.raf) {
       cancelAnimationFrame(item.raf)
@@ -681,10 +713,6 @@ async function resetGame(startAgain = true) {
   resetQuestionTimer()
   resetProgressTimer()
   resetPauseTimer()
-
-  if (startAgain) {
-    startExercise()
-  }
 }
 
 function endGame() {
@@ -696,42 +724,39 @@ function onDocumentVisibilityChange() {
   syncGameClockAfterVisibilityChange()
 }
 
+// start drawing as soon as the stave container exists in the DOM — covers
+// the first mount AND retry, where <Transition mode="out-in"> inserts the
+// board only after the end screen has finished leaving
+watch(
+  vfContainer,
+  (container) => {
+    if (container) startExercise()
+  },
+  { flush: 'post' },
+)
+
 onMounted(() => {
-  visible.value = false
   initializeStats()
   document.addEventListener('visibilitychange', onDocumentVisibilityChange)
-
-  setTimeout(async () => {
-    visible.value = true
-    await nextTick()
-
-    startExercise()
-  }, 1000)
 })
 
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', onDocumentVisibilityChange)
   saveStats()
-  resetGame(false)
+  resetGame()
 })
 </script>
 
 <template>
-  <EndScreen
-    v-if="state == 'game-over'"
-    :stats="lastSavedStats"
-    :reset="handleResetGame"
-  />
-
-  <div v-if="state == 'not-playing'" class="mt-10">
-    <div class="justify-self-center mt-5">
-      <i
-        class="pi pi-spin pi-spinner"
-        style="font-size: 5rem; color: var(--primary)"
-      />
-    </div>
-  </div>
-  <div class="grid" v-if="state != 'game-over' && visible">
+  <!-- game over: the board falls away before the end screen rises in -->
+  <Transition name="game-end" mode="out-in">
+    <EndScreen
+      v-if="state == 'game-over'"
+      key="end-screen"
+      :stats="lastSavedStats"
+      :reset="handleResetGame"
+    />
+    <div v-else key="game" class="grid">
     <ProgressBar :progress="progress" />
     <div
       ref="vfContainer"
@@ -762,14 +787,35 @@ onUnmounted(() => {
         <div
           class="mt-1 text-sm font-semibold tabular-nums text-(--error-text)"
         >
-          {{ incorrectGuessTotal }} / {{ totalGuessesToDefeat }}
+          {{ incorrectGuessTotal }} / {{ errorsAllowed }}
         </div>
       </div>
     </div>
-  </div>
+    </div>
+  </Transition>
 </template>
 
 <style scoped>
+/* game over: board sinks away, end screen rises in (mode="out-in") */
+.game-end-leave-active {
+  transition:
+    opacity 0.35s ease-in,
+    transform 0.35s ease-in;
+}
+.game-end-enter-active {
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.45s ease-out;
+}
+.game-end-leave-to {
+  opacity: 0;
+  transform: translateY(16px) scale(0.97);
+}
+.game-end-enter-from {
+  opacity: 0;
+  transform: translateY(24px) scale(0.97);
+}
+
 .vf-stavenote {
   transition: opacity 0.5s ease-out;
 }
@@ -931,6 +977,11 @@ button:not(:disabled)::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .game-end-enter-active,
+  .game-end-leave-active {
+    transition: none;
+  }
+
   button:not(:disabled),
   button:not(:disabled)::after,
   .tally-correct,
