@@ -45,6 +45,23 @@ const settings = useSettingsStore()
       v-model="settings.questionTimeLimit"
     />
     <div>
+      <label for="errorsAllowed" class="font-bold block mb-1">
+        Mistakes allowed
+      </label>
+      <small id="errorsAllowed-help" class="block text-(--text-muted)">
+        Wrong answers before the exercise ends. 0 is unlimited.
+      </small>
+    </div>
+    <InputNumber
+      size="large"
+      inputId="errorsAllowed"
+      name="errorsAllowed"
+      aria-describedby="errorsAllowed-help"
+      :min="0"
+      :max="100"
+      v-model="settings.errorsAllowed"
+    />
+    <div>
       <label for="showLastNoteQuessed" class="font-bold block mb-1">
         Show last note quessed
       </label>

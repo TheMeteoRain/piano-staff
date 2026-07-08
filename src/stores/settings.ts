@@ -12,6 +12,8 @@ const SettingsSchema = z.object({
     .transform((v) => Math.min(10, Math.max(1, v))),
   questionTimeLimit: z.coerce.number().min(1).max(10),
   showLastNoteQuessed: z.coerce.boolean().default(true),
+  /** wrong answers before the exercise ends; 0 means unlimited */
+  errorsAllowed: z.coerce.number().int().min(0).max(100),
 })
 type Settings = z.infer<typeof SettingsSchema>
 
@@ -19,14 +21,18 @@ const initSettings = {
   secondsBetweenNotes: 3,
   questionTimeLimit: 5,
   showLastNoteQuessed: true,
+  errorsAllowed: 3,
 }
 
 export const useSettingsStore = defineStore('settings', () => {
   const localStorage = useLocalStorage()
   localStorage.initializeStorageItems('settings', initSettings)
-  const values = ref<Settings>(
-    localStorage.getStorageItem('settings') as Settings,
-  )
+  // merge onto defaults so settings saved before a new key existed still get
+  // that key's default instead of undefined
+  const values = ref<Settings>({
+    ...initSettings,
+    ...(localStorage.getStorageItem('settings') as Partial<Settings>),
+  })
 
   function set<K extends keyof Settings>(key: K, rawValue: unknown) {
     const result = SettingsSchema.safeParse({
@@ -51,6 +57,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const secondsBetweenNotes = computedValue('secondsBetweenNotes')
   const questionTimeLimit = computedValue('questionTimeLimit')
   const showLastNoteQuessed = computedValue('showLastNoteQuessed')
+  const errorsAllowed = computedValue('errorsAllowed')
   const resolver = zodResolver(SettingsSchema)
 
   return {
@@ -60,5 +67,6 @@ export const useSettingsStore = defineStore('settings', () => {
     secondsBetweenNotes,
     questionTimeLimit,
     showLastNoteQuessed,
+    errorsAllowed,
   }
 })

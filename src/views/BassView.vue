@@ -12,6 +12,7 @@ const settings = useSettingsStore()
       :secondsBetweenNotes="settings.values.secondsBetweenNotes"
       :questionTimeLimit="settings.values.questionTimeLimit"
       :showLastNoteQuessed="settings.showLastNoteQuessed"
+      :errorsAllowed="settings.values.errorsAllowed"
     />
   </main>
 </template>

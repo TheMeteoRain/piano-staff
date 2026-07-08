@@ -47,6 +47,8 @@ type ExerciseProps = {
   showLastNoteQuessed: boolean
   /** seconds the game pauses after an answer before scrolling resumes */
   pauseDuration?: number
+  /** wrong answers before the exercise ends; 0 means unlimited */
+  errorsAllowed?: number
 }
 const {
   exercise,
@@ -54,6 +56,7 @@ const {
   questionTimeLimit = 5,
   showLastNoteQuessed = true,
   pauseDuration = 2,
+  errorsAllowed = 3,
 } = defineProps<ExerciseProps>()
 const initialStatsState: Stats = {
   guesses: {},
@@ -76,8 +79,7 @@ const pauseDurationMs = pauseDuration * 1000
 let pauseLoopRafId: number | null = null
 let questionStartGameMs: number = 0
 let questionLoopRafId: number | null = null
-const totalGuessesToDefeat = 10003
-/** incorrect guesses so far — the game ends when this reaches totalGuessesToDefeat */
+/** incorrect guesses so far — the game ends when this reaches errorsAllowed (0 = unlimited) */
 const incorrectGuessTotal = computed(() =>
   Object.values(stats.value.guesses).reduce(
     (sum, guess) => sum + guess.incorrectGuesses,
@@ -370,7 +372,7 @@ function handleGuess(guessNote: Note | '') {
     svgNote.classList.add('wrong')
 
     updateStats(false, item as NoteQueueItem)
-    if (incorrectGuessTotal.value >= totalGuessesToDefeat) {
+    if (errorsAllowed > 0 && incorrectGuessTotal.value >= errorsAllowed) {
       endGame()
       return
     }
@@ -762,7 +764,8 @@ onUnmounted(() => {
         <div
           class="mt-1 text-sm font-semibold tabular-nums text-(--error-text)"
         >
-          {{ incorrectGuessTotal }} / {{ totalGuessesToDefeat }}
+          {{ incorrectGuessTotal }} /
+          {{ errorsAllowed > 0 ? errorsAllowed : '∞' }}
         </div>
       </div>
     </div>
