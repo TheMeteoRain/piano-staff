@@ -2,60 +2,13 @@
 import { usePwaStore } from '@/stores/pwa'
 import Card from '@/volt/Card.vue'
 import ContrastButton from '@/volt/ContrastButton.vue'
-import Dialog from '@/volt/Dialog.vue'
 import { Icon } from '@iconify/vue'
-import { ref, watch } from 'vue'
 
 const pwaStore = usePwaStore()
 pwaStore.checkIfInstalled()
-
-const dialogVisible = ref(false)
-
-function closeDialog() {
-  if (dialogVisible.value) {
-    dialogVisible.value = false
-  }
-}
-
-watch(dialogVisible, (value) => {
-  if (!value) {
-    window.removeEventListener('click', closeDialog)
-  }
-})
-
-function installPWA() {
-  if (!pwaStore.deferredPrompt) {
-    setTimeout(() => {
-      dialogVisible.value = true
-      window.addEventListener('click', closeDialog)
-    }, 10)
-
-    return
-  }
-
-  pwaStore.promptInstall()
-}
 </script>
 
 <template>
-  <Dialog
-    v-model:visible="dialogVisible"
-    modal
-    :closable="false"
-    header="Unsupported browser"
-    class="lg:w-100 md:w-3/4 w-9/10"
-  >
-    <p>
-      Unsupported Browser: Your current browser doesn't support installing this
-      app to your device. You can continue using it in your browser, or switch
-      to another browser.
-    </p>
-    <br />
-    <p>
-      Press anywhere to close
-      <i class="pi pi-times"></i>
-    </p>
-  </Dialog>
   <Card class="mb-5">
     <template #title>Training</template>
     <template #content>
@@ -84,13 +37,54 @@ function installPWA() {
       <p>
         Install this app on your device for the best experience! It works just
         like a regular app — faster access, smoother performance, and full
-        functionality even offline. Tap the install icon and enjoy the
-        convenience anytime, anywhere.
+        functionality even offline.
+      </p>
+
+      <!-- iOS: no install prompt exists, guide the manual Share flow -->
+      <ol
+        v-if="pwaStore.isIOS && !pwaStore.deferredPrompt"
+        class="mt-2 flex flex-col gap-2"
+      >
+        <li class="flex items-center gap-2">
+          <span class="font-bold">1.</span>
+          <span>Tap the Share button</span>
+          <Icon
+            icon="mdi:export-variant"
+            width="20"
+            class="text-(--primary-600)"
+          />
+          <span>in the browser toolbar</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="font-bold">2.</span>
+          <span>Choose “Add to Home Screen”</span>
+          <Icon
+            icon="mdi:plus-box-outline"
+            width="20"
+            class="text-(--primary-600)"
+          />
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="font-bold">3.</span>
+          <span>Tap “Add” — done!</span>
+        </li>
+      </ol>
+
+      <!-- browsers without install support (e.g. desktop Firefox/Safari) -->
+      <p
+        v-else-if="!pwaStore.deferredPrompt"
+        class="mt-2 text-(--text-muted)"
+      >
+        Your current browser can’t install this app. Open it in Chrome, Edge, or
+        Safari on your phone to add it to your home screen.
       </p>
     </template>
-    <template #footer>
+    <template v-if="pwaStore.deferredPrompt" #footer>
       <div>
-        <ContrastButton @click="installPWA" label="Install To Device">
+        <ContrastButton
+          @click="pwaStore.promptInstall()"
+          label="Install To Device"
+        >
           <template #icon>
             <Icon icon="mdi:cellphone-arrow-down" width="20" />
           </template>

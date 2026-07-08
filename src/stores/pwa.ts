@@ -33,9 +33,22 @@ export function isMobileCheck() {
   return !window.matchMedia('(hover: hover)').matches
 }
 
+/**
+ * iPhone / iPad / iPod. iPadOS 13+ reports a desktop-Mac user agent, so it is
+ * detected via touch support on a "Macintosh" UA.
+ */
+export function isIOSCheck() {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent
+  const iPhone = /iPhone|iPod|iPad/.test(ua)
+  const iPadOS = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1
+  return iPhone || iPadOS
+}
+
 export const usePwaStore = defineStore('pwa', {
   state: () => ({
     isMobile: isMobileCheck(),
+    isIOS: isIOSCheck(),
     isInstalled: false,
     deferredPrompt: null as BeforeInstallPromptEvent | null,
     displayMode: getPWADisplayMode() as ReturnType<typeof getPWADisplayMode>,
