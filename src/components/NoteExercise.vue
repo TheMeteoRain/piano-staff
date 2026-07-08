@@ -76,6 +76,10 @@ const noteSpacing = 50
 const noteDelay = 1
 const progress = ref<number>(0)
 const pauseDurationMs = pauseDuration * 1000
+/** on the final mistake, hold at least this long so the shake and the tally
+ * hitting the limit are visible before the game-over screen */
+const gameOverHoldMs = 1400
+let defeated = false
 let pauseLoopRafId: number | null = null
 let questionStartGameMs: number = 0
 let questionLoopRafId: number | null = null
@@ -372,9 +376,10 @@ function handleGuess(guessNote: Note | '') {
     svgNote.classList.add('wrong')
 
     updateStats(false, item as NoteQueueItem)
+    // don't end instantly — let the pause play so the shake and the tally
+    // reaching the limit register, then end when the hold finishes
     if (errorsAllowed > 0 && incorrectGuessTotal.value >= errorsAllowed) {
-      endGame()
-      return
+      defeated = true
     }
   }
 
@@ -388,6 +393,25 @@ function startPauseTimer() {
   // drain the question fill back to zero over the full pause — the drain is
   // visible for the whole pause regardless of how early the answer came
   const drainFrom = progress.value
+  // a losing answer holds long enough to see the outcome, even if the normal
+  // pause is short or zero
+  const durationMs = defeated
+    ? Math.max(pauseDurationMs, gameOverHoldMs)
+    : pauseDurationMs
+
+  function finish() {
+    pauseLoopRafId = null
+    if (defeated) {
+      endGame()
+      return
+    }
+    state.value = 'scrolling'
+    userGuess.value = ''
+    resetQuestionTimer()
+    resetProgressTimer()
+    addNotes(1)
+    playNotes()
+  }
 
   function tickPause() {
     if (state.value !== 'pause') {
@@ -395,15 +419,10 @@ function startPauseTimer() {
       return
     }
     const elapsed = gameNow() - pauseStart
-    progress.value = drainFrom * Math.max(0, 1 - elapsed / pauseDurationMs)
-    if (elapsed >= pauseDurationMs) {
-      pauseLoopRafId = null
-      state.value = 'scrolling'
-      userGuess.value = ''
-      resetQuestionTimer()
-      resetProgressTimer()
-      addNotes(1)
-      playNotes()
+    progress.value =
+      durationMs > 0 ? drainFrom * Math.max(0, 1 - elapsed / durationMs) : 0
+    if (elapsed >= durationMs) {
+      finish()
       return
     }
     pauseLoopRafId = requestAnimationFrame(tickPause)
@@ -558,6 +577,7 @@ function startExercise() {
     console.error('Container not found')
     return
   }
+  defeated = false
 
   container.innerHTML = ''
 
