@@ -74,7 +74,10 @@ function animate(event: MouseEvent) {
           class="stat"
         >
           <div class="stat_item text-right">{{ key }}</div>
-          <div class="stat_item text-left">{{ guess.guessRate }}%</div>
+          <div class="stat_item text-left">
+            {{ guess.correctGuesses }}/{{ guess.totalGuesses }} -
+            {{ Math.round(guess.guessRate) }}%
+          </div>
         </div>
       </div>
     </div>
