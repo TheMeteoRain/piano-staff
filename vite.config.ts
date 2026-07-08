@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
     vueDevTools(),
     tailwindcss(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       strategies: 'injectManifest',
       srcDir: 'src',
       filename: 'service-worker.ts',

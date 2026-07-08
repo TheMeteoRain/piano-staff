@@ -122,13 +122,6 @@ self.addEventListener('message', async (event) => {
       console.log(`A newer version of ${updatedURL} is available!`)
   } else if (event.data.type === 'GET_VERSION') {
     event.ports[0].postMessage(SW_VERSION)
-  } else if (event.data.type === 'INSTALL_PROMPT_EVENT') {
-    event.ports[0].postMessage(deferredPrompt)
-  } else if (event.data.type === 'UPDATE') {
-    if (data.debug) console.log('UPDATE')
-    await self.skipWaiting()
-    clientsClaim()
-    event.ports[0].postMessage(true)
   }
 })
 
