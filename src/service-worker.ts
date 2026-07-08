@@ -6,7 +6,6 @@ import {
   setCatchHandler,
   setDefaultHandler,
 } from 'workbox-routing'
-import type { StrategyHandler } from 'workbox-strategies'
 import { CacheFirst, NetworkFirst, NetworkOnly, Strategy } from 'workbox-strategies'
 import type { ManifestEntry } from 'workbox-build'
 
@@ -14,7 +13,6 @@ import type { ManifestEntry } from 'workbox-build'
 declare let self: ServiceWorkerGlobalScope
 
 const data = {
-  race: false,
   debug: import.meta.env.DEV || import.meta.env.VITE_DEBUG === 'true',
   credentials: 'same-origin',
   networkTimeoutSeconds: 0,
@@ -24,47 +22,12 @@ const cacheName = cacheNames.runtime
 const SW_VERSION = '1'
 
 function buildStrategy(): Strategy {
-  if (data.race) {
-    class CacheNetworkRace extends Strategy {
-      _handle(
-        request: Request,
-        handler: StrategyHandler,
-      ): Promise<Response | undefined> {
-        const fetchAndCachePutDone: Promise<Response> =
-          handler.fetchAndCachePut(request)
-        const cacheMatchDone: Promise<Response | undefined> =
-          handler.cacheMatch(request)
-
-        return new Promise((resolve, reject) => {
-          fetchAndCachePutDone.then(resolve).catch((e) => {
-            if (data.debug)
-              console.log(`Cannot fetch resource: ${request.url}`, e)
-          })
-          cacheMatchDone.then((response) => response && resolve(response))
-
-          // Reject if both network and cache error or find no response.
-          Promise.allSettled([fetchAndCachePutDone, cacheMatchDone]).then(
-            (results) => {
-              const [fetchAndCachePutResult, cacheMatchResult] = results
-              if (
-                fetchAndCachePutResult.status === 'rejected' &&
-                !cacheMatchResult.value
-              )
-                reject(fetchAndCachePutResult.reason)
-            },
-          )
-        })
-      }
-    }
-    return new CacheNetworkRace()
-  } else {
-    if (data.networkTimeoutSeconds > 0)
-      return new NetworkFirst({
-        cacheName,
-        networkTimeoutSeconds: data.networkTimeoutSeconds,
-      })
-    else return new NetworkFirst({ cacheName })
-  }
+  if (data.networkTimeoutSeconds > 0)
+    return new NetworkFirst({
+      cacheName,
+      networkTimeoutSeconds: data.networkTimeoutSeconds,
+    })
+  return new NetworkFirst({ cacheName })
 }
 const manifest = self.__WB_MANIFEST as Array<ManifestEntry>
 const cacheEntries: RequestInfo[] = []
@@ -88,27 +51,18 @@ self.addEventListener('install', (event) => {
 })
 
 self.addEventListener('activate', (event) => {
-  // - clean up outdated runtime cache
+  // clean up cache entries no longer listed in the precache manifest, and
+  // await every deletion so activation doesn't complete before cleanup does
   event.waitUntil(
-    caches.open(cacheName).then((cache) => {
-      // clean up those who are not listed in manifestURLs
-      cache.keys().then((keys) => {
-        keys.forEach((request) => {
-          if (data.debug)
-            console.log(`Checking cache entry to be removed: ${request.url}`)
-          if (!manifestURLs.includes(request.url)) {
-            cache.delete(request).then((deleted) => {
-              if (data.debug) {
-                if (deleted)
-                  console.log(
-                    `Precached data removed: ${request.url || request}`,
-                  )
-                else console.log(`No precache found: ${request.url || request}`)
-              }
-            })
-          }
-        })
-      })
+    caches.open(cacheName).then(async (cache) => {
+      const keys = await cache.keys()
+      const stale = keys.filter(
+        (request) => !manifestURLs.includes(request.url),
+      )
+      await Promise.all(stale.map((request) => cache.delete(request)))
+      if (data.debug && stale.length) {
+        console.log(`Removed ${stale.length} stale precache entries`)
+      }
     }),
   )
 })
