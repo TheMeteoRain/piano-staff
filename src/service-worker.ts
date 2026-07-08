@@ -7,7 +7,7 @@ import {
   setDefaultHandler,
 } from 'workbox-routing'
 import type { StrategyHandler } from 'workbox-strategies'
-import { NetworkFirst, NetworkOnly, Strategy } from 'workbox-strategies'
+import { CacheFirst, NetworkFirst, NetworkOnly, Strategy } from 'workbox-strategies'
 import type { ManifestEntry } from 'workbox-build'
 
 // Give TypeScript the correct global.
@@ -132,7 +132,18 @@ self.addEventListener('message', async (event) => {
   }
 })
 
-registerRoute(({ url }) => manifestURLs.includes(url.href), buildStrategy())
+const fallbackURL = new URL(data.fallback, self.location).href
+
+// The app shell stays network-first so navigations pick up new deployments.
+registerRoute(({ url }) => url.href === fallbackURL, buildStrategy())
+
+// Everything else precached is immutable (content-hashed bundles, stable
+// piano samples), so serve it cache-first — no network round-trip when the
+// asset is already stored locally.
+registerRoute(
+  ({ url }) => url.href !== fallbackURL && manifestURLs.includes(url.href),
+  new CacheFirst({ cacheName }),
+)
 
 setDefaultHandler(new NetworkOnly())
 
