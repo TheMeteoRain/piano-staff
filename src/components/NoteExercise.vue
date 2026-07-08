@@ -12,7 +12,10 @@ import {
 import ProgressBar from './ProgressBar.vue'
 import EndScreen from './EndScreen.vue'
 import { useStats, type Stats } from '@/utils/stats'
+import { useNoteSound } from '@/composables/useNoteSound'
 import type { Clef } from '@/types/global'
+
+const { preloadSound, unlockAudio, playNote } = useNoteSound()
 
 type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
 type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'pause' | 'game-over'
@@ -340,6 +343,9 @@ function resetQuestionTimer() {
 function handleGuess(guessNote: Note | '') {
   if (state.value !== 'waiting') return
 
+  // this runs inside the note-button click, the gesture that unlocks audio
+  void unlockAudio()
+
   resetQuestionTimer()
   // keep the question fill where it stopped — the pause overlay fills over it,
   // and resetProgressTimer() clears both when scrolling resumes
@@ -362,6 +368,9 @@ function handleGuess(guessNote: Note | '') {
   modifyStaveNoteAnnotation(item.note as StaveNote, 'visibility', 'visible')
   item.meta.state = 'answered'
   svgNote.setAttribute('data-state', item.meta.state)
+
+  // always play the correct pitch — hearing the right note is the ear-training
+  playNote(item.randomNote.key)
 
   const correctNote = item.note.keys[0].charAt(0)
 
@@ -721,6 +730,7 @@ function onDocumentVisibilityChange() {
 onMounted(() => {
   visible.value = false
   initializeStats()
+  preloadSound()
   document.addEventListener('visibilitychange', onDocumentVisibilityChange)
 
   setTimeout(async () => {
