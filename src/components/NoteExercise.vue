@@ -81,7 +81,6 @@ const userGuess = ref<Note | ''>('')
 const notes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 const state = ref<GameState>('not-playing')
 const notesQueue = ref<NoteQueueItem[]>([])
-const visible = ref<boolean>(false)
 const noteSpacing = 50
 const noteDelay = 1
 const progress = ref<number>(0)
@@ -94,6 +93,9 @@ let defeated = false
 let pauseLoopRafId: number | null = null
 let questionStartGameMs: number = 0
 let questionLoopRafId: number | null = null
+/** brief orientation pause before the notes start moving */
+const START_DELAY_MS = 900
+let startDelayTimeout: number | null = null
 /** incorrect guesses so far — the game ends when this reaches errorsAllowed (0 = unlimited) */
 const incorrectGuessTotal = computed(() =>
   Object.values(stats.value.guesses).reduce(
@@ -685,8 +687,12 @@ function startExercise() {
   drawQuestionMarkers(staves)
   state.value = 'scrolling'
 
+  // let the staff and first notes sit still briefly so the player can take in
+  // the view before the notes start moving
   waitForNoteGroup()
-    .then(() => playNotes())
+    .then(() => {
+      startDelayTimeout = window.setTimeout(playNotes, START_DELAY_MS)
+    })
     .catch((err) => console.error(err.message))
 }
 
@@ -746,6 +752,10 @@ async function resetGame(startAgain = true) {
   resetQuestionTimer()
   resetProgressTimer()
   resetPauseTimer()
+  if (startDelayTimeout !== null) {
+    clearTimeout(startDelayTimeout)
+    startDelayTimeout = null
+  }
 
   if (startAgain) {
     startExercise()
@@ -762,17 +772,10 @@ function onDocumentVisibilityChange() {
 }
 
 onMounted(() => {
-  visible.value = false
   initializeStats()
   preloadSound()
   document.addEventListener('visibilitychange', onDocumentVisibilityChange)
-
-  setTimeout(async () => {
-    visible.value = true
-    await nextTick()
-
-    startExercise()
-  }, 1000)
+  startExercise()
 })
 
 onUnmounted(() => {
@@ -789,15 +792,7 @@ onUnmounted(() => {
     :reset="handleResetGame"
   />
 
-  <div v-if="state == 'not-playing'" class="mt-10">
-    <div class="justify-self-center mt-5">
-      <i
-        class="pi pi-spin pi-spinner"
-        style="font-size: 5rem; color: var(--primary)"
-      />
-    </div>
-  </div>
-  <div class="grid" v-if="state != 'game-over' && visible">
+  <div class="grid" v-if="state != 'game-over'">
     <ProgressBar :progress="progress" />
     <div
       ref="vfContainer"

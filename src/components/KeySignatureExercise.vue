@@ -60,8 +60,12 @@ let renderer: Renderer | null = null
 let context: RenderContext | null = null
 let timerRaf: number | null = null
 let advanceTimeout: number | null = null
+let startTimeout: number | null = null
 let disposed = false
+let firstCard = true
 let lastKey = ''
+/** brief orientation pause before the first card's timer starts */
+const START_DELAY_MS = 900
 
 const incorrectTotal = computed(() =>
   Object.values(guesses.value).reduce((s, g) => s + g.incorrectGuesses, 0),
@@ -117,9 +121,19 @@ function startCard() {
   picked.value = null
   current.value = pickNextKey()
   choices.value = buildChoices(current.value, pool)
+  progress.value = 0
   state.value = 'playing'
   nextTick(() => drawKeySignature(current.value))
-  startTimer()
+
+  if (firstCard) {
+    // show the first card but hold the countdown so the player can orient
+    firstCard = false
+    startTimeout = window.setTimeout(() => {
+      if (!disposed) startTimer()
+    }, START_DELAY_MS)
+  } else {
+    startTimer()
+  }
 }
 
 function startTimer() {
@@ -188,6 +202,7 @@ function handleReset(event: MouseEvent) {
   event.preventDefault()
   event.stopPropagation()
   guesses.value = {}
+  firstCard = true
   startCard()
 }
 
@@ -202,6 +217,10 @@ onUnmounted(() => {
   if (advanceTimeout !== null) {
     clearTimeout(advanceTimeout)
     advanceTimeout = null
+  }
+  if (startTimeout !== null) {
+    clearTimeout(startTimeout)
+    startTimeout = null
   }
 })
 </script>
