@@ -18,6 +18,9 @@ const SettingsSchema = z.object({
   soundEnabled: z.coerce.boolean().default(true),
   /** seconds the game waits after an answer before the next note starts; 0 = none */
   pauseDuration: z.coerce.number().min(0).max(10),
+  /** answer the leading note immediately, self-paced, without waiting for it
+   * to reach the question spot */
+  answerInLine: z.coerce.boolean().default(false),
 })
 type Settings = z.infer<typeof SettingsSchema>
 
@@ -28,6 +31,7 @@ const initSettings = {
   showLastNoteQuessed: true,
   errorsAllowed: 3,
   pauseDuration: 1,
+  answerInLine: false,
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -66,6 +70,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const errorsAllowed = computedValue('errorsAllowed')
   const soundEnabled = computedValue('soundEnabled')
   const pauseDuration = computedValue('pauseDuration')
+  const answerInLine = computedValue('answerInLine')
   const resolver = zodResolver(SettingsSchema)
 
   return {
@@ -78,5 +83,6 @@ export const useSettingsStore = defineStore('settings', () => {
     errorsAllowed,
     soundEnabled,
     pauseDuration,
+    answerInLine,
   }
 })

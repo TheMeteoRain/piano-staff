@@ -43,7 +43,22 @@ const settings = useSettingsStore()
       aria-describedby="pauseDuration-help"
       :min="0"
       :max="10"
+      :disabled="settings.answerInLine"
       v-model="settings.pauseDuration"
+    />
+    <div>
+      <label for="answerInLine" class="font-bold block mb-1">
+        Answer at your own pace
+      </label>
+      <small id="answerInLine-help" class="block text-(--text-muted)">
+        Answer the next note right away without waiting for it to reach the
+        question spot. No time limit or wait between notes.
+      </small>
+    </div>
+    <ToggleSwitch
+      inputId="answerInLine"
+      aria-describedby="answerInLine-help"
+      v-model="settings.answerInLine"
     />
     <div>
       <label for="questionTimeLimit" class="font-bold block mb-1">

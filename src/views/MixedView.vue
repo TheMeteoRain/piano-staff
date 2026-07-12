@@ -15,6 +15,7 @@ const settings = useSettingsStore()
       :errorsAllowed="settings.values.errorsAllowed"
       :soundEnabled="settings.values.soundEnabled"
       :pauseDuration="settings.values.pauseDuration"
+      :answerInLine="settings.values.answerInLine"
     />
   </main>
 </template>

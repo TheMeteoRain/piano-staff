@@ -54,6 +54,9 @@ type ExerciseProps = {
   errorsAllowed?: number
   /** play a piano sound when a note is answered */
   soundEnabled?: boolean
+  /** answer the leading note immediately, self-paced, without waiting for it
+   * to scroll to the question spot */
+  answerInLine?: boolean
 }
 const {
   exercise,
@@ -63,6 +66,7 @@ const {
   pauseDuration = 1,
   errorsAllowed = 3,
   soundEnabled = true,
+  answerInLine = false,
 } = defineProps<ExerciseProps>()
 const initialStatsState: Stats = {
   guesses: {},
@@ -81,7 +85,8 @@ const visible = ref<boolean>(false)
 const noteSpacing = 50
 const noteDelay = 1
 const progress = ref<number>(0)
-const pauseDurationMs = pauseDuration * 1000
+// self-paced mode has no between-notes wait — you set the pace by answering
+const pauseDurationMs = answerInLine ? 0 : pauseDuration * 1000
 /** on the final mistake, hold at least this long so the shake and the tally
  * hitting the limit are visible before the game-over screen */
 const gameOverHoldMs = 1400
@@ -344,7 +349,9 @@ function resetQuestionTimer() {
 }
 
 function handleGuess(guessNote: Note | '') {
-  if (state.value !== 'waiting') return
+  // self-paced mode: also answerable while notes are still scrolling in
+  const early = answerInLine && state.value === 'scrolling'
+  if (state.value !== 'waiting' && !early) return
 
   // this runs inside the note-button click, the gesture that unlocks audio
   void unlockAudio()
@@ -353,18 +360,22 @@ function handleGuess(guessNote: Note | '') {
   // keep the question fill where it stopped — the pause overlay fills over it,
   // and resetProgressTimer() clears both when scrolling resumes
 
-  const item = notesQueue.value.find((item) => item.meta.state == 'in-question')
+  // normally the note at the spot; when answering early, the leading note
+  // still scrolling toward it
+  const item =
+    notesQueue.value.find((item) => item.meta.state == 'in-question') ??
+    notesQueue.value.find((item) => item.meta.state == 'default')
   if (!item) {
-    // should not happen — but never leave the game dead in 'waiting'
+    // should not happen — but never leave the game dead
     console.error('No item found in notesQueue')
-    startPauseTimer()
+    if (!early) startPauseTimer()
     return
   }
 
   const svgNote = item.note.getSVGElement()
   if (!svgNote) {
     console.error('SVG element not found for note:', item.note)
-    startPauseTimer()
+    if (!early) startPauseTimer()
     return
   }
 
@@ -393,6 +404,26 @@ function handleGuess(guessNote: Note | '') {
     if (errorsAllowed > 0 && incorrectGuessTotal.value >= errorsAllowed) {
       defeated = true
     }
+  }
+
+  if (early) {
+    // the answered note keeps scrolling off on its own; no stop, no pause.
+    // keep ~5 upcoming notes in the pipeline, but cap the total so answering
+    // faster than notes scroll off can't pile them up unboundedly.
+    if (defeated) {
+      startPauseTimer() // shows the game-over hold, then ends
+      return
+    }
+    const upcoming = notesQueue.value.filter(
+      (i) => i.meta.state === 'default',
+    ).length
+    if (upcoming < 5 && notesQueue.value.length < 8) {
+      addNotes(1)
+      animateNote(
+        notesQueue.value[notesQueue.value.length - 1] as NoteQueueItem,
+      )
+    }
+    return
   }
 
   startPauseTimer()
@@ -778,7 +809,7 @@ onUnmounted(() => {
         v-for="note in notes"
         :key="note"
         @click="handleGuess(note)"
-        :disabled="state !== 'waiting'"
+        :disabled="!answerInLine && state !== 'waiting'"
         class="note-button cursor-pointer disabled:cursor-not-allowed"
       >
         {{ note }}
