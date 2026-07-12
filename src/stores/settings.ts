@@ -16,6 +16,8 @@ const SettingsSchema = z.object({
   errorsAllowed: z.coerce.number().int().min(0).max(100),
   /** play a piano sound when a note is answered */
   soundEnabled: z.coerce.boolean().default(true),
+  /** seconds the game waits after an answer before the next note starts; 0 = none */
+  pauseDuration: z.coerce.number().min(0).max(10),
 })
 type Settings = z.infer<typeof SettingsSchema>
 
@@ -25,6 +27,7 @@ const initSettings = {
   soundEnabled: true,
   showLastNoteQuessed: true,
   errorsAllowed: 3,
+  pauseDuration: 1,
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -62,6 +65,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const showLastNoteQuessed = computedValue('showLastNoteQuessed')
   const errorsAllowed = computedValue('errorsAllowed')
   const soundEnabled = computedValue('soundEnabled')
+  const pauseDuration = computedValue('pauseDuration')
   const resolver = zodResolver(SettingsSchema)
 
   return {
@@ -73,5 +77,6 @@ export const useSettingsStore = defineStore('settings', () => {
     showLastNoteQuessed,
     errorsAllowed,
     soundEnabled,
+    pauseDuration,
   }
 })

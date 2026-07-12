@@ -14,6 +14,7 @@ const settings = useSettingsStore()
       :showLastNoteQuessed="settings.showLastNoteQuessed"
       :errorsAllowed="settings.values.errorsAllowed"
       :soundEnabled="settings.values.soundEnabled"
+      :pauseDuration="settings.values.pauseDuration"
     />
   </main>
 </template>

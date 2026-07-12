@@ -11,7 +11,7 @@ const settings = useSettingsStore()
   <Form class="grid lg:grid-cols-2 gap-4 w-full items-center">
     <div>
       <label for="secondsBetweenNotes" class="font-bold block mb-1">
-        Time between notes (seconds)
+        Note travel time (seconds)
       </label>
       <small id="secondsBetweenNotes-help" class="block text-(--text-muted)">
         How long a note takes to reach the question spot. Lower is faster and
@@ -26,6 +26,24 @@ const settings = useSettingsStore()
       :min="1"
       :max="10"
       v-model="settings.secondsBetweenNotes"
+    />
+    <div>
+      <label for="pauseDuration" class="font-bold block mb-1">
+        Wait between notes (seconds)
+      </label>
+      <small id="pauseDuration-help" class="block text-(--text-muted)">
+        Pause after you answer before the next note starts moving. 0 for no
+        wait.
+      </small>
+    </div>
+    <InputNumber
+      size="large"
+      inputId="pauseDuration"
+      name="pauseDuration"
+      aria-describedby="pauseDuration-help"
+      :min="0"
+      :max="10"
+      v-model="settings.pauseDuration"
     />
     <div>
       <label for="questionTimeLimit" class="font-bold block mb-1">

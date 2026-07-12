@@ -60,7 +60,7 @@ const {
   secondsBetweenNotes = 3,
   questionTimeLimit = 5,
   showLastNoteQuessed = true,
-  pauseDuration = 2,
+  pauseDuration = 1,
   errorsAllowed = 3,
   soundEnabled = true,
 } = defineProps<ExerciseProps>()
