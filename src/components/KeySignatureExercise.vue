@@ -5,7 +5,13 @@ import ProgressBar from './ProgressBar.vue'
 import EndScreen from './EndScreen.vue'
 import Button from '@/volt/Button.vue'
 import { useNoteSound } from '@/composables/useNoteSound'
-import { MAJOR_KEYS, buildChoices, type MajorKey } from '@/utils/keySignatures'
+import {
+  MAJOR_KEYS,
+  buildChoices,
+  keysFor,
+  type MajorKey,
+  type KeyMode,
+} from '@/utils/keySignatures'
 
 /**
  * Key-signature recognition — a static flashcard: render a clef + key
@@ -14,6 +20,8 @@ import { MAJOR_KEYS, buildChoices, type MajorKey } from '@/utils/keySignatures'
  * apply here.
  */
 type Props = {
+  /** which keys to practise: flat, sharp, or all */
+  mode?: KeyMode
   /** seconds to answer before the card counts as missed; 0 = untimed */
   questionTimeLimit?: number
   /** wrong answers before the exercise ends; 0 = unlimited */
@@ -22,10 +30,13 @@ type Props = {
   soundEnabled?: boolean
 }
 const {
+  mode = 'mixed',
   questionTimeLimit = 8,
   errorsAllowed = 3,
   soundEnabled = true,
 } = defineProps<Props>()
+
+const pool = keysFor(mode)
 
 const { preloadSound, unlockAudio, playNote } = useNoteSound()
 
@@ -70,8 +81,8 @@ const endStats = computed(() => ({
 function pickNextKey(): MajorKey {
   let key: MajorKey
   do {
-    key = MAJOR_KEYS[Math.floor(Math.random() * MAJOR_KEYS.length)]
-  } while (key.spec === lastKey && MAJOR_KEYS.length > 1)
+    key = pool[Math.floor(Math.random() * pool.length)]
+  } while (key.spec === lastKey && pool.length > 1)
   lastKey = key.spec
   return key
 }
@@ -102,7 +113,7 @@ function drawKeySignature(k: MajorKey) {
 function startCard() {
   picked.value = null
   current.value = pickNextKey()
-  choices.value = buildChoices(current.value)
+  choices.value = buildChoices(current.value, pool)
   state.value = 'playing'
   nextTick(() => drawKeySignature(current.value))
   startTimer()

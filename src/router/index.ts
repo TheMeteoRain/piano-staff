@@ -41,9 +41,36 @@ const router = createRouter({
           component: () => import('../views/MixedView.vue'),
         },
         {
-          path: 'key-signatures',
+          path: 'notes',
+          name: 'note-reading',
+          component: withLayout(() => import('../views/NoteReadingView.vue')),
+          props: { header: 'Note reading' },
+        },
+        {
+          path: 'keys',
           name: 'key-signatures',
+          component: withLayout(
+            () => import('../views/KeySignatureCategoryView.vue'),
+          ),
+          props: { header: 'Key signatures' },
+        },
+        {
+          path: 'keys/flat',
+          name: 'keys-flat',
           component: () => import('../views/KeySignatureView.vue'),
+          props: { mode: 'flat' },
+        },
+        {
+          path: 'keys/sharp',
+          name: 'keys-sharp',
+          component: () => import('../views/KeySignatureView.vue'),
+          props: { mode: 'sharp' },
+        },
+        {
+          path: 'keys/mixed',
+          name: 'keys-mixed',
+          component: () => import('../views/KeySignatureView.vue'),
+          props: { mode: 'mixed' },
         },
         {
           path: 'settings',

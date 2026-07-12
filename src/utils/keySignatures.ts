@@ -38,6 +38,15 @@ export const MAJOR_KEYS_BY_DIFFICULTY = [...MAJOR_KEYS].sort(
   (a, b) => Math.abs(a.accidentals) - Math.abs(b.accidentals),
 )
 
+export type KeyMode = 'flat' | 'sharp' | 'mixed'
+
+/** The keys practised in a given mode. C (no accidentals) only appears in mixed. */
+export function keysFor(mode: KeyMode): MajorKey[] {
+  if (mode === 'sharp') return MAJOR_KEYS.filter((k) => k.accidentals > 0)
+  if (mode === 'flat') return MAJOR_KEYS.filter((k) => k.accidentals < 0)
+  return MAJOR_KEYS
+}
+
 function shuffle<T>(arr: T[], rng: () => number = Math.random): T[] {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -54,16 +63,19 @@ function shuffle<T>(arr: T[], rng: () => number = Math.random): T[] {
  */
 export function buildChoices(
   answer: MajorKey,
+  pool: MajorKey[] = MAJOR_KEYS,
   distractorCount = 3,
   rng: () => number = Math.random,
 ): MajorKey[] {
-  const others = MAJOR_KEYS.filter((k) => k.spec !== answer.spec).sort(
-    (a, b) =>
-      Math.abs(a.accidentals - answer.accidentals) -
-      Math.abs(b.accidentals - answer.accidentals),
-  )
+  const others = pool
+    .filter((k) => k.spec !== answer.spec)
+    .sort(
+      (a, b) =>
+        Math.abs(a.accidentals - answer.accidentals) -
+        Math.abs(b.accidentals - answer.accidentals),
+    )
   // take from the nearest ~6, pick distractorCount at random for variety
-  const pool = others.slice(0, Math.max(distractorCount + 3, 6))
-  const distractors = shuffle(pool, rng).slice(0, distractorCount)
+  const nearby = others.slice(0, Math.max(distractorCount + 3, 6))
+  const distractors = shuffle(nearby, rng).slice(0, distractorCount)
   return shuffle([answer, ...distractors], rng)
 }
