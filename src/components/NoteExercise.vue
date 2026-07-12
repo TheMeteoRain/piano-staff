@@ -52,6 +52,8 @@ type ExerciseProps = {
   pauseDuration?: number
   /** wrong answers before the exercise ends; 0 means unlimited */
   errorsAllowed?: number
+  /** play a piano sound when a note is answered */
+  soundEnabled?: boolean
 }
 const {
   exercise,
@@ -60,6 +62,7 @@ const {
   showLastNoteQuessed = true,
   pauseDuration = 2,
   errorsAllowed = 3,
+  soundEnabled = true,
 } = defineProps<ExerciseProps>()
 const initialStatsState: Stats = {
   guesses: {},
@@ -370,7 +373,7 @@ function handleGuess(guessNote: Note | '') {
   svgNote.setAttribute('data-state', item.meta.state)
 
   // always play the correct pitch — hearing the right note is the ear-training
-  playNote(item.randomNote.key)
+  if (soundEnabled) playNote(item.randomNote.key)
 
   const correctNote = item.note.keys[0].charAt(0)
 

@@ -74,5 +74,18 @@ const settings = useSettingsStore()
       aria-describedby="showLastNoteQuessed-help"
       v-model="settings.showLastNoteQuessed"
     />
+    <div>
+      <label for="soundEnabled" class="font-bold block mb-1">
+        Note sounds
+      </label>
+      <small id="soundEnabled-help" class="block text-(--text-muted)">
+        Play a piano sound when a note is answered.
+      </small>
+    </div>
+    <ToggleSwitch
+      inputId="soundEnabled"
+      aria-describedby="soundEnabled-help"
+      v-model="settings.soundEnabled"
+    />
   </Form>
 </template>

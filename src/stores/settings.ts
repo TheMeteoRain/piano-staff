@@ -14,12 +14,15 @@ const SettingsSchema = z.object({
   showLastNoteQuessed: z.coerce.boolean().default(true),
   /** wrong answers before the exercise ends; 0 means unlimited */
   errorsAllowed: z.coerce.number().int().min(0).max(100),
+  /** play a piano sound when a note is answered */
+  soundEnabled: z.coerce.boolean().default(true),
 })
 type Settings = z.infer<typeof SettingsSchema>
 
 const initSettings = {
   secondsBetweenNotes: 3,
   questionTimeLimit: 5,
+  soundEnabled: true,
   showLastNoteQuessed: true,
   errorsAllowed: 3,
 }
@@ -58,6 +61,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const questionTimeLimit = computedValue('questionTimeLimit')
   const showLastNoteQuessed = computedValue('showLastNoteQuessed')
   const errorsAllowed = computedValue('errorsAllowed')
+  const soundEnabled = computedValue('soundEnabled')
   const resolver = zodResolver(SettingsSchema)
 
   return {
@@ -68,5 +72,6 @@ export const useSettingsStore = defineStore('settings', () => {
     questionTimeLimit,
     showLastNoteQuessed,
     errorsAllowed,
+    soundEnabled,
   }
 })

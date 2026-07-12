@@ -13,6 +13,7 @@ const settings = useSettingsStore()
       :questionTimeLimit="settings.values.questionTimeLimit"
       :showLastNoteQuessed="settings.showLastNoteQuessed"
       :errorsAllowed="settings.values.errorsAllowed"
+      :soundEnabled="settings.values.soundEnabled"
     />
   </main>
 </template>
