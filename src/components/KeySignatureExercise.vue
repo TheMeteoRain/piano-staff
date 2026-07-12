@@ -59,6 +59,8 @@ const guesses = ref<Record<string, Guess>>({})
 let renderer: Renderer | null = null
 let context: RenderContext | null = null
 let timerRaf: number | null = null
+let advanceTimeout: number | null = null
+let disposed = false
 let lastKey = ''
 
 const incorrectTotal = computed(() =>
@@ -111,6 +113,7 @@ function drawKeySignature(k: MajorKey) {
 }
 
 function startCard() {
+  if (disposed) return
   picked.value = null
   current.value = pickNextKey()
   choices.value = buildChoices(current.value, pool)
@@ -161,7 +164,7 @@ function record(isCorrect: boolean) {
 }
 
 function answer(spec: string) {
-  if (state.value !== 'playing') return
+  if (state.value !== 'playing' || disposed) return
   void unlockAudio()
   stopTimer()
   picked.value = spec
@@ -172,13 +175,13 @@ function answer(spec: string) {
 
   if (!correct && errorsAllowed > 0 && incorrectTotal.value >= errorsAllowed) {
     // hold on the revealed answer briefly, then end
-    window.setTimeout(() => {
-      state.value = 'game-over'
+    advanceTimeout = window.setTimeout(() => {
+      if (!disposed) state.value = 'game-over'
     }, 1200)
     return
   }
   // brief reveal, then next card
-  window.setTimeout(startCard, correct ? 550 : 1100)
+  advanceTimeout = window.setTimeout(startCard, correct ? 550 : 1100)
 }
 
 function handleReset(event: MouseEvent) {
@@ -192,7 +195,15 @@ onMounted(() => {
   preloadSound()
   startCard()
 })
-onUnmounted(stopTimer)
+onUnmounted(() => {
+  // stop everything so cards don't keep advancing (and playing) after leaving
+  disposed = true
+  stopTimer()
+  if (advanceTimeout !== null) {
+    clearTimeout(advanceTimeout)
+    advanceTimeout = null
+  }
+})
 </script>
 
 <template>
