@@ -233,90 +233,90 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { Clef } from "@/components/NoteExercise.vue";
-<span class="cstat-no" title="statement not covered" >import { ref } from "vue";</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { Clef } from '@/types/global'
+<span class="cstat-no" title="statement not covered" >import { ref } from 'vue'</span>
 &nbsp;
 export type Stats = {
   guesses: {
     [key: string]: {
-      averageMs: number;
-      totalGuesses: number;
-      correctGuesses: number;
-      incorrectGuesses: number;
-      guessRate: number;
-    };
-  };
-  exercise: Clef;
-  startTime: string;
-  endTime: string | null;
-};
+      averageMs: number
+      totalGuesses: number
+      correctGuesses: number
+      incorrectGuesses: number
+      guessRate: number
+    }
+  }
+  exercise: Clef
+  startTime: string
+  endTime: string | null
+}
 &nbsp;
 export type SavedStats = {
   exercises: {
-    treble: Stats[];
-    bass: Stats[];
-    mixed: Stats[];
-  };
-};
+    treble: Stats[]
+    bass: Stats[]
+    mixed: Stats[]
+  }
+}
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export function resetLocalStorage() {</span>
-<span class="cstat-no" title="statement not covered" >  localStorage.removeItem("stats");</span>
+<span class="cstat-no" title="statement not covered" >  localStorage.removeItem('stats')</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export function useStats(initial: Stats) {</span>
-<span class="cstat-no" title="statement not covered" >  const stats = ref&lt;Stats&gt;(structuredClone(initial));</span>
-<span class="cstat-no" title="statement not covered" >  const lastSavedStats = ref&lt;Stats&gt;(stats.value);</span>
+<span class="cstat-no" title="statement not covered" >  const stats = ref&lt;Stats&gt;(structuredClone(initial))</span>
+<span class="cstat-no" title="statement not covered" >  const lastSavedStats = ref&lt;Stats&gt;(stats.value)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  function resetGameStats() {</span>
-<span class="cstat-no" title="statement not covered" >    stats.value = structuredClone(initial);</span>
-<span class="cstat-no" title="statement not covered" >    stats.value.startTime = new Date().toISOString();</span>
+<span class="cstat-no" title="statement not covered" >    stats.value = structuredClone(initial)</span>
+<span class="cstat-no" title="statement not covered" >    stats.value.startTime = new Date().toISOString()</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  function initializeStats() {</span>
-<span class="cstat-no" title="statement not covered" >    if (!localStorage.getItem("stats")) {</span>
+<span class="cstat-no" title="statement not covered" >    if (!localStorage.getItem('stats')) {</span>
 <span class="cstat-no" title="statement not covered" >      localStorage.setItem(</span>
-<span class="cstat-no" title="statement not covered" >        "stats",</span>
+<span class="cstat-no" title="statement not covered" >        'stats',</span>
 <span class="cstat-no" title="statement not covered" >        JSON.stringify({</span>
 <span class="cstat-no" title="statement not covered" >          exercises: {</span>
 <span class="cstat-no" title="statement not covered" >            treble: [],</span>
 <span class="cstat-no" title="statement not covered" >            bass: [],</span>
 <span class="cstat-no" title="statement not covered" >            mixed: [],</span>
 <span class="cstat-no" title="statement not covered" >          },</span>
-<span class="cstat-no" title="statement not covered" >        })</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >        }),</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  function saveStats() {</span>
-<span class="cstat-no" title="statement not covered" >    console.log("Saving stats", stats.value);</span>
+<span class="cstat-no" title="statement not covered" >    console.log('Saving stats', stats.value)</span>
 <span class="cstat-no" title="statement not covered" >    if (</span>
 <span class="cstat-no" title="statement not covered" >      Object.entries(stats.value.guesses).reduce(</span>
 <span class="cstat-no" title="statement not covered" >        (prev, [, guess]) =&gt; prev + guess.totalGuesses,</span>
-<span class="cstat-no" title="statement not covered" >        0</span>
+<span class="cstat-no" title="statement not covered" >        0,</span>
 <span class="cstat-no" title="statement not covered" >      ) === 0</span>
     )
-<span class="cstat-no" title="statement not covered" >      return;</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    const savedStats = localStorage.getItem("stats");</span>
-<span class="cstat-no" title="statement not covered" >    if (!savedStats) return;</span>
+<span class="cstat-no" title="statement not covered" >    const savedStats = localStorage.getItem('stats')</span>
+<span class="cstat-no" title="statement not covered" >    if (!savedStats) return</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    const parsedStats: SavedStats = JSON.parse(savedStats);</span>
+<span class="cstat-no" title="statement not covered" >    const parsedStats: SavedStats = JSON.parse(savedStats)</span>
     // Prevent double saving the same exercise
 <span class="cstat-no" title="statement not covered" >    if (</span>
 <span class="cstat-no" title="statement not covered" >      parsedStats.exercises[stats.value.exercise].find(</span>
-<span class="cstat-no" title="statement not covered" >        (s) =&gt; s.startTime === stats.value.startTime</span>
+<span class="cstat-no" title="statement not covered" >        (s) =&gt; s.startTime === stats.value.startTime,</span>
 <span class="cstat-no" title="statement not covered" >      )</span>
 <span class="cstat-no" title="statement not covered" >    ) {</span>
-<span class="cstat-no" title="statement not covered" >      return;</span>
+<span class="cstat-no" title="statement not covered" >      return</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    stats.value.endTime = new Date().toISOString();</span>
-<span class="cstat-no" title="statement not covered" >    parsedStats.exercises[stats.value.exercise].push(stats.value);</span>
-<span class="cstat-no" title="statement not covered" >    localStorage.setItem("stats", JSON.stringify(parsedStats));</span>
-<span class="cstat-no" title="statement not covered" >    lastSavedStats.value = stats.value;</span>
-<span class="cstat-no" title="statement not covered" >    resetGameStats();</span>
+<span class="cstat-no" title="statement not covered" >    stats.value.endTime = new Date().toISOString()</span>
+<span class="cstat-no" title="statement not covered" >    parsedStats.exercises[stats.value.exercise].push(stats.value)</span>
+<span class="cstat-no" title="statement not covered" >    localStorage.setItem('stats', JSON.stringify(parsedStats))</span>
+<span class="cstat-no" title="statement not covered" >    lastSavedStats.value = stats.value</span>
+<span class="cstat-no" title="statement not covered" >    resetGameStats()</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return { stats, resetGameStats, initializeStats, saveStats, lastSavedStats };</span>
+<span class="cstat-no" title="statement not covered" >  return { stats, resetGameStats, initializeStats, saveStats, lastSavedStats }</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -325,7 +325,7 @@ export type SavedStats = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-03T09:13:48.308Z
+                at 2026-07-12T19:39:41.258Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
