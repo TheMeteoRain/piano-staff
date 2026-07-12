@@ -5,8 +5,10 @@ import Button from '@/volt/Button.vue'
 type EndScreenProps = {
   reset: (event: MouseEvent) => void
   stats: Stats
+  /** what each per-item row represents, e.g. "note" or "key" */
+  itemLabel?: string
 }
-const { reset, stats } = defineProps<EndScreenProps>()
+const { reset, stats, itemLabel = 'note' } = defineProps<EndScreenProps>()
 
 function animate(event: MouseEvent) {
   const target = event.currentTarget as HTMLElement
@@ -67,7 +69,9 @@ function animate(event: MouseEvent) {
           </div>
         </div>
 
-        <h2 class="text-center text-2xl font-bold mt-10">Per note accuracy</h2>
+        <h2 class="text-center text-2xl font-bold mt-10">
+          Per {{ itemLabel }} accuracy
+        </h2>
         <div
           v-for="(guess, key, _index) in stats.guesses"
           :key="key"

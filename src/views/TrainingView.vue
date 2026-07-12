@@ -54,6 +54,21 @@ import { RouterLink, RouterView } from 'vue-router'
               width="20" /></template
         ></Button>
       </router-link>
+      <router-link
+        to="/training/key-signatures"
+        v-slot="{ href, navigate }"
+        class="flex-grow"
+      >
+        <Button
+          :href="href"
+          @click="navigate"
+          label="Key Signatures"
+          class="w-full h-20"
+        >
+          <template #icon>
+            <Icon icon="mdi:music-accidental-sharp" width="20" /></template
+        ></Button>
+      </router-link>
       <Button disabled label="More coming..." class="w-full h-20">
         <template #icon> <Icon icon="mdi:wrench" width="20" /></template
       ></Button>

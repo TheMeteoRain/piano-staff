@@ -41,6 +41,11 @@ const router = createRouter({
           component: () => import('../views/MixedView.vue'),
         },
         {
+          path: 'key-signatures',
+          name: 'key-signatures',
+          component: () => import('../views/KeySignatureView.vue'),
+        },
+        {
           path: 'settings',
           redirect: { name: 'exercise-settings' },
         },
