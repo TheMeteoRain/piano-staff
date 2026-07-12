@@ -44,7 +44,7 @@ const router = createRouter({
           path: 'notes',
           name: 'note-reading',
           component: withLayout(() => import('../views/NoteReadingView.vue')),
-          props: { header: 'Note reading' },
+          props: { header: 'Sight reading' },
         },
         {
           path: 'keys',

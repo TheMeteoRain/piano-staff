@@ -4,7 +4,7 @@ import TrainingMenu from '@/components/TrainingMenu.vue'
 const items = [
   {
     to: '/training/notes',
-    label: 'Note reading',
+    label: 'Sight reading',
     icons: ['mdi:music-clef-treble', 'mdi:music-clef-bass'],
   },
   {
