@@ -811,7 +811,7 @@ onUnmounted(() => {
       </button>
 
       <div
-        class="guess-tally absolute h-full content-center justify-self-center pointer-events-none select-none text-center"
+        class="guess-tally absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center"
       >
         <!-- :key remounts the element on each increment, replaying the splash -->
         <div
