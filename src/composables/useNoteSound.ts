@@ -50,6 +50,10 @@ let gestureBound = false
 
 function getSampler(): Sampler {
   if (!sampler) {
+    // Tone schedules events lookAhead seconds ahead (default 0.1s) to avoid
+    // glitches — but that reads as a ~100ms delay when a note is played on a
+    // key press. Zero it so notes sound the instant they're triggered.
+    getContext().lookAhead = 0
     sampler = new Sampler({
       urls: SAMPLES,
       baseUrl: `${import.meta.env.BASE_URL}piano/`,
