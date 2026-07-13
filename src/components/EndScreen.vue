@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Stats } from '@/utils/stats'
 import Button from '@/volt/Button.vue'
 
@@ -9,6 +10,35 @@ type EndScreenProps = {
   itemLabel?: string
 }
 const { reset, stats, itemLabel = 'note' } = defineProps<EndScreenProps>()
+
+const PITCH_CLASS: Record<string, number> = {
+  C: 0,
+  D: 2,
+  E: 4,
+  F: 5,
+  G: 7,
+  A: 9,
+  B: 11,
+}
+
+/** Sort value for a per-item key: pitch order (octave then chromatic). Handles
+ * note keys like "C4"/"F#5" and key names like "D♭"; unknowns sort last. */
+function pitchValue(key: string): number {
+  const m = key.match(/^([A-Ga-g])([#♯b♭]?)(-?\d+)?$/)
+  if (!m) return Number.POSITIVE_INFINITY
+  let semitone = PITCH_CLASS[m[1].toUpperCase()]
+  if (m[2] === '#' || m[2] === '♯') semitone += 1
+  else if (m[2] === 'b' || m[2] === '♭') semitone -= 1
+  const octave = m[3] !== undefined ? parseInt(m[3], 10) : 0
+  return octave * 12 + semitone
+}
+
+/** per-item rows, highest pitch first — mirrors top-to-bottom on the staff */
+const sortedGuesses = computed(() =>
+  Object.entries(stats.guesses).sort(
+    ([a], [b]) => pitchValue(b) - pitchValue(a),
+  ),
+)
 
 function animate(event: MouseEvent) {
   const target = event.currentTarget as HTMLElement
@@ -72,11 +102,7 @@ function animate(event: MouseEvent) {
         <h2 class="text-center text-2xl font-bold mt-10">
           Per {{ itemLabel }} accuracy
         </h2>
-        <div
-          v-for="(guess, key, _index) in stats.guesses"
-          :key="key"
-          class="stat"
-        >
+        <div v-for="[key, guess] in sortedGuesses" :key="key" class="stat">
           <div class="stat_item text-right">{{ key }}</div>
           <div class="stat_item text-left">
             {{ guess.correctGuesses }}/{{ guess.totalGuesses }} -
