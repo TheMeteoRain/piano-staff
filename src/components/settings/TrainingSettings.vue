@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import InputNumber from '@/volt/InputNumber.vue'
 import ToggleSwitch from '@/volt/ToggleSwitch.vue'
+import SelectButton from '@/volt/SelectButton.vue'
 import { Form } from '@primevue/forms'
 import { useSettingsStore } from '@/stores/settings'
 
 const settings = useSettingsStore()
+
+const inputMethods = [
+  { label: 'Letters', value: 'letters' },
+  { label: 'Piano', value: 'piano' },
+]
 </script>
 
 <template>
@@ -119,6 +125,23 @@ const settings = useSettingsStore()
       inputId="soundEnabled"
       aria-describedby="soundEnabled-help"
       v-model="settings.soundEnabled"
+    />
+    <div>
+      <label for="inputMethod" class="font-bold block mb-1">
+        Answer with
+      </label>
+      <small id="inputMethod-help" class="block text-(--text-muted)">
+        Choose note-letter buttons or a piano keyboard (sight reading).
+      </small>
+    </div>
+    <SelectButton
+      id="inputMethod"
+      aria-describedby="inputMethod-help"
+      :options="inputMethods"
+      optionLabel="label"
+      optionValue="value"
+      :allowEmpty="false"
+      v-model="settings.inputMethod"
     />
   </Form>
 </template>

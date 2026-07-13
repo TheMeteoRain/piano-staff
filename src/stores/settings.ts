@@ -21,6 +21,8 @@ const SettingsSchema = z.object({
   /** answer the leading note immediately, self-paced, without waiting for it
    * to reach the question spot */
   answerInLine: z.coerce.boolean().default(false),
+  /** how notes are answered: letter buttons or a piano keyboard */
+  inputMethod: z.enum(['letters', 'piano']).default('letters'),
 })
 type Settings = z.infer<typeof SettingsSchema>
 
@@ -32,6 +34,7 @@ const initSettings = {
   errorsAllowed: 3,
   pauseDuration: 1,
   answerInLine: false,
+  inputMethod: 'letters' as const,
 }
 
 export const useSettingsStore = defineStore('settings', () => {
@@ -71,6 +74,7 @@ export const useSettingsStore = defineStore('settings', () => {
   const soundEnabled = computedValue('soundEnabled')
   const pauseDuration = computedValue('pauseDuration')
   const answerInLine = computedValue('answerInLine')
+  const inputMethod = computedValue('inputMethod')
   const resolver = zodResolver(SettingsSchema)
 
   return {
@@ -84,5 +88,6 @@ export const useSettingsStore = defineStore('settings', () => {
     soundEnabled,
     pauseDuration,
     answerInLine,
+    inputMethod,
   }
 })
