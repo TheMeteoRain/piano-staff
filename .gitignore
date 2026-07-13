@@ -9,3 +9,23 @@ coverage
 cypress/screenshots
 cypress/videos
 cypress/downloads
+
+# Android / Bubblewrap TWA build — generated project + signing secrets.
+# twa-manifest.json is intentionally NOT ignored (it's the build config).
+/android/
+/app/
+/build/
+/.gradle/
+/gradle/
+gradlew
+gradlew.bat
+gradle.properties
+build.gradle
+settings.gradle
+store_icon.png
+manifest-checksum.txt
+*.keystore
+*.jks
+*.aab
+*.apk
+*.apk.idsig

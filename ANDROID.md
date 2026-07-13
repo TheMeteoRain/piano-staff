@@ -72,13 +72,37 @@ the key Google signs releases with. On Play App Signing, copy that JSON from
 **Play Console → App signing** (it lists the exact fingerprint) and deploy it to
 the site. `bubblewrap fingerprint` also generates it from a keystore.
 
+## Passwords (read this — it's the #1 gotcha)
+
+Keystores are **PKCS12**, which supports only **one** password: the store and
+key password must be **identical**. keytool silently forces the key password to
+equal the store password at creation, so if Bubblewrap later signs with a
+*different* key password you get `Wrong password? / BadPaddingException` even
+though nothing is actually wrong.
+
+Also avoid `$`, backtick and backslash in the password — Bubblewrap signs via a
+shell command, so the shell expands them and the password gets mangled. Use
+letters and digits only.
+
+`pnpm android:build` reads passwords from env vars (no prompt if set). Keep them
+identical:
+
+```sh
+export BUBBLEWRAP_KEYSTORE_PASSWORD='<letters-and-digits-only>'
+export BUBBLEWRAP_KEY_PASSWORD='<same-value>'
+```
+
+If a build ever fails with "Wrong password?", it's almost always these two env
+vars holding different values.
+
 ## Building
 
 ```sh
 pnpm android:build
 ```
 
-Prompts for the keystore password, then produces (in the project root):
+With the env vars above set (or by entering the same password at both prompts),
+produces (in the project root):
 
 - `app-release-bundle.aab` → **upload this to Play Console** (Play requires AAB).
 - `app-release-signed.apk` → sideload onto a device for testing
