@@ -12,20 +12,16 @@ export function PWAServiceWorkerPlugin() {
   const state = useRegisterSW({
     onRegisteredSW(swUrl, r) {
       registration.value = r
-      //   if (r) {
-      //     setInterval(() => {
-      //       if (r.installing || !navigator) return
-      //       if ('connection' in navigator && !navigator.onLine) return
-      //       const channel = new MessageChannel()
-      //       channel.port1.onmessage = (event) => {
-      //         console.log('SW response:', event.data)
-      //       }
-      //       navigator.serviceWorker.controller?.postMessage(
-      //         { type: 'GET_VERSION' },
-      //         [channel.port2],
-      //       )
-      //     }, 5000)
-      //   }
+      if (!r) return
+      // Browsers only check for a new service worker on navigation, so a
+      // long-open session could sit on an old version. Poll hourly (skipping
+      // when offline or an update is already in flight) so autoUpdate can pick
+      // up and apply new deployments without the user relaunching.
+      const ONE_HOUR = 60 * 60 * 1000
+      setInterval(() => {
+        if (r.installing || !navigator.onLine) return
+        r.update()
+      }, ONE_HOUR)
     },
     onOfflineReady() {
       // called when sw installed

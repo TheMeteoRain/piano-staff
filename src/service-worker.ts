@@ -69,12 +69,18 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', async (event) => {
   if (data.debug) console.log(event)
-  if (event.data.type === 'CACHE_UPDATED') {
+  if (event.data?.type === 'SKIP_WAITING') {
+    // vite-plugin-pwa (autoUpdate) posts this once the new worker is waiting.
+    // Activating in response — instead of skipping waiting unconditionally —
+    // lets workbox-window drive the update and reload the page to the new
+    // version automatically, so users never need a hard refresh.
+    self.skipWaiting()
+  } else if (event.data?.type === 'CACHE_UPDATED') {
     const { updatedURL } = event.data.payload
 
     if (data.debug)
       console.log(`A newer version of ${updatedURL} is available!`)
-  } else if (event.data.type === 'GET_VERSION') {
+  } else if (event.data?.type === 'GET_VERSION') {
     event.ports[0].postMessage(SW_VERSION)
   }
 })
@@ -106,7 +112,9 @@ setCatchHandler(({ event }): Promise<Response> => {
   }
 })
 
-// this is necessary, since the new service worker will keep on skipWaiting state
-// and then, caches will not be cleared since it is not activated
-self.skipWaiting()
+// NOTE: do not call self.skipWaiting() here. Skipping waiting unconditionally
+// activates the worker "externally", which workbox-window / vite-plugin-pwa
+// won't auto-reload for — so users stay on the old version until a hard
+// refresh. We skip waiting via the SKIP_WAITING message instead (see above),
+// which is what autoUpdate sends, and the page then reloads to the new version.
 clientsClaim()
