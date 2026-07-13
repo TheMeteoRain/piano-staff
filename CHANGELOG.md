@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.5.0...v0.6.0) (2026-07-13)
+
+
+### Features
+
+* **endscreen:** order per-note stats highest to lowest, matching the staff ([94f4770](https://github.com/TheMeteoRain/piano-staff/commit/94f4770f335c89abf75c8b68c016606d40529b52))
+* **sight-reading:** swappable answer input — letter buttons or piano keyboard ([119af50](https://github.com/TheMeteoRain/piano-staff/commit/119af50f7842e87fcfc2425e695ac3afea7b95ad))
+* **store:** generate Play Store graphics with Cypress ([320568d](https://github.com/TheMeteoRain/piano-staff/commit/320568d8ea8fb0caac075c8e6015895c38cae722))
+
+
+### Bug Fixes
+
+* **exercise:** center guess tally reliably on Safari/iPad ([5e64dde](https://github.com/TheMeteoRain/piano-staff/commit/5e64ddeeff2b22e8a7d7c75a79fac4c1cb16d46d))
+* **pwa:** correct manifest icon paths to /icons/ ([d677d53](https://github.com/TheMeteoRain/piano-staff/commit/d677d53b98c499861496bb6e0e0dcb7673b34c89))
+
 ## [0.5.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.4.1...v0.5.0) (2026-07-12)
 
 

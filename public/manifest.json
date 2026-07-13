@@ -2,7 +2,7 @@
   "name": "Musical Sight",
   "short_name": "MusicalSight",
   "manifest_version": 3,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "categories": [
     "music",
     "education"
