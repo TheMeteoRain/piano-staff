@@ -21,8 +21,8 @@
     "path": "/home/akash/Projects/piano-staff/android/android.keystore",
     "alias": "android-musical-sight"
   },
-  "appVersionName": "4",
-  "appVersionCode": 4,
+  "appVersionName": "5",
+  "appVersionCode": 5,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://piano.akash.fi/manifest.json",
@@ -51,5 +51,5 @@
   "displayOverride": [
     "window-controls-overlay"
   ],
-  "appVersion": "4"
+  "appVersion": "5"
 }
