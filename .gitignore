@@ -4,3 +4,8 @@ coverage
 **/.DS_Store
 .env*
 !.env.template
+
+# Cypress generated output (incl. generated Play Store assets)
+cypress/screenshots
+cypress/videos
+cypress/downloads

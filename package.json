@@ -11,6 +11,7 @@
     "coverage": "vitest run --coverage",
     "_prepare": "cypress install",
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
+    "store:assets": "vite build && start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/store-assets.cy.ts'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
