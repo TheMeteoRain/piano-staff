@@ -53,6 +53,15 @@ const githubLink =
         <template #icon> <Icon icon="mdi:license" width="20" /></template
       ></Button>
     </AppLink>
+    <AppLink to="https://piano.akash.fi/privacy.html">
+      <Button
+        variant="outlined"
+        label="Privacy policy"
+        class="h-[75px] w-[100%]"
+      >
+        <template #icon> <Icon icon="mdi:shield-lock" width="20" /></template
+      ></Button>
+    </AppLink>
   </div>
 </template>
 
