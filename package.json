@@ -18,7 +18,11 @@
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
     "format": "prettier --write src/",
-    "prepare": "husky"
+    "prepare": "husky",
+    "android:doctor": "bubblewrap doctor",
+    "android:init": "bubblewrap init --manifest https://piano.akash.fi/manifest.json",
+    "android:update": "bubblewrap update",
+    "android:build": "bubblewrap build"
   },
   "dependencies": {
     "@grafana/faro-web-sdk": "^2.2.4",
@@ -44,6 +48,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@bubblewrap/cli": "^1.24.1",
     "@grafana/faro-rollup-plugin": "^0.5.1",
     "@iconify/vue": "^5.0.0",
     "@tsconfig/node22": "^22.0.1",
