@@ -60,21 +60,25 @@ const blackKeys = [
   gap: 2px;
 }
 
+/* Piano keys keep real-piano colours (white naturals, black accidentals) in
+   both light and dark themes — a piano looks the same whatever the lighting. */
 .white-key {
   flex: 1;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 0.6rem;
-  background: var(--background-0);
-  border: 1px solid var(--primary-200);
+  background: #fbfbfb;
+  border: 1px solid #c7c4d1;
+  border-top: none;
   border-radius: 0 0 8px 8px;
-  color: var(--text-muted);
+  color: #4a4753;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: inset 0 -5px 7px -5px rgba(0, 0, 0, 0.28);
 }
 .white-key:not(:disabled):active {
-  background: var(--primary-100);
+  background: #ece9f6;
 }
 .white-key:disabled {
   cursor: not-allowed;
@@ -85,13 +89,14 @@ const blackKeys = [
   top: 0;
   width: 9%;
   height: 62%;
-  background: var(--primary-800);
-  border: 1px solid var(--primary-900);
+  background: #201e28;
+  border: 1px solid #000;
   border-radius: 0 0 6px 6px;
   cursor: pointer;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
 }
 .black-key:not(:disabled):active {
-  background: var(--primary-700);
+  background: #3b3746;
 }
 .black-key:disabled {
   cursor: not-allowed;
