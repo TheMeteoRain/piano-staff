@@ -40,12 +40,7 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "protocolHandlers": [
-    {
-      "protocol": "mailto",
-      "url": "https://piano.akash.fi/newEmail?to=%s"
-    }
-  ],
+  "protocolHandlers": [],
   "fileHandlers": [],
   "launchHandlerClientMode": "",
   "displayOverride": [
