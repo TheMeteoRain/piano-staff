@@ -128,7 +128,7 @@ const inputMethods = [
     />
     <div>
       <label for="inputMethod" class="font-bold block mb-1">
-        Answer with
+        Input method
       </label>
       <small id="inputMethod-help" class="block text-(--text-muted)">
         Choose note-letter buttons or a piano keyboard (sight reading).
