@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.2](https://github.com/TheMeteoRain/piano-staff/compare/v0.6.1...v0.6.2) (2026-07-14)
+
+
+### Bug Fixes
+
+* **ci:** include hidden files so assetlinks.json ships in the image ([b6a1d76](https://github.com/TheMeteoRain/piano-staff/commit/b6a1d76ec13317090062ec9f59c0a0da45f11762))
+
 ## [0.6.1](https://github.com/TheMeteoRain/piano-staff/compare/v0.6.0...v0.6.1) (2026-07-14)
 
 
