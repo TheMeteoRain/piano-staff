@@ -54,6 +54,9 @@ jobs:
           name: dist
           path: ./dist
           if-no-files-found: 'error'
+          # dist/.well-known/ is a hidden dir; upload-artifact v4+ excludes
+          # hidden files by default, which would drop assetlinks.json
+          include-hidden-files: true
 
   docker:
     needs: [get-tag, build]
