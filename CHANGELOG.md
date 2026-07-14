@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.1](https://github.com/TheMeteoRain/piano-staff/compare/v0.6.0...v0.6.1) (2026-07-14)
+
+
+### Bug Fixes
+
+* **pwa:** auto-reload on service worker update ([d697132](https://github.com/TheMeteoRain/piano-staff/commit/d697132b0c81faeeec76f183c0c35225bb4acb67))
+* **pwa:** remove stray mailto protocol handler ([5694b51](https://github.com/TheMeteoRain/piano-staff/commit/5694b514a233c479822b8648de7f8d23abcb258a))
+* **twa:** serve Digital Asset Links for Play domain verification ([cc31d05](https://github.com/TheMeteoRain/piano-staff/commit/cc31d05165450324d44fcb6a937ed6a039684144))
+
 ## [0.6.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.5.0...v0.6.0) (2026-07-13)
 
 
