@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fi.akash.piano.twa",
+      "sha256_cert_fingerprints": [
+        "1D:16:B8:43:1E:97:E6:0F:FB:B9:3A:EA:E8:A4:21:F5:59:06:3E:D3:A8:7F:B5:F4:9E:4F:71:F1:B0:A6:B9:8B",
+        "16:25:51:A2:9E:FD:74:1A:B7:96:32:CE:9C:F1:E8:D9:48:CC:56:99:72:E8:64:FE:57:B7:0C:28:05:88:95:7A"
+      ]
+    }
+  }
+]
