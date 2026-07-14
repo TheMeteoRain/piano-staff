@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/80</span>
+                <span class='fraction'>0/81</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/80</span>
+                <span class='fraction'>0/81</span>
             </div>
         
             
@@ -175,7 +175,15 @@
 <a name='L110'></a><a href='#L110'>110</a>
 <a name='L111'></a><a href='#L111'>111</a>
 <a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -247,6 +255,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -285,7 +299,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
@@ -358,12 +374,18 @@ declare let self: ServiceWorkerGlobalScope
 &nbsp;
 <span class="cstat-no" title="statement not covered" >self.addEventListener('message', async (event) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  if (data.debug) console.log(event)</span>
-<span class="cstat-no" title="statement not covered" >  if (event.data.type === 'CACHE_UPDATED') {</span>
+<span class="cstat-no" title="statement not covered" >  if (event.data?.type === 'SKIP_WAITING') {</span>
+    // vite-plugin-pwa (autoUpdate) posts this once the new worker is waiting.
+    // Activating in response — instead of skipping waiting unconditionally —
+    // lets workbox-window drive the update and reload the page to the new
+    // version automatically, so users never need a hard refresh.
+<span class="cstat-no" title="statement not covered" >    self.skipWaiting()</span>
+<span class="cstat-no" title="statement not covered" >  } else if (event.data?.type === 'CACHE_UPDATED') {</span>
 <span class="cstat-no" title="statement not covered" >    const { updatedURL } = event.data.payload</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (data.debug)</span>
 <span class="cstat-no" title="statement not covered" >      console.log(`A newer version of ${updatedURL} is available!`)</span>
-<span class="cstat-no" title="statement not covered" >  } else if (event.data.type === 'GET_VERSION') {</span>
+<span class="cstat-no" title="statement not covered" >  } else if (event.data?.type === 'GET_VERSION') {</span>
 <span class="cstat-no" title="statement not covered" >    event.ports[0].postMessage(SW_VERSION)</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >})</span>
@@ -395,9 +417,11 @@ declare let self: ServiceWorkerGlobalScope
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
-// this is necessary, since the new service worker will keep on skipWaiting state
-// and then, caches will not be cleared since it is not activated
-<span class="cstat-no" title="statement not covered" >self.skipWaiting()</span>
+// NOTE: do not call self.skipWaiting() here. Skipping waiting unconditionally
+// activates the worker "externally", which workbox-window / vite-plugin-pwa
+// won't auto-reload for — so users stay on the old version until a hard
+// refresh. We skip waiting via the SKIP_WAITING message instead (see above),
+// which is what autoUpdate sends, and the page then reloads to the new version.
 <span class="cstat-no" title="statement not covered" >clientsClaim()</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -406,7 +430,7 @@ declare let self: ServiceWorkerGlobalScope
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-13T18:41:00.180Z
+                at 2026-07-14T16:08:31.136Z
             </div>
         <script src="../prettify.js"></script>
         <script>
