@@ -12,6 +12,11 @@ const items = [
     label: 'Key signatures',
     icons: ['mdi:music-accidental-sharp', 'mdi:music-accidental-flat'],
   },
+  {
+    to: '/training/chords',
+    label: 'Chords',
+    icons: ['mdi:music-circle-outline', 'mdi:piano'],
+  },
 ]
 </script>
 

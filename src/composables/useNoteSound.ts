@@ -115,6 +115,26 @@ export function playNote(note: string): void {
   s.triggerAttackRelease(note.replace('/', ''), MAX_RING_SECONDS)
 }
 
+/**
+ * Play the notes as one chord, struck together. Uses a softer velocity than a
+ * single note: three notes at full velocity pile up energy in the low end and
+ * turn muddy, so easing off keeps the chord clear. Each note rings up to
+ * MAX_RING_SECONDS and a previous chord is damped first. Accepts Tone note
+ * names ("C4", "F#4") or "C/4" form. No-op until the samples have loaded.
+ */
+export function playChord(notes: string[], velocity = 0.6): void {
+  const s = getSampler()
+  ensureRunning()
+  if (!s.loaded || notes.length === 0) return
+  s.releaseAll()
+  s.triggerAttackRelease(
+    notes.map((n) => n.replace('/', '')),
+    MAX_RING_SECONDS,
+    undefined,
+    velocity,
+  )
+}
+
 export function useNoteSound() {
-  return { preloadSound, unlockAudio, playNote }
+  return { preloadSound, unlockAudio, playNote, playChord }
 }

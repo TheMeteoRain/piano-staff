@@ -73,6 +73,11 @@ const router = createRouter({
           props: { mode: 'mixed' },
         },
         {
+          path: 'chords',
+          name: 'chords',
+          component: () => import('../views/ChordsView.vue'),
+        },
+        {
           path: 'settings',
           redirect: { name: 'exercise-settings' },
         },
