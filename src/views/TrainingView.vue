@@ -17,6 +17,11 @@ const items = [
     label: 'Chords',
     icons: ['mdi:music-circle-outline', 'mdi:piano'],
   },
+  {
+    to: '/training/musicsheet',
+    label: 'Music sheet',
+    icons: ['mdi:card-text-outline', 'mdi:music'],
+  },
 ]
 </script>
 

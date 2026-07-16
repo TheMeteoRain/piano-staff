@@ -78,6 +78,11 @@ const router = createRouter({
           component: () => import('../views/ChordsView.vue'),
         },
         {
+          path: 'musicsheet',
+          name: 'musicsheet',
+          component: () => import('../views/MusicSheet.vue'),
+        },
+        {
           path: 'settings',
           redirect: { name: 'exercise-settings' },
         },
