@@ -44,12 +44,13 @@ function closeToast(t: ToastMessageOptions) {
     </template>
   </Toast>
 
-  <div class="h-[calc(100vh-5rem)]" id="content">
+  <div class="h-[calc(100vh-3.5rem)]" id="content">
     <RouterView />
-    <div class="box h-[5rem]" :data-hidden="false" />
+    <div class="box h-[3.5rem]" :data-hidden="false" />
   </div>
   <footer>
-    <nav class="box flex fixed bottom-0 left-0 right-0" :data-hidden="false">
+    <nav class="box footer-bar fixed bottom-0 left-0 right-0" :data-hidden="false">
+      <div class="footer-inner flex">
       <router-link
         to="/"
         v-slot="{ href, navigate, isActive }"
@@ -60,7 +61,7 @@ function closeToast(t: ToastMessageOptions) {
           @click="navigate"
           :variant="isActive ? undefined : 'outlined'"
           label="Home"
-          :class="['w-full h-[5rem] border-l-0 border-b-0 rounded-none']"
+          :class="['w-full h-[3.5rem] border-l-0 border-b-0 border-t-0 rounded-none']"
         >
           <template #icon> <Icon icon="mdi:home" width="20" /> </template
         ></Button>
@@ -75,7 +76,7 @@ function closeToast(t: ToastMessageOptions) {
           @click="navigate"
           :variant="isExactActive ? undefined : 'outlined'"
           label="Training"
-          :class="['w-full h-[5rem] border-l-0 border-b-0 rounded-none']"
+          :class="['w-full h-[3.5rem] border-l-0 border-b-0 border-t-0 rounded-none']"
         >
           <template #icon>
             <Icon icon="mdi:music-clef-treble" width="20" /> </template
@@ -92,12 +93,13 @@ function closeToast(t: ToastMessageOptions) {
           :variant="isActive ? undefined : 'outlined'"
           label="Settings"
           :class="[
-            'w-full h-[5rem] border-l-0 border-b-0 border-r-0 rounded-none',
+            'w-full h-[3.5rem] border-l-0 border-b-0 border-r-0 border-t-0 rounded-none',
           ]"
         >
           <template #icon> <Icon icon="mdi:settings" width="20" /> </template
         ></Button>
       </router-link>
+      </div>
     </nav>
   </footer>
 </template>
@@ -108,6 +110,22 @@ function closeToast(t: ToastMessageOptions) {
     margin: 0 2rem 0 0;
   }
 }
+/* the footer nav is the full-width bar: an opaque background so page content
+   doesn't show through the sides, plus a single edge-to-edge top divider. The
+   buttons are centered inside via .footer-inner. It's the bottom-nav transition
+   group, so it stays stable during navigation (no flash). */
+.footer-bar {
+  max-width: none;
+  display: flex;
+  justify-content: center;
+  background: var(--background);
+  border-top: 1px solid var(--primary);
+}
+.footer-inner {
+  width: 100%;
+  max-width: 512px; /* narrower row so the buttons aren't full-width on tablets */
+}
+
 .box {
   opacity: 1;
   transform: translateY(0);

@@ -2,7 +2,7 @@
 
 #content {
   view-transition-name: content;
-  max-height: calc(100vh - 5rem);
+  max-height: calc(100vh - 3.5rem);
   /* opaque so view-transition snapshots are solid sheets — without this the
      old page shows through the gaps of the incoming one */
   background-color: var(--background);
@@ -16,7 +16,17 @@ h1 {
 }
 
 header {
-  padding: calc(var(--spacing) * 4);
+  /* Full-bleed gradient: stretch the background to the viewport edges while the
+     title stays aligned to the centered content column. On phones (viewport <=
+     column width) the calcs collapse to the original 1rem padding, so nothing
+     changes there — this only widens the background on larger screens. */
+  padding-block: calc(var(--spacing) * 4);
+  padding-inline: calc(50vw - 50% + var(--spacing) * 4);
+  margin-inline: calc(50% - 50vw);
+  /* Own transition group so the header is captured at its true full-bleed
+     width instead of being clipped inside the (column-width) #content snapshot
+     during page slides. */
+  view-transition-name: page-header;
   /* #4a1bb1 -> #98348b in both themes (ramps cross): white title stays AAA */
   background: linear-gradient(100deg, #4a1bb1, #98348b);
 }
@@ -73,6 +83,27 @@ nav {
   animation-name: slide-in;
   mix-blend-mode: normal;
   overflow: hidden;
+}
+
+/* The fixed bottom nav lives outside #content, so it lands in the root
+   snapshot, which the browser paints *under* the named "content" group — the
+   sliding view then renders on top of the nav for the duration. Give the nav
+   its own group (painted after content, so above it) and don't animate it, so
+   it stays rock-steady on top during the slide. */
+footer nav {
+  view-transition-name: bottom-nav;
+}
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation: none;
+}
+
+/* The header stays a stable full-width bar; only its title cross-fades (the
+   gradient is identical on both sides, so the bar itself looks static) while
+   the body slides. Match the 300ms body duration so they finish together. */
+::view-transition-old(page-header),
+::view-transition-new(page-header) {
+  animation-duration: 300ms;
 }
 
 /* class "back-transition" is added to the html element 
