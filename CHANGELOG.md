@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.7.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.6.2...v0.7.0) (2026-07-16)
+
+
+### Features
+
+* **exercise:** keyboard controls, press feedback, grace, and scrollable score screen ([d10170c](https://github.com/TheMeteoRain/piano-staff/commit/d10170ca4e752fe04508c500e8f980b1cafc41f3))
+* **training:** circle-of-fifths chord explorer ([2344159](https://github.com/TheMeteoRain/piano-staff/commit/23441596f6bb4463becd83603a4eb82d388a5445))
+* **training:** music-sheet note reference ([b9e7556](https://github.com/TheMeteoRain/piano-staff/commit/b9e7556cf4c261a8062d76092bec05caefe34323))
+* **ui:** card-style training menu tiles ([6f6c557](https://github.com/TheMeteoRain/piano-staff/commit/6f6c557e5d5288fb3076cf1912f2a80a17692837))
+
+
+### Bug Fixes
+
+* **ui:** compact full-width footer and stable page transitions ([f05882e](https://github.com/TheMeteoRain/piano-staff/commit/f05882ebc0db4d2df8fdd95b377bf5b046e3bd00))
+
 ## [0.6.2](https://github.com/TheMeteoRain/piano-staff/compare/v0.6.1...v0.6.2) (2026-07-14)
 
 
