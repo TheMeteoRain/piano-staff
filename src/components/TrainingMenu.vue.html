@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/30</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/30</span>
             </div>
         
             
@@ -103,7 +103,9 @@
 <a name='L38'></a><a href='#L38'>38</a>
 <a name='L39'></a><a href='#L39'>39</a>
 <a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -116,19 +118,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -138,6 +127,21 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -148,8 +152,9 @@
 <span class="cstat-no" title="statement not covered" >import { Icon } from '@iconify/vue'</span>
 <span class="cstat-no" title="statement not covered" >import { RouterLink } from 'vue-router'</span>
 &nbsp;
-/** A vertical list of navigation buttons — shared by the training category and
- * exercise-selection pages. */
+/** A 2-column grid of card-style navigation tiles — shared by the training
+ * category and exercise-selection pages. Each tile shows its symbol(s) above a
+ * stylized label. */
 defineProps&lt;{
   items: { to: string; label: string; icons: string[] }[]
 }&gt;()
@@ -164,20 +169,21 @@ defineProps&lt;{
 <span class="cstat-no" title="statement not covered" >        :to="item.to"</span>
 <span class="cstat-no" title="statement not covered" >        v-slot="{ href, navigate }"</span>
       &gt;
-<span class="cstat-no" title="statement not covered" >        &lt;Button</span>
-<span class="cstat-no" title="statement not covered" >          :href="href"</span>
-<span class="cstat-no" title="statement not covered" >          @click="navigate"</span>
-<span class="cstat-no" title="statement not covered" >          :label="item.label"</span>
-<span class="cstat-no" title="statement not covered" >          class="w-full h-24"</span>
-        &gt;
-<span class="cstat-no" title="statement not covered" >          &lt;template #icon&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;Icon</span>
-<span class="cstat-no" title="statement not covered" >              v-for="icon in item.icons"</span>
-<span class="cstat-no" title="statement not covered" >              :key="icon"</span>
-<span class="cstat-no" title="statement not covered" >              :icon="icon"</span>
-<span class="cstat-no" title="statement not covered" >              width="20"</span>
-<span class="cstat-no" title="statement not covered" >            /&gt;</span>
-          &lt;/template&gt;
+<span class="cstat-no" title="statement not covered" >        &lt;Button :href="href" @click="navigate" class="w-full h-36"&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;span class="flex flex-col items-center justify-center gap-3"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span class="flex items-center gap-2 text-4xl leading-none"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;Icon</span>
+<span class="cstat-no" title="statement not covered" >                v-for="icon in item.icons"</span>
+<span class="cstat-no" title="statement not covered" >                :key="icon"</span>
+<span class="cstat-no" title="statement not covered" >                :icon="icon"</span>
+<span class="cstat-no" title="statement not covered" >                width="36"</span>
+<span class="cstat-no" title="statement not covered" >                height="36"</span>
+<span class="cstat-no" title="statement not covered" >              /&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span class="text-base font-semibold tracking-wide"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              {{ item.label }}</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/Button&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/router-link&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/nav&gt;</span>
@@ -190,7 +196,7 @@ defineProps&lt;{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-14T16:30:29.813Z
+                at 2026-07-16T19:45:35.509Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
