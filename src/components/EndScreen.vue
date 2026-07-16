@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import type { Stats } from '@/utils/stats'
 import Button from '@/volt/Button.vue'
 
 type EndScreenProps = {
-  reset: (event: MouseEvent) => void
+  reset: (event: Event) => void
   stats: Stats
   /** what each per-item row represents, e.g. "note" or "key" */
   itemLabel?: string
 }
 const { reset, stats, itemLabel = 'note' } = defineProps<EndScreenProps>()
+
+// "R" retries from the score screen (this component only mounts on game-over)
+function handleRetryKey(event: KeyboardEvent) {
+  if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
+  if (event.key.toLowerCase() !== 'r') return
+  event.preventDefault()
+  reset(event)
+}
+onMounted(() => window.addEventListener('keydown', handleRetryKey))
+onUnmounted(() => window.removeEventListener('keydown', handleRetryKey))
 
 const PITCH_CLASS: Record<string, number> = {
   C: 0,
@@ -50,7 +60,7 @@ function animate(event: MouseEvent) {
 </script>
 
 <template>
-  <div class="result grid" @click="animate">
+  <div class="result" @click="animate">
     <div
       class="result__content end-screen relative transition-transform duration-1000 cursor-pointer"
     >
@@ -111,20 +121,24 @@ function animate(event: MouseEvent) {
         </div>
       </div>
     </div>
-    <Button @click="reset"> Retry </Button>
+    <Button class="shrink-0" @click="reset"> Retry </Button>
   </div>
 </template>
 
 <style scoped>
-.end-screen {
-  height: calc(100vh - 5rem - 5rem);
-}
-
 .result {
   perspective: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  /* fill the space above the fixed bottom nav; the card flexes and its inner
+     list scrolls, so the Retry button always stays pinned at the bottom */
+  height: calc(100vh - 3.5rem - 3.5rem);
 }
 .result__content {
   transform-style: preserve-3d;
+  flex: 1;
+  min-height: 0;
 }
 .animate {
   transform: rotateY(0.5turn);
@@ -145,5 +159,10 @@ function animate(event: MouseEvent) {
 }
 .result__back {
   transform: rotateY(0.5turn);
+  /* long per-item lists exceed the fixed card height — let them scroll instead
+     of being clipped (scrollbars are hidden app-wide; touch/drag still works) */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 1rem;
 }
 </style>

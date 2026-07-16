@@ -198,7 +198,7 @@ function answer(spec: string) {
   advanceTimeout = window.setTimeout(startCard, correct ? 550 : 1100)
 }
 
-function handleReset(event: MouseEvent) {
+function handleReset(event: Event) {
   event.preventDefault()
   event.stopPropagation()
   guesses.value = {}

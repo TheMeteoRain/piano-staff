@@ -82,7 +82,12 @@ const initialStatsState: Stats = {
 const { stats, initializeStats, saveStats, lastSavedStats } =
   useStats(initialStatsState)
 const vfContainer = ref<HTMLDivElement | null>(null)
-const userGuess = ref<Note | ''>('')
+// the note the player last pressed (letter or sharp); highlights the piano key
+const userGuess = ref<string>('')
+// bumped on every press so the piano's flash replays even for a repeated note
+const flashTick = ref(0)
+// gameNow() of the last accepted press, for spam protection
+let lastAcceptedAt = 0
 const notes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
 const state = ref<GameState>('not-playing')
 const notesQueue = ref<NoteQueueItem[]>([])
@@ -100,6 +105,13 @@ let questionStartGameMs: number = 0
 let questionLoopRafId: number | null = null
 /** brief orientation pause before the notes start moving */
 const START_DELAY_MS = 900
+// spam protection: minimum gap between two accepted presses, so a burst of
+// presses (or a double-tap) can't leak extra answers onto following notes
+const SPAM_GRACE_MS = 150
+// settle window: ignore presses in the first moments after a note becomes
+// answerable, so a hair-late press meant for the previous note doesn't spill
+// onto this one (timed mode only — self-paced has no forced advance)
+const ANSWER_GRACE_MS = 350
 let startDelayTimeout: number | null = null
 /** incorrect guesses so far — the game ends when this reaches errorsAllowed (0 = unlimited) */
 const incorrectGuessTotal = computed(() =>
@@ -364,6 +376,21 @@ function handleGuess(guessNote: string) {
   const early = answerInLine && state.value === 'scrolling'
   if (state.value !== 'waiting' && !early) return
 
+  const now = gameNow()
+  // spam protection: drop presses that come too soon after an accepted one (a
+  // timeout counts as accepted, so a burst right after a miss is caught too)
+  if (now - lastAcceptedAt < SPAM_GRACE_MS) return
+  // settle window (timed mode): drop a press in the first moments after this
+  // note became answerable, so a hair-late press for the previous note doesn't
+  // spill onto this one. A genuine answer arrives later, after the player reacts.
+  if (!answerInLine && now - questionStartGameMs < ANSWER_GRACE_MS) return
+  lastAcceptedAt = now
+
+  // remember the pressed note + bump the tick so the piano key flashes again;
+  // the CSS flash animation fades it out within ~0.9s on its own
+  userGuess.value = guessNote
+  flashTick.value++
+
   // this runs inside the note-button click, the gesture that unlocks audio
   void unlockAudio()
 
@@ -460,7 +487,6 @@ function startPauseTimer() {
       return
     }
     state.value = 'scrolling'
-    userGuess.value = ''
     resetQuestionTimer()
     resetProgressTimer()
     addNotes(1)
@@ -737,7 +763,7 @@ function drawQuestionMarkers(staves: Stave[]) {
   }
 }
 
-function handleResetGame(event: MouseEvent) {
+function handleResetGame(event: Event) {
   event.preventDefault()
   event.stopPropagation()
   resetGame()
@@ -765,6 +791,7 @@ async function resetGame(startAgain = true) {
     clearTimeout(startDelayTimeout)
     startDelayTimeout = null
   }
+  lastAcceptedAt = 0
 
   if (startAgain) {
     startExercise()
@@ -780,15 +807,28 @@ function onDocumentVisibilityChange() {
   syncGameClockAfterVisibilityChange()
 }
 
+// Let a physical keyboard answer too: the letter keys C-B map to the same
+// notes as the on-screen buttons/piano. handleGuess ignores presses when the
+// game isn't accepting an answer, so no extra state guard is needed here.
+function handleKeydown(event: KeyboardEvent) {
+  if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
+  const key = event.key.toUpperCase()
+  if (!notes.includes(key as Note)) return
+  event.preventDefault()
+  handleGuess(key)
+}
+
 onMounted(() => {
   initializeStats()
   preloadSound()
   document.addEventListener('visibilitychange', onDocumentVisibilityChange)
+  window.addEventListener('keydown', handleKeydown)
   startExercise()
 })
 
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', onDocumentVisibilityChange)
+  window.removeEventListener('keydown', handleKeydown)
   saveStats()
   resetGame(false)
 })
@@ -824,7 +864,13 @@ onUnmounted(() => {
           {{ errorsAllowed > 0 ? errorsAllowed : '∞' }}
         </div>
       </div>
-      <PianoKeyboard :disabled="answersDisabled" @answer="handleGuess" />
+      <PianoKeyboard
+        :disabled="answersDisabled"
+        :highlight="userGuess ? [userGuess] : []"
+        :flash-tick="flashTick"
+        flash
+        @answer="handleGuess"
+      />
     </template>
 
     <!-- letter input: tally overlaid in the centre of the circle -->
