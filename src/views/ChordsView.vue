@@ -5,6 +5,7 @@ import CircleOfFifths from '@/components/CircleOfFifths.vue'
 import PianoKeyboard from '@/components/inputs/PianoKeyboard.vue'
 import Button from '@/volt/Button.vue'
 import Slider from '@/volt/Slider.vue'
+import Divider from '@/volt/Divider.vue'
 import { useNoteSound } from '@/composables/useNoteSound'
 
 const { preloadSound, unlockAudio, playChord } = useNoteSound()
@@ -133,6 +134,17 @@ onUnmounted(stop)
   <section class="chords">
     <CircleOfFifths ref="circle" @select="onSelect" />
 
+    <p class="chord-name">
+      <span class="name">{{ selected?.name ?? 'Pick a chord' }}</span>
+      <span v-if="triadNames.length" class="notes">{{
+        triadNames.join(' · ')
+      }}</span>
+    </p>
+
+    <PianoKeyboard readonly :highlight="triad" :range="['F3', 'B4']" />
+
+    <Divider />
+
     <div class="controls">
       <Button
         :label="playingQuality === 'major' ? 'Stop' : 'Play majors'"
@@ -200,14 +212,6 @@ onUnmounted(stop)
       </div>
     </div>
 
-    <p class="chord-name">
-      <span class="name">{{ selected?.name ?? 'Pick a chord' }}</span>
-      <span v-if="triadNames.length" class="notes">{{
-        triadNames.join(' · ')
-      }}</span>
-    </p>
-
-    <PianoKeyboard readonly :highlight="triad" :range="['F3', 'B4']" />
   </section>
 </template>
 
