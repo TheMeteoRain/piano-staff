@@ -14,7 +14,7 @@ const items = [
   },
   {
     to: '/training/mixed',
-    label: 'Mixed',
+    label: 'Grand staff',
     icons: ['mdi:music-clef-treble', 'mdi:music-clef-bass'],
   },
 ]
