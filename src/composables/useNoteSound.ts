@@ -98,12 +98,17 @@ export async function unlockAudio(): Promise<void> {
 // little silence before the next note comes up
 const MAX_RING_SECONDS = 1.8
 
+// slightly soft strike so quick successive notes overlap cleanly instead of
+// piling up energy and sounding harsh (matches the chord viewer's feel)
+const NOTE_VELOCITY = 0.7
+
 /**
  * Play a note like a real key press: strike it and let it ring, but never
- * longer than MAX_RING_SECONDS so it ends a beat before the next note. If you
- * answer faster than that, the next press damps this one — only one rings at a
- * time. Accepts the app's `note/octave` key (e.g. "C/4") or a plain Tone note
- * name ("C4"). No-op until the samples have loaded.
+ * longer than MAX_RING_SECONDS. Quick successive notes are left to ring together
+ * and interweave (like a real piano / the chord viewer) rather than hard-cutting
+ * the previous one — each still stops on its own after the ring limit. Accepts
+ * the app's `note/octave` key (e.g. "C/4") or a plain Tone note name ("C4").
+ * No-op until the samples have loaded.
  */
 export function playNote(note: string): void {
   const s = getSampler()
@@ -111,8 +116,12 @@ export function playNote(note: string): void {
   // context that was suspended (first gesture, or mobile backgrounding)
   ensureRunning()
   if (!s.loaded) return
-  s.releaseAll() // damp the previous note before striking the next
-  s.triggerAttackRelease(note.replace('/', ''), MAX_RING_SECONDS)
+  s.triggerAttackRelease(
+    note.replace('/', ''),
+    MAX_RING_SECONDS,
+    undefined,
+    NOTE_VELOCITY,
+  )
 }
 
 /**
