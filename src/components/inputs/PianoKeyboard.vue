@@ -11,6 +11,7 @@ const {
   highlight = [],
   flash = false,
   flashTick = 0,
+  fingers = {},
   range = ['C4', 'B4'],
 } = defineProps<{
   disabled?: boolean
@@ -23,6 +24,8 @@ const {
   flash?: boolean
   /** bump this on every press so the flash replays even for a repeated note */
   flashTick?: number
+  /** finger numbers to badge on keys, keyed by name+octave: { "C4": 1, "E4": 3 } */
+  fingers?: Record<string, string | number>
   /** inclusive pitch range [lowest, highest], e.g. ['F3', 'B5'] */
   range?: [string, string]
 }>()
@@ -88,6 +91,7 @@ const keys = computed(() => {
         :disabled="disabled"
         @click="press(k.name)"
       >
+        <span v-if="fingers[k.id]" class="finger">{{ fingers[k.id] }}</span>
         <span class="label">{{ k.name }}</span>
       </button>
     </div>
@@ -100,7 +104,11 @@ const keys = computed(() => {
       :style="{ left: b.left + '%', width: b.width + '%' }"
       :disabled="disabled"
       @click="press(b.name)"
-    />
+    >
+      <span v-if="fingers[b.id]" class="finger finger-black">{{
+        fingers[b.id]
+      }}</span>
+    </button>
   </div>
 </template>
 
@@ -125,6 +133,7 @@ const keys = computed(() => {
 /* Piano keys keep real-piano colours (white naturals, black accidentals) in
    both light and dark themes — a piano looks the same whatever the lighting. */
 .white-key {
+  position: relative;
   flex: 1;
   display: flex;
   align-items: flex-end;
@@ -205,5 +214,30 @@ const keys = computed(() => {
 .piano.readonly .white-key,
 .piano.readonly .black-key {
   cursor: default;
+}
+
+/* fingering badge (chord chart) — white circle so the number reads on any key */
+.finger {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 9999px;
+  background: #fff;
+  color: #2b2540;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+.white-key .finger {
+  bottom: 2.1rem;
+}
+.black-key .finger {
+  bottom: 0.35rem;
 }
 </style>

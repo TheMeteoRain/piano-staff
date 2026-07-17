@@ -75,7 +75,18 @@ const router = createRouter({
         {
           path: 'chords',
           name: 'chords',
+          component: withLayout(() => import('../views/ChordsCategoryView.vue')),
+          props: { header: 'Chords' },
+        },
+        {
+          path: 'chords/circle',
+          name: 'chords-circle',
           component: () => import('../views/ChordsView.vue'),
+        },
+        {
+          path: 'chords/chart',
+          name: 'chords-chart',
+          component: () => import('../views/ChordChart.vue'),
         },
         {
           path: 'musicsheet',
