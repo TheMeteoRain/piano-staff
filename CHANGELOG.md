@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.1](https://github.com/TheMeteoRain/piano-staff/compare/v0.8.0...v0.8.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* **deps:** align PrimeVue packages to 4.5.5 ([2a41e15](https://github.com/TheMeteoRain/piano-staff/commit/2a41e1530e0637fe44a1d92e46b801f6547bcdf1))
+* **nginx:** serve correct manifest content-types and load the config ([816faf3](https://github.com/TheMeteoRain/piano-staff/commit/816faf38478c94e148621bc81805723c19b69b31))
+* **router:** pass header only to the layout, not the wrapped view ([75e306c](https://github.com/TheMeteoRain/piano-staff/commit/75e306c7f0b8bea8d411a43fed3b3d5e8ca30e65))
+* **ui:** remove unresolved AngleUpIcon from Volt InputNumber ([3874466](https://github.com/TheMeteoRain/piano-staff/commit/38744666b711b80d9882a39b314e8e5c7f7f9e26))
+
 ## [0.8.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.7.0...v0.8.0) (2026-07-18)
 
 

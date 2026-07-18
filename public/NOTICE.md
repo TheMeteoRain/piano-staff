@@ -8,7 +8,7 @@ This application makes use of the following open source packages:
 | @grafana/faro-web-tracing | 2.2.4 | Apache-2.0 | https://github.com/grafana/faro-web-sdk |
 | @iconify/vue | 5.0.0 | MIT | https://github.com/iconify/iconify |
 | @pixi/text-bitmap | 7.4.3 | MIT | https://github.com/pixijs/pixijs |
-| @primevue/forms | 4.5.4 | MIT | https://github.com/primefaces/primevue |
+| @primevue/forms | 4.5.5 | MIT | https://github.com/primefaces/primevue |
 | @tailwindcss/vite | 4.1.7 | MIT | https://github.com/tailwindlabs/tailwindcss |
 | @tsconfig/node22 | 22.0.2 | MIT | https://github.com/tsconfig/bases |
 | @types/jsdom | 21.1.7 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped |
@@ -41,7 +41,7 @@ This application makes use of the following open source packages:
 | pixi.js | 8.9.2 | MIT | https://github.com/pixijs/pixijs |
 | prettier | 3.5.3 | MIT | https://github.com/prettier/prettier |
 | primeicons | 7.0.0 | MIT | https://github.com/primefaces/primeicons |
-| primevue | 4.3.5 | MIT | https://github.com/primefaces/primevue |
+| primevue | 4.5.5 | MIT | https://github.com/primefaces/primevue |
 | start-server-and-test | 2.0.12 | MIT | https://github.com/bahmutov/start-server-and-test |
 | tailwind-merge | 3.3.1 | MIT | https://github.com/dcastil/tailwind-merge |
 | tailwindcss | 4.1.7 | MIT | https://github.com/tailwindlabs/tailwindcss |
