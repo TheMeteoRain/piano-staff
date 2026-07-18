@@ -11,6 +11,12 @@ const inputMethods = [
   { label: 'Letters', value: 'letters' },
   { label: 'Piano', value: 'piano' },
 ]
+
+// Web MIDI is Chrome/Android-only (not iOS Safari) — hide the toggle where the
+// browser can't talk to a MIDI instrument at all.
+const midiSupported =
+  typeof navigator !== 'undefined' &&
+  typeof navigator.requestMIDIAccess === 'function'
 </script>
 
 <template>
@@ -143,5 +149,21 @@ const inputMethods = [
       :allowEmpty="false"
       v-model="settings.inputMethod"
     />
+    <template v-if="midiSupported">
+      <div>
+        <label for="midiInput" class="font-bold block mb-1">
+          MIDI keyboard
+        </label>
+        <small id="midiInput-help" class="block text-(--text-muted)">
+          Answer by playing a connected MIDI instrument (Bluetooth or USB). Pair
+          it in your device settings first.
+        </small>
+      </div>
+      <ToggleSwitch
+        inputId="midiInput"
+        aria-describedby="midiInput-help"
+        v-model="settings.midiInput"
+      />
+    </template>
   </Form>
 </template>

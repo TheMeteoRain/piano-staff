@@ -15,9 +15,11 @@ import LetterAnswers from './inputs/LetterAnswers.vue'
 import PianoKeyboard from './inputs/PianoKeyboard.vue'
 import { useStats, type Stats } from '@/utils/stats'
 import { useNoteSound } from '@/composables/useNoteSound'
+import { useMidiInput } from '@/composables/useMidiInput'
 import type { Clef } from '@/types/global'
 
 const { preloadSound, unlockAudio, playNote } = useNoteSound()
+const midi = useMidiInput()
 
 type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
 type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'pause' | 'game-over'
@@ -61,6 +63,8 @@ type ExerciseProps = {
   answerInLine?: boolean
   /** how the player answers: letter buttons or a piano keyboard */
   inputMethod?: 'letters' | 'piano'
+  /** also accept answers from a connected MIDI instrument (Bluetooth/USB) */
+  midiInput?: boolean
 }
 const {
   exercise,
@@ -72,6 +76,7 @@ const {
   soundEnabled = true,
   answerInLine = false,
   inputMethod = 'letters',
+  midiInput = false,
 } = defineProps<ExerciseProps>()
 const initialStatsState: Stats = {
   guesses: {},
@@ -818,17 +823,35 @@ function handleKeydown(event: KeyboardEvent) {
   handleGuess(key)
 }
 
+// A key pressed on a connected MIDI instrument answers the same way an on-screen
+// key or a physical letter key does: the note name (naturals "C", accidentals
+// "C#") flows into handleGuess, which only compares the letter. handleGuess'
+// own spam/settle grace windows debounce a MIDI burst, so nothing extra needed.
+function handleMidiNote(note: { name: string }) {
+  handleGuess(note.name)
+}
+
+// Play several keys at once on the score screen to restart hands-free — the
+// MIDI counterpart to pressing "R" or the on-screen Retry button. Only honored
+// at game-over so a fast triad mid-exercise can't wipe a run.
+function handleMidiChord() {
+  if (state.value === 'game-over') resetGame()
+}
+
 onMounted(() => {
   initializeStats()
   preloadSound()
   document.addEventListener('visibilitychange', onDocumentVisibilityChange)
   window.addEventListener('keydown', handleKeydown)
+  if (midiInput)
+    void midi.start({ onNote: handleMidiNote, onChord: handleMidiChord })
   startExercise()
 })
 
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', onDocumentVisibilityChange)
   window.removeEventListener('keydown', handleKeydown)
+  midi.stop()
   saveStats()
   resetGame(false)
 })
