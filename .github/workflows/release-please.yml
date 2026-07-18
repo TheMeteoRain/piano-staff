@@ -35,9 +35,6 @@ jobs:
           ref: ${{ fromJson(needs.release-please.outputs.pr).headBranchName }}
           fetch-depth: 0
 
-      - uses: ./.github/actions/asdf-setup
-      - uses: ./.github/actions/pnpm
-
       - name: Get version from package.json
         id: get-version
         run: |
@@ -56,8 +53,10 @@ jobs:
             public/version.json > tmp.json && mv tmp.json public/version.json
           cat public/version.json
 
-      - name: Regenerate NOTICE.md
-        run: pnpm notice
+      - name: Bump the app version in NOTICE.md
+        run: |
+          sed -i "s/^| piano-staff | [^|]* |/| piano-staff | $VERSION |/" public/NOTICE.md
+          grep "piano-staff" public/NOTICE.md
 
       - name: Commit and push updated files
         run: |
