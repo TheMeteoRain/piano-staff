@@ -1,10 +1,12 @@
-// Regenerates public/NOTICE.md — the open-source dependency attribution table
-// served by the app. Run via `pnpm notice`; also run on release so the notice
-// stays in sync with the dependency tree.
+// Regenerates public/NOTICE.md — the third-party open-source attribution table
+// served by the app. Run via `pnpm notice` whenever dependencies change; CI
+// fails if it's out of date. Lists direct dependencies only (depth 0) and
+// excludes the app itself (a NOTICE attributes others, not you).
 import { init } from 'license-checker-rseidelsohn'
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 
-// direct dependencies only (depth 0), matching the existing NOTICE scope
+const selfName = JSON.parse(readFileSync('package.json', 'utf8')).name
+
 init({ start: process.cwd(), direct: 0 }, (err, packages) => {
   if (err) {
     console.error(err)
@@ -23,6 +25,7 @@ init({ start: process.cwd(), direct: 0 }, (err, packages) => {
         repository: info.repository || '',
       }
     })
+    .filter((r) => r.name !== selfName) // the app doesn't attribute itself
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const out =

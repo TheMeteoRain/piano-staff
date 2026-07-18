@@ -28,6 +28,14 @@ jobs:
       - name: pnpm lint
         run: pnpm lint
 
+      - name: NOTICE.md up to date
+        run: |
+          pnpm notice
+          git diff --exit-code public/NOTICE.md || {
+            echo "::error::public/NOTICE.md is stale — run 'pnpm notice' and commit the result."
+            exit 1
+          }
+
   test:
     runs-on: ubuntu-latest
     needs: install

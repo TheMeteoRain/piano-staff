@@ -37,7 +37,6 @@ This application makes use of the following open source packages:
 | markdown-it | 14.1.0 | MIT | https://github.com/markdown-it/markdown-it |
 | npm-run-all2 | 7.0.2 | MIT | https://github.com/bcomnes/npm-run-all2 |
 | oxlint | 0.16.11 | MIT | https://github.com/oxc-project/oxc |
-| piano-staff | 0.8.0 | UNLICENSED |  |
 | pinia | 3.0.2 | MIT | https://github.com/vuejs/pinia |
 | pixi.js | 8.9.2 | MIT | https://github.com/pixijs/pixijs |
 | prettier | 3.5.3 | MIT | https://github.com/prettier/prettier |
