@@ -13,7 +13,7 @@ const githubLink =
   <div
     class="text-base sm:text-lg text-gray-500 text-center mt-8 grid grid-cols-2 grid-rows-2 gap-2 wrap-anywhere items-center"
   >
-    <AppLink :to="githubLink">
+    <AppLink :to="`${githubLink}/releases/tag/v${versionInfo.version}`">
       <Button
         variant="outlined"
         :label="`Version: ${versionInfo.version}`"
