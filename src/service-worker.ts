@@ -1,120 +1,47 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { cacheNames, clientsClaim } from 'workbox-core'
+import { clientsClaim } from 'workbox-core'
 import {
-  registerRoute,
-  setCatchHandler,
-  setDefaultHandler,
-} from 'workbox-routing'
-import { CacheFirst, NetworkFirst, NetworkOnly, Strategy } from 'workbox-strategies'
-import type { ManifestEntry } from 'workbox-build'
+  cleanupOutdatedCaches,
+  createHandlerBoundToURL,
+  precacheAndRoute,
+} from 'workbox-precaching'
+import { NavigationRoute, registerRoute } from 'workbox-routing'
+import { NetworkFirst } from 'workbox-strategies'
 
 // Give TypeScript the correct global.
 declare let self: ServiceWorkerGlobalScope
 
-const data = {
-  debug: import.meta.env.DEV || import.meta.env.VITE_DEBUG === 'true',
-  credentials: 'same-origin',
-  networkTimeoutSeconds: 0,
-  fallback: 'index.html',
-}
-const cacheName = cacheNames.runtime
-const SW_VERSION = '1'
+// Precache every asset in the injected manifest. Workbox keys each entry by its
+// content revision, so on update only entries whose revision changed are
+// downloaded; unchanged bundles and piano samples are served from cache.
+cleanupOutdatedCaches()
+precacheAndRoute(self.__WB_MANIFEST)
 
-function buildStrategy(): Strategy {
-  if (data.networkTimeoutSeconds > 0)
-    return new NetworkFirst({
-      cacheName,
-      networkTimeoutSeconds: data.networkTimeoutSeconds,
-    })
-  return new NetworkFirst({ cacheName })
-}
-const manifest = self.__WB_MANIFEST as Array<ManifestEntry>
-const cacheEntries: RequestInfo[] = []
-
-const manifestURLs = manifest.map((entry) => {
-  const url = new URL(entry.url, self.location)
-  cacheEntries.push(
-    new Request(url.href, {
-      credentials: data.credentials,
-    }),
-  )
-  return url.href
-})
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(cacheName).then((cache) => {
-      return cache.addAll(cacheEntries)
-    }),
-  )
-})
-
-self.addEventListener('activate', (event) => {
-  // clean up cache entries no longer listed in the precache manifest, and
-  // await every deletion so activation doesn't complete before cleanup does
-  event.waitUntil(
-    caches.open(cacheName).then(async (cache) => {
-      const keys = await cache.keys()
-      const stale = keys.filter(
-        (request) => !manifestURLs.includes(request.url),
-      )
-      await Promise.all(stale.map((request) => cache.delete(request)))
-      if (data.debug && stale.length) {
-        console.log(`Removed ${stale.length} stale precache entries`)
-      }
-    }),
-  )
-})
-
-self.addEventListener('message', async (event) => {
-  if (data.debug) console.log(event)
-  if (event.data?.type === 'SKIP_WAITING') {
-    // vite-plugin-pwa (autoUpdate) posts this once the new worker is waiting.
-    // Activating in response — instead of skipping waiting unconditionally —
-    // lets workbox-window drive the update and reload the page to the new
-    // version automatically, so users never need a hard refresh.
-    self.skipWaiting()
-  } else if (event.data?.type === 'CACHE_UPDATED') {
-    const { updatedURL } = event.data.payload
-
-    if (data.debug)
-      console.log(`A newer version of ${updatedURL} is available!`)
-  } else if (event.data?.type === 'GET_VERSION') {
-    event.ports[0].postMessage(SW_VERSION)
-  }
-})
-
-const fallbackURL = new URL(data.fallback, self.location).href
-
-// The app shell stays network-first so navigations pick up new deployments.
-registerRoute(({ url }) => url.href === fallbackURL, buildStrategy())
-
-// Everything else precached is immutable (content-hashed bundles, stable
-// piano samples), so serve it cache-first — no network round-trip when the
-// asset is already stored locally.
+// version.json and manifest.json must always be fresh — they report the live
+// deployed version and app/store metadata. Both are excluded from the precache
+// (see globIgnores in vite.config.ts) and served network-first: an
+// already-installed app reflects the current release immediately, falling back
+// to the runtime-cached copy only when offline. assetlinks.json is likewise not
+// precached; it has no route and passes straight through to the network so TWA
+// verification always sees the current signing-key fingerprints.
 registerRoute(
-  ({ url }) => url.href !== fallbackURL && manifestURLs.includes(url.href),
-  new CacheFirst({ cacheName }),
+  ({ url }) =>
+    url.pathname === '/version.json' ||
+    url.pathname === '/manifest.json' ||
+    url.pathname === '/manifest.webmanifest',
+  new NetworkFirst({ cacheName: 'app-metadata' }),
 )
 
-setDefaultHandler(new NetworkOnly())
+// SPA navigations — including deep links and offline reloads — resolve to the
+// precached app shell. In dev the precache manifest is empty (the vite server
+// handles navigation itself), so index.html isn't precached; only register this
+// for production builds to avoid a non-precached-url error.
+if (import.meta.env.PROD) {
+  registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html')))
+}
 
-// fallback to app-shell for document request
-setCatchHandler(({ event }): Promise<Response> => {
-  switch (event.request.destination) {
-    case 'document':
-      return caches.match(data.fallback).then((r) => {
-        return r ? Promise.resolve(r) : Promise.resolve(Response.error())
-      })
-    default:
-      return Promise.resolve(Response.error())
-  }
-})
-
-// NOTE: do not call self.skipWaiting() here. Skipping waiting unconditionally
-// activates the worker "externally", which workbox-window / vite-plugin-pwa
-// won't auto-reload for — so users stay on the old version until a hard
-// refresh. We skip waiting via the SKIP_WAITING message instead (see above),
-// which is what autoUpdate sends, and the page then reloads to the new version.
+// registerType: 'autoUpdate' — activate the new worker as soon as it installs
+// and take control of open clients; virtual:pwa-register then reloads the page.
+self.skipWaiting()
 clientsClaim()
