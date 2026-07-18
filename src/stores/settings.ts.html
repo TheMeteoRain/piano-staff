@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/76</span>
+                <span class='fraction'>0/80</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/76</span>
+                <span class='fraction'>0/80</span>
             </div>
         
             
@@ -156,7 +156,12 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -181,6 +186,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -194,18 +201,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -219,6 +221,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -234,7 +242,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -274,6 +284,8 @@
 <span class="cstat-no" title="statement not covered" >  answerInLine: z.coerce.boolean().default(false),</span>
   /** how notes are answered: letter buttons or a piano keyboard */
 <span class="cstat-no" title="statement not covered" >  inputMethod: z.enum(['letters', 'piano']).default('letters'),</span>
+  /** also accept answers from a connected MIDI instrument (Bluetooth/USB) */
+<span class="cstat-no" title="statement not covered" >  midiInput: z.coerce.boolean().default(false),</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 type Settings = z.infer&lt;typeof SettingsSchema&gt;
 &nbsp;
@@ -286,6 +298,7 @@ type Settings = z.infer&lt;typeof SettingsSchema&gt;
 <span class="cstat-no" title="statement not covered" >  pauseDuration: 1,</span>
 <span class="cstat-no" title="statement not covered" >  answerInLine: false,</span>
 <span class="cstat-no" title="statement not covered" >  inputMethod: 'letters' as const,</span>
+<span class="cstat-no" title="statement not covered" >  midiInput: false,</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export const useSettingsStore = defineStore('settings', () =&gt; {</span>
@@ -326,6 +339,7 @@ type Settings = z.infer&lt;typeof SettingsSchema&gt;
 <span class="cstat-no" title="statement not covered" >  const pauseDuration = computedValue('pauseDuration')</span>
 <span class="cstat-no" title="statement not covered" >  const answerInLine = computedValue('answerInLine')</span>
 <span class="cstat-no" title="statement not covered" >  const inputMethod = computedValue('inputMethod')</span>
+<span class="cstat-no" title="statement not covered" >  const midiInput = computedValue('midiInput')</span>
 <span class="cstat-no" title="statement not covered" >  const resolver = zodResolver(SettingsSchema)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return {</span>
@@ -340,6 +354,7 @@ type Settings = z.infer&lt;typeof SettingsSchema&gt;
 <span class="cstat-no" title="statement not covered" >    pauseDuration,</span>
 <span class="cstat-no" title="statement not covered" >    answerInLine,</span>
 <span class="cstat-no" title="statement not covered" >    inputMethod,</span>
+<span class="cstat-no" title="statement not covered" >    midiInput,</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;</pre></td></tr></table></pre>
@@ -349,7 +364,7 @@ type Settings = z.infer&lt;typeof SettingsSchema&gt;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-16T19:46:42.064Z
+                at 2026-07-18T14:55:41.582Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

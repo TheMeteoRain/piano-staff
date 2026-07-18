@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/147</span>
+                <span class='fraction'>0/167</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/147</span>
+                <span class='fraction'>0/167</span>
             </div>
         
             
@@ -226,7 +226,27 @@
 <a name='L161'></a><a href='#L161'>161</a>
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -234,6 +254,26 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -420,16 +460,19 @@
 <span class="cstat-no" title="statement not covered" >          path: 'clef-treble',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'clef-treble',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/TrebleView.vue'),</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'clef-bass',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'clef-bass',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/BassView.vue'),</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'mixed',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'mixed',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/MixedView.vue'),</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'notes',</span>
@@ -450,28 +493,45 @@
 <span class="cstat-no" title="statement not covered" >          name: 'keys-flat',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/KeySignatureView.vue'),</span>
 <span class="cstat-no" title="statement not covered" >          props: { mode: 'flat' },</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'keys/sharp',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'keys-sharp',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/KeySignatureView.vue'),</span>
 <span class="cstat-no" title="statement not covered" >          props: { mode: 'sharp' },</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'keys/mixed',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'keys-mixed',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/KeySignatureView.vue'),</span>
 <span class="cstat-no" title="statement not covered" >          props: { mode: 'mixed' },</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'chords',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'chords',</span>
+<span class="cstat-no" title="statement not covered" >          component: withLayout(() =&gt; import('../views/ChordsCategoryView.vue')),</span>
+<span class="cstat-no" title="statement not covered" >          props: { header: 'Chords &amp; scales' },</span>
+<span class="cstat-no" title="statement not covered" >        },</span>
+<span class="cstat-no" title="statement not covered" >        {</span>
+<span class="cstat-no" title="statement not covered" >          path: 'chords/circle',</span>
+<span class="cstat-no" title="statement not covered" >          name: 'chords-circle',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/ChordsView.vue'),</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
+<span class="cstat-no" title="statement not covered" >        },</span>
+<span class="cstat-no" title="statement not covered" >        {</span>
+<span class="cstat-no" title="statement not covered" >          path: 'chords/chart',</span>
+<span class="cstat-no" title="statement not covered" >          name: 'chords-chart',</span>
+<span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/ChordChart.vue'),</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiCapture: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'musicsheet',</span>
 <span class="cstat-no" title="statement not covered" >          name: 'musicsheet',</span>
 <span class="cstat-no" title="statement not covered" >          component: () =&gt; import('../views/MusicSheet.vue'),</span>
+<span class="cstat-no" title="statement not covered" >          meta: { midiProtect: true },</span>
 <span class="cstat-no" title="statement not covered" >        },</span>
 <span class="cstat-no" title="statement not covered" >        {</span>
 <span class="cstat-no" title="statement not covered" >          path: 'settings',</span>
@@ -559,7 +619,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-16T19:46:42.064Z
+                at 2026-07-18T14:55:41.582Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
