@@ -10,13 +10,16 @@ type ViewType = Component | AsyncComponentLoader
 
 function wrap(view: Component) {
   return defineComponent({
+    inheritAttrs: false,
     props: {
       header: String,
     },
-    setup(props) {
+    setup(props, { attrs }) {
+      // header belongs to the layout only; forward any other attrs to the view
+      // so header isn't passed down as an un-inheritable fallthrough attribute.
       return () =>
-        h(DefaultLayout, props, {
-          default: () => h(view, props),
+        h(DefaultLayout, { header: props.header }, {
+          default: () => h(view, attrs),
         })
     },
   })
