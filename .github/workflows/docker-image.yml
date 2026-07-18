@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-      - uses: ./.github/actions/asdf-setup
+      - uses: ./.github/actions/mise-setup
       - uses: ./.github/actions/pnpm
 
       - name: pnpm build

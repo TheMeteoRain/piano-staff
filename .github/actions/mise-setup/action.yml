@@ -1,0 +1,6 @@
+name: Setup mise
+description: Install tools (node, pnpm) with mise from .tool-versions
+runs:
+  using: 'composite'
+  steps:
+    - uses: jdx/mise-action@v2
