@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.7.0...v0.8.0) (2026-07-18)
+
+
+### Features
+
+* **midi:** navigate the app by MIDI or keyboard with leader-protected training views ([067166c](https://github.com/TheMeteoRain/piano-staff/commit/067166ccec489f91b1462a1646b8d6cdd181a7f3))
+* **training:** add scales to the chord chart with shift markers ([c937910](https://github.com/TheMeteoRain/piano-staff/commit/c937910922c22e0b5a7790183f62e9942964e25a))
+* **training:** answer the note exercise via MIDI input ([3e87005](https://github.com/TheMeteoRain/piano-staff/commit/3e870056e215b88db9e92cc5530d8236896235b5))
+* **training:** chord chart with fingering under a chords menu ([1643b3f](https://github.com/TheMeteoRain/piano-staff/commit/1643b3f2fda7b2158fc2319eb3c5da6e322ceff2))
+* **training:** hands-free config, staff view, and Degrees mode on the Reference ([cc1718f](https://github.com/TheMeteoRain/piano-staff/commit/cc1718f345dc8946ff3c8aac27c2bb9d804d4f7d))
+
+
+### Bug Fixes
+
+* **about:** point the version button to its release notes ([b950b8b](https://github.com/TheMeteoRain/piano-staff/commit/b950b8b37448e6648d6cd6b37b5fef723687a776))
+* **audio:** let exercise notes ring together and interweave ([801132b](https://github.com/TheMeteoRain/piano-staff/commit/801132bb8a124bcc60902ffc38af4fb86f299770))
+* **ci:** bump NOTICE version with sed, not pnpm, in the release job ([324d182](https://github.com/TheMeteoRain/piano-staff/commit/324d1823fd57dbbb2fb1b1cff1088d0b4dac0ff3))
+* **ci:** regenerate NOTICE with manifest/version in the release commit ([b116b1a](https://github.com/TheMeteoRain/piano-staff/commit/b116b1a4cb90865245c14c57ef803bdb0b8c428d))
+* **ci:** update pnpm-workspace.yaml to fix CI build issues ([a9f02e1](https://github.com/TheMeteoRain/piano-staff/commit/a9f02e13c991cd6f993067bf8ed53b2c2f973c73))
+* **ui:** reorder chords explorer so circle and piano stay visible ([69be6eb](https://github.com/TheMeteoRain/piano-staff/commit/69be6eb52311b93e16bc6bd3e9f2e5f369b81055))
+
+
+### Miscellaneous Chores
+
+* reset version files to 0.7.0 to re-cut the 0.8.0 release ([ee88ced](https://github.com/TheMeteoRain/piano-staff/commit/ee88cedf455c8faa00471064a9a607d1d1730cb4))
+
 ## [0.7.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.6.2...v0.7.0) (2026-07-16)
 
 
