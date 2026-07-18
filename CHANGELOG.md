@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.1](https://github.com/TheMeteoRain/piano-staff/compare/v0.8.0...v0.8.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* **ci:** bump NOTICE version with sed, not pnpm, in the release job ([324d182](https://github.com/TheMeteoRain/piano-staff/commit/324d1823fd57dbbb2fb1b1cff1088d0b4dac0ff3))
+* **ci:** regenerate NOTICE with manifest/version in the release commit ([b116b1a](https://github.com/TheMeteoRain/piano-staff/commit/b116b1a4cb90865245c14c57ef803bdb0b8c428d))
+
 ## [0.8.0](https://github.com/TheMeteoRain/piano-staff/compare/v0.7.0...v0.8.0) (2026-07-18)
 
 
