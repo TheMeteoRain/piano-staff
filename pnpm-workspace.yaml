@@ -1,6 +1,6 @@
-ignoredBuiltDependencies:
-  - cypress
-onlyBuiltDependencies:
-  - "@tailwindcss/oxide"
-  - vue-demi
-  - esbuild
+allowBuilds:
+  '@tailwindcss/oxide': true
+  cypress: false
+  esbuild: true
+  protobufjs: true
+  vue-demi: true
