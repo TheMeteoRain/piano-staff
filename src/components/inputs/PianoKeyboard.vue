@@ -12,6 +12,7 @@ const {
   flash = false,
   flashTick = 0,
   fingers = {},
+  crossovers = [],
   range = ['C4', 'B4'],
 } = defineProps<{
   disabled?: boolean
@@ -26,13 +27,22 @@ const {
   flashTick?: number
   /** finger numbers to badge on keys, keyed by name+octave: { "C4": 1, "E4": 3 } */
   fingers?: Record<string, string | number>
+  /** keys (name+octave) where the hand shifts position in a scale — badged with
+   * a small marker so the thumb-under / cross-over point stands out */
+  crossovers?: string[]
   /** inclusive pitch range [lowest, highest], e.g. ['F3', 'B5'] */
   range?: [string, string]
 }>()
 const emit = defineEmits<{ answer: [note: string] }>()
 
+// marker on the fingering badge at a hand-shift note (thumb-under / cross-over)
+const CROSS_SYMBOL = '↪'
+
 function press(note: string) {
   if (!readonly) emit('answer', note)
+}
+function isCrossover(id: string) {
+  return crossovers.includes(id)
 }
 
 function isHighlighted(key: { id: string; name: string }) {
@@ -91,7 +101,18 @@ const keys = computed(() => {
         :disabled="disabled"
         @click="press(k.name)"
       >
-        <span v-if="fingers[k.id]" class="finger">{{ fingers[k.id] }}</span>
+        <span
+          v-if="fingers[k.id]"
+          class="finger"
+          :class="{ crossover: isCrossover(k.id) }"
+        >
+          <span
+            v-if="isCrossover(k.id)"
+            class="cross-mark"
+            aria-hidden="true"
+            >{{ CROSS_SYMBOL }}</span
+          >{{ fingers[k.id] }}</span
+        >
         <span class="label">{{ k.name }}</span>
       </button>
     </div>
@@ -105,9 +126,18 @@ const keys = computed(() => {
       :disabled="disabled"
       @click="press(b.name)"
     >
-      <span v-if="fingers[b.id]" class="finger finger-black">{{
-        fingers[b.id]
-      }}</span>
+      <span
+        v-if="fingers[b.id]"
+        class="finger finger-black"
+        :class="{ crossover: isCrossover(b.id) }"
+      >
+        <span
+          v-if="isCrossover(b.id)"
+          class="cross-mark"
+          aria-hidden="true"
+          >{{ CROSS_SYMBOL }}</span
+        >{{ fingers[b.id] }}</span
+      >
     </button>
   </div>
 </template>
@@ -239,5 +269,26 @@ const keys = computed(() => {
 }
 .black-key .finger {
   bottom: 0.35rem;
+}
+
+/* hand-shift badge: accent ring so the thumb-under / cross-over note stands out,
+   with a small directional symbol sitting just above the number */
+.finger.crossover {
+  background: #ffd24a;
+  color: #2b2540;
+  box-shadow:
+    0 0 0 2px #b8860b,
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.cross-mark {
+  position: absolute;
+  bottom: 1.15rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #b8860b;
+  pointer-events: none;
 }
 </style>
