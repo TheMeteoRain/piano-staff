@@ -9,7 +9,7 @@ const items = [
   },
   {
     to: '/training/chords/chart',
-    label: 'Chords & scales',
+    label: 'Reference',
     icons: ['mdi:piano', 'mdi:hand-back-right'],
   },
 ]

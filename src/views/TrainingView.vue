@@ -14,7 +14,7 @@ const items = [
   },
   {
     to: '/training/chords',
-    label: 'Chords',
+    label: 'Chords & scales',
     icons: ['mdi:music-circle-outline', 'mdi:piano'],
   },
   {
