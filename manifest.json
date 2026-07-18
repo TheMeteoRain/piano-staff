@@ -1,30 +1,16 @@
 {
+  "id": "/",
   "name": "Musical Sight",
   "short_name": "MusicalSight",
-  "manifest_version": 3,
-  "version": "0.8.0",
-  "categories": [
-    "music",
-    "education"
-  ],
-  "display": "standalone",
-  "display_override": [
-    "window-controls-overlay"
-  ],
-  "orientation": "portrait",
-  "lang": "en",
   "description": "Companion application to help improve your music reading skill.",
+  "categories": ["music", "education"],
+  "lang": "en",
   "start_url": "/",
-  "author": "Akash Singh",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "orientation": "portrait",
   "theme_color": "#5d21de",
   "background_color": "#ffffff",
-  "di,splay": "standalone",
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://piano.akash.fi/manifest.json"
-    }
-  ],
   "screenshots": [
     {
       "src": "/screenshots/home.webp",

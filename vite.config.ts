@@ -8,7 +8,11 @@ import faroUploader from '@grafana/faro-rollup-plugin'
 import { VitePWA } from 'vite-plugin-pwa'
 import fs from 'fs'
 
-const manifest = JSON.parse(fs.readFileSync('./public/manifest.json', 'utf-8'))
+// The web app manifest is authored as a standalone file for readability, then
+// generated into the build and injected by vite-plugin-pwa under its default
+// name (manifest.webmanifest). It lives outside public/ so it isn't also copied
+// verbatim into the output; nginx mirrors it at the manifest.json URL too.
+const manifest = JSON.parse(fs.readFileSync('./manifest.json', 'utf-8'))
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -25,8 +29,23 @@ export default defineConfig(({ mode }) => {
       filename: 'service-worker.ts',
       manifest,
       injectManifest: {
-        globPatterns: ['**/*.{js,wasm,css,html,json,webp,m4a}'], // match what you want cached (m4a = piano samples)
+        globPatterns: ['**/*.{js,wasm,css,html,json,webp,m4a}'],
         globDirectory: 'dist', // default is `dist`, override if needed
+        // Keep release- and Play-related files out of the precache so the
+        // service worker never pins an installed app to a stale copy (see the
+        // routes in service-worker.ts):
+        //   version.json         — reports the live deployed version
+        //   manifest.webmanifest — app/store metadata, changes every release
+        //                          (manifest.json is nginx-mirrored from it)
+        //   assetlinks.json      — TWA Digital Asset Links, must reflect current
+        //                          signing-key fingerprints (already skipped as
+        //                          a dotfile; listed here to make intent explicit)
+        globIgnores: [
+          'version.json',
+          'manifest.webmanifest',
+          'manifest.json',
+          '.well-known/assetlinks.json',
+        ],
         sourcemap: false,
       },
       injectRegister: null,
