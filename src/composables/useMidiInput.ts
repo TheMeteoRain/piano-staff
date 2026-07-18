@@ -36,6 +36,9 @@ export function useMidiInput() {
   const devices = ref<string[]>([])
 
   let access: MIDIAccess | null = null
+  // inputs this instance has attached to — addEventListener (not onmidimessage)
+  // so several useMidiInput consumers can coexist without clobbering each other
+  const boundInputs = new Set<MIDIInput>()
   let onNote: ((note: MidiNote) => void) | null = null
   let onChord: (() => void) | null = null
   // timestamps of recent note-ons, for the simultaneous-chord gesture
@@ -81,7 +84,10 @@ export function useMidiInput() {
     if (!access) return
     const names: string[] = []
     access.inputs.forEach((input) => {
-      input.onmidimessage = onMessage
+      if (!boundInputs.has(input)) {
+        input.addEventListener('midimessage', onMessage)
+        boundInputs.add(input)
+      }
       if (input.name) names.push(input.name)
     })
     devices.value = names
@@ -116,10 +122,11 @@ export function useMidiInput() {
     onNote = null
     onChord = null
     recentOns = []
+    boundInputs.forEach((input) =>
+      input.removeEventListener('midimessage', onMessage),
+    )
+    boundInputs.clear()
     if (access) {
-      access.inputs.forEach((input) => {
-        input.onmidimessage = null
-      })
       access.onstatechange = null
       access = null
     }

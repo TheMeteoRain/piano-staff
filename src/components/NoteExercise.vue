@@ -16,10 +16,13 @@ import PianoKeyboard from './inputs/PianoKeyboard.vue'
 import { useStats, type Stats } from '@/utils/stats'
 import { useNoteSound } from '@/composables/useNoteSound'
 import { useMidiInput } from '@/composables/useMidiInput'
+import { useMidiNavStore, LEADER_KEY } from '@/stores/midiNav'
 import type { Clef } from '@/types/global'
 
 const { preloadSound, unlockAudio, playNote } = useNoteSound()
 const midi = useMidiInput()
+// this view answers with MIDI, so suspend global MIDI navigation while it's open
+const midiNav = useMidiNavStore()
 
 type Note = 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
 type GameState = 'not-playing' | 'scrolling' | 'waiting' | 'pause' | 'game-over'
@@ -817,6 +820,7 @@ function onDocumentVisibilityChange() {
 // game isn't accepting an answer, so no extra state guard is needed here.
 function handleKeydown(event: KeyboardEvent) {
   if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
+  if (midiNav.navMode) return // navigating (leader armed), not answering
   const key = event.key.toUpperCase()
   if (!notes.includes(key as Note)) return
   event.preventDefault()
@@ -827,7 +831,10 @@ function handleKeydown(event: KeyboardEvent) {
 // key or a physical letter key does: the note name (naturals "C", accidentals
 // "C#") flows into handleGuess, which only compares the letter. handleGuess'
 // own spam/settle grace windows debounce a MIDI burst, so nothing extra needed.
-function handleMidiNote(note: { name: string }) {
+function handleMidiNote(note: { name: string; midi: number }) {
+  // the leader is handled app-side (it toggles nav mode); never answer it. And
+  // while navigating, notes drive the footer nav / history, not answers.
+  if (note.midi === LEADER_KEY || midiNav.navMode) return
   handleGuess(note.name)
 }
 
