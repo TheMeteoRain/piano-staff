@@ -7,7 +7,6 @@
     }"
   >
     <template #incrementicon>
-      <AngleUpIcon />
       <i class="pi pi-angle-up"></i>
     </template>
     <template #decrementicon>
